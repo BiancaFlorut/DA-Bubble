@@ -1,0 +1,44 @@
+.intro-container {
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(1.46deg, #313AE6 1.22%, #797EF3 98.76%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.animation-container {
+    width: 696px;
+    height: 184px;
+    position: relative;
+
+    img {
+        width: 100%;
+        height: 100%;
+    }
+
+    div {
+        position: absolute;
+        top: 50%;
+        right: -100;
+        font-size: 80px;
+        font-weight: 700;
+        color: white;
+        opacity: 0;
+        transform: translate(-100%, -100%);
+    }
+}
+
+// // After delay
+// animation-delay: 500ms;
+// // Change to: "Step 1";
+// // Animate: Smart animate;
+// animation-timing-function: ease-out;
+// animation-duration: 300ms;
+
+// // After delay
+// animation-delay: 1ms;
+// // Change to: "Final";
+// // Animate: Smart animate;
+// animation-timing-function: ease-out;
+// animation-duration: 500ms;

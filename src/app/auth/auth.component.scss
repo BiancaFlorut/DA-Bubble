@@ -1,0 +1,57 @@
+.auth-background-container {
+    height: 100vh;
+    background: #ECEEFE;
+}
+
+.auth-container {
+    max-width: 1920px;
+    height: 100%;
+    padding: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .create-account-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 10px;
+
+        span {
+            font-size: 18px;
+            padding: 0 25px;
+        }
+    }
+}
+
+.legal-links-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding-top: 50px;
+}
+
+a {
+    text-decoration: none;
+    font-size: 18px;
+    color: #797EF3;
+    padding: 12px 25px;
+    display: inline-block; 
+    border: 1px solid transparent;
+
+    &:hover {
+        border: 1px solid #686868;
+        border-radius: 25px;
+    }
+}

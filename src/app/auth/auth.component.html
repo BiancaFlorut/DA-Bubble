@@ -1,0 +1,16 @@
+<div class="auth-background-container">
+    <div class="auth-container">
+        <div class="header-container">
+            <img src="./assets/img/auth/logo.png" alt="logo">
+            <div class="create-account-container">
+                <span>Neu bei DABubble?</span>
+                <a [routerLink]="'signup'">Konto erstellen</a>
+            </div>
+        </div>
+            <router-outlet />
+        <div class="legal-links-container">
+            <a [routerLink]="'imprint'">Impressum</a>
+            <a [routerLink]="'privacy-policy'">Datenschutz</a>
+        </div>
+    </div>
+</div>
