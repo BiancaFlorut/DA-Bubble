@@ -3,13 +3,13 @@ import { HandleCreateAccountService } from '../../serives/handle-create-account/
 import { Location } from '@angular/common';
 
 @Component({
-  selector: 'app-forgot-password',
+  selector: 'app-change-password',
   standalone: true,
   imports: [],
-  templateUrl: './forgot-password.component.html',
-  styleUrl: './forgot-password.component.scss'
+  templateUrl: './change-password.component.html',
+  styleUrl: './change-password.component.scss'
 })
-export class ForgotPasswordComponent {
+export class ChangePasswordComponent {
   isLoginUrl!: boolean;
 
   constructor(private handleCreateAccount: HandleCreateAccountService, private location: Location) {

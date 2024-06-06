@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { HandleCreateAccountService } from '../../serives/handle-create-account/handle-create-account.service';
 import { Location } from '@angular/common';
+import { HandleCreateAccountService } from '../../serives/handle-create-account/handle-create-account.service';
 
 @Component({
-  selector: 'app-forgot-password',
+  selector: 'app-privacy-policy',
   standalone: true,
   imports: [],
-  templateUrl: './forgot-password.component.html',
-  styleUrl: './forgot-password.component.scss'
+  templateUrl: './privacy-policy.component.html',
+  styleUrl: './privacy-policy.component.scss'
 })
-export class ForgotPasswordComponent {
+export class PrivacyPolicyComponent {
   isLoginUrl!: boolean;
 
   constructor(private handleCreateAccount: HandleCreateAccountService, private location: Location) {

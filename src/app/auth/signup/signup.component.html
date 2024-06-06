@@ -1,1 +1,26 @@
-<p>signup works!</p>
+<div class="signup-container">
+    <div (click)="handleIsLoginUrl()" class="back-arrow"></div>
+    <h2>Konto erstellen</h2>
+    <p>Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.</p>
+    <form>
+        <div class="pos-rel-container">
+            <input type="text" name="name" id="name" placeholder="Name und Nachname">
+            <img src="./assets/img/auth/person.png" alt="person">
+        </div>
+        <div class="pos-rel-container">
+            <input type="email" name="email" id="email" placeholder="beispielnamen@email.com">
+            <img src="./assets/img/auth/email.png" alt="email">
+        </div>
+        <div class="pos-rel-container">
+            <input type="password" name="password" id="password" placeholder="Passwort">
+            <img src="./assets/img/auth/lock.png" alt="lock">
+        </div>
+        <div class="privacy-policy-container">
+            <div (click)="handleCheckbox()" [ngClass]="{'checked': isChecked, 'unchecked': !isChecked}" class="checkbox"></div>
+            <div>Ich stimme der <a [routerLink]="'/auth/privacy-policy'">Datenschutzerklärung</a> zu.</div>
+        </div>
+        <div class="next-button-container">
+            <button>weiter</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,23 @@
+<div class="choose-avatar-container">
+    <div (click)="handleIsLoginUrl()" class="back-arrow"></div>
+    <h2>Wähle deinen Avatar</h2>
+    <div class="profile-container">
+        <img src="./assets/img/auth/profile.png" alt="profile">
+        <span>Frederik Beck</span>
+    </div>
+    <div class="avatar-container">
+        <span>Aus der Liste wählen</span>
+        <div class="avatar">
+            @for (avatar of [0,1,2,3,4,5]; track $index) {
+            <img src="./assets/img/auth/character{{avatar}}.png" alt="character">
+            }
+        </div>
+        <div class="personal-img-container">
+            <span>eigenes Bild verwenden</span>
+            <button>Datei hochladen</button>
+        </div>
+    </div>
+    <div class="next-button-container">
+        <button>weiter</button>
+    </div>
+</div>
