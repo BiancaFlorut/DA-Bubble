@@ -16,8 +16,16 @@
 .header-container {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
+
+    img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        animation: moveToTopLeft 0.8s ease 1.5s forwards;
+    }
 
     .create-account-container {
         display: flex;
@@ -38,7 +46,7 @@
     justify-content: center;
     align-items: center;
     gap: 30px;
-    padding: 50px;
+    padding: 40px;
 }
 
 a {
@@ -46,11 +54,59 @@ a {
     font-size: 18px;
     color: #797EF3;
     padding: 12px 25px;
-    display: inline-block; 
+    display: inline-block;
     border: 1px solid transparent;
 
     &:hover {
         border: 1px solid #686868;
         border-radius: 25px;
+    }
+}
+
+.intro-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(1.46deg, #313AE6 1.22%, #797EF3 98.76%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    animation: moveAndFade 0.8s ease 1.5s forwards;
+
+    div {
+        font-size: 80px;
+        font-weight: 700;
+        color: white;
+    }
+}
+
+@keyframes moveAndFade {
+    0% {
+        height: 100vh;
+        width: 100%;
+        opacity: 1;
+    }
+
+    100% {
+        height: 25vh;
+        width: 25%;
+        opacity: 0;
+    }
+}
+
+@keyframes moveToTopLeft {
+    0% {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    100% {
+        top: 80px;
+        left: 80px;
+        transform: translate(0, 0);
     }
 }
