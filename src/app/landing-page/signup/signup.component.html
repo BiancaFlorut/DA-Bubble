@@ -1,0 +1,62 @@
+<div class="signup-container">
+    <div routerLink=".." class="back-arrow"></div>
+    <h2>Konto erstellen</h2>
+    <p>Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.</p>
+    <form [formGroup]="userForm" (ngSubmit)="addUser()">
+        <div class="pos-rel-container">
+            <input type="text" formControlName="name" id="name" placeholder="Name und Nachname">
+            <img src="./assets/img/auth/person.png" alt="person">
+            @if (userForm.get('name')?.touched && userForm.get('name')?.invalid) {
+            @if (userForm.get('name')?.errors?.['required']) {
+            <span>Bitte schreiben Sie einen Namen.</span>
+            }
+            @if (userForm.get('name')?.errors?.['pattern']) {
+            <span>Vor- und Nachname müssen mit Großbuchstaben beginnen.</span>
+            }
+            }
+        </div>
+        <div class="pos-rel-container">
+            <input type="email" formControlName="email" id="email" placeholder="beispielnamen@email.com">
+            <img src="./assets/img/auth/email.png" alt="email">
+            @if (userForm.get('email')?.touched && userForm.get('email')?.invalid) {
+            @if (userForm.get('email')?.errors?.['required']) {
+            <span>Bitte schreiben Sie eine E-Mail</span>
+            }
+            @if (userForm.get('email')?.errors?.['pattern']) {
+            <span>Diese E-Mail-Adresse ist leider ungültig.</span>
+            }
+            }
+            @for (user of createdUser; track $index) {
+            @if(emailIsExisting) {
+            <span>Diese E-Mail-Adresse ist bereits registriert.</span>
+            }
+            }
+        </div>
+        <div class="pos-rel-container">
+            <input type="password" formControlName="password" id="password" placeholder="Passwort">
+            <img src="./assets/img/auth/lock.png" alt="lock">
+            @if (userForm.get('password')?.touched && userForm.get('password')?.invalid) {
+            @if (userForm.get('password')?.errors?.['required']) {
+            <span>Bitte geben Sie ein Passwort ein.</span>
+            }
+            @if (userForm.get('password')?.errors?.['pattern']) {
+            <span>Passwort muss mindestens 8 Zeichen lang sein.</span>
+            }
+            }
+        </div>
+        <div class="d-flex-dir-col">
+            <div class="privacy-policy-container">
+                <div (click)="handleCheckbox()" [ngClass]="{'checked': isChecked, 'unchecked': !isChecked}"
+                    class="checkbox"></div>
+                <div>Ich stimme der <a [routerLink]="'/landing-page/privacy-policy'">Datenschutzerklärung</a> zu.</div>
+            </div>
+            @if (showCheckboxFeedback) {
+            <span>Bitte stimme der Datenschutzerklärung zu.</span>
+            }
+        </div>
+        <div class="next-button-container">
+            <button class="inactive-button" [ngClass]="{'active-button': isChecked && userForm.valid}"
+                [disabled]="userForm.invalid" type="submit">weiter</button>
+        </div>
+    </form>
+</div>

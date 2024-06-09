@@ -5,14 +5,14 @@
             @if(isLoginUrl){
             <div class="create-account-container">
                 <span>Neu bei DABubble?</span>
-                <a (click)="handleIsLoginUrl()" [routerLink]="'signup'">Konto erstellen</a>
+                <a routerLink="signup">Konto erstellen</a>
             </div>
             }
         </div>
         <router-outlet style="display: none;" />
         <div class="legal-links-container">
-            <a (click)="handleIsLoginUrl()" [routerLink]="'imprint'">Impressum</a>
-            <a (click)="handleIsLoginUrl()" [routerLink]="'privacy-policy'">Datenschutz</a>
+            <a routerLink="imprint">Impressum</a>
+            <a routerLink="privacy-policy">Datenschutz</a>
         </div>
     </div>
 </div>

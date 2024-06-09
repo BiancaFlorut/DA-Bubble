@@ -41,6 +41,19 @@
     align-items: center;
     gap: 16px;
 
+    img {
+        cursor: pointer;
+        width: 168px;
+        height: 168px;
+        object-fit: cover;
+        border-radius: 100px;
+        border: 8px solid transparent;
+
+        &:hover {
+            border: 8px solid #E6E6E6;
+        }
+    }
+
     span {
         font-size: 32px;
         font-weight: 700;
@@ -60,6 +73,18 @@
     .avatar {
         display: flex;
         gap: 10px;
+
+        img {
+            width: 64px;
+            height: 64px;
+            cursor: pointer;
+            border-radius: 41px;
+            border: 4px solid transparent;
+
+            &:hover {
+                border: 4px solid #ECEEFE
+            }
+        }
     }
 }
 
@@ -69,6 +94,7 @@
     gap: 20px;
 
     button {
+        cursor: pointer;
         padding: 12px 25px;
         border: 1px solid #797EF3;
         border-radius: 25px;
@@ -76,6 +102,11 @@
         color: #444DF2;
         font-size: 18px;
         font-weight: 700;
+
+        &:hover {
+            background-color: #535AF1;
+            color: white;
+        }
     }
 }
 
@@ -85,12 +116,24 @@
     justify-content: flex-end;
 
     button {
+        cursor: pointer;
         padding: 12px 25px;
         border-radius: 25px;
-        background-color: #444DF2;
         color: white;
         font-size: 18px;
         font-weight: 700;
         border: unset;
+    }
+}
+
+.inactive-button {
+    background-color: #686868;
+}
+
+.active-button {
+    background-color: #444DF2;
+
+    &:hover {
+        background-color: #797EF3;
     }
 }
