@@ -14,15 +14,15 @@ export class UserService {
 
   constructor() { }
 
-  setUser(user: User): void {
+  public setUser(user: User) {
     this.user = user;
   }
 
-  getUser(): User {
+  public getUser() {
     return this.user;
   }
 
-  updateUser(data: Partial<User>): void {
+  public updateUser(data: Partial<User>) {
     this.user = { ...this.user, ...data };
   }
 }

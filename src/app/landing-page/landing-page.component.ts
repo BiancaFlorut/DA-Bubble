@@ -12,12 +12,12 @@ import { HandleCreateAccountService } from '../services/handle-create-account/ha
   styleUrl: './landing-page.component.scss'
 })
 export class LandingPageComponent {
-  isLoginUrl: boolean = true;
+  public isLoginUrl: boolean = true;
 
   constructor(private handleCreateAccount: HandleCreateAccountService, private router: Router) {
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         if (event.url === '/landing-page/login' || event.url === '/landing-page') {

@@ -6,15 +6,15 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class HandleCreateAccountService {
   private isLoginUrl = new BehaviorSubject<boolean>(true);
-  isLoginUrlObservable = this.isLoginUrl.asObservable();
+  public isLoginUrlObservable = this.isLoginUrl.asObservable();
 
   constructor() { }
 
-  public setBoolean(value: boolean): void {
+  public setBoolean(value: boolean) {
     this.isLoginUrl.next(value);
   }
 
-  public getBoolean(): boolean {
+  public getBoolean() {
     return this.isLoginUrl.value;
   }
 }

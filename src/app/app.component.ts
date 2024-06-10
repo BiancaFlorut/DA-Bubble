@@ -13,17 +13,17 @@ import 'aos/dist/aos.css';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'da_bubble';
+  public title = 'da_bubble';
 
-  constructor(private firesbase: FirebaseService) { }
+  constructor(private firebase: FirebaseService) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.getUsers();
     AOS.init();
   }
 
   public getUsers() {
-    return onSnapshot(this.firesbase.getUsers(), (users) => {
+    return onSnapshot(this.firebase.getUsers(), (users) => {
       users.forEach((user) => {
         console.log(user.data());
       });

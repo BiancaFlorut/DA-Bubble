@@ -2,7 +2,7 @@
     <div routerLink=".." class="back-arrow"></div>
     <h2>Wähle deinen Avatar</h2>
     <div class="profile-container">
-        <img src="{{avatar}}" alt="profile">
+        <img (click)="onUploadButtonClick()" src="{{avatar}}" alt="profile">
         <span>{{currentUser.name}}</span>
     </div>
     <div class="avatar-container">
@@ -14,10 +14,18 @@
         </div>
         <div class="personal-img-container">
             <span>eigenes Bild verwenden</span>
-            <button>Datei hochladen</button>
+            <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" />
+            <button (click)="onUploadButtonClick()">Datei hochladen</button>
         </div>
     </div>
     <div class="next-button-container">
         <button (click)="saveUser()" class="inactive-button" [ngClass]="{'active-button': chooseAvatar}">weiter</button>
+    </div>
+</div>
+<div [ngStyle]="{'display': !showCreateUser ? 'none' : 'unset'}" class="feedback-container">
+    <div class="pos-rel-container">
+        <div>
+            Konto erfolgreich erstellt!
+        </div>
     </div>
 </div>

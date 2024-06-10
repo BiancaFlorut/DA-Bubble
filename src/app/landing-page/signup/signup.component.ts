@@ -20,19 +20,19 @@ import { onSnapshot } from '@angular/fire/firestore';
   styleUrl: './signup.component.scss'
 })
 export class SignupComponent {
-  newUser: User = {
+  private newUser: User = {
     name: '',
     email: '',
     password: '',
     avatar: '',
   }
 
-  isChecked: boolean = false;
-  showCheckboxFeedback: boolean = false;
-  createdUser!: any[];
-  emailIsExisting: boolean = false;
+  public isChecked: boolean = false;
+  public showCheckboxFeedback: boolean = false;
+  public createdUser!: any[];
+  public emailIsExisting: boolean = false;
 
-  userForm!: FormGroup;
+  public userForm!: FormGroup;
 
   constructor(
     private user: UserService,
@@ -41,7 +41,7 @@ export class SignupComponent {
     private firebase: FirebaseService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.userForm = this.fb.group({
       name: [this.newUser.name, [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+\s[A-Z][a-zA-Z]+$/)]],
       email: [this.newUser.email, [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
@@ -50,11 +50,11 @@ export class SignupComponent {
     this.getUser();
   }
 
-  public handleCheckbox(): void {
+  public handleCheckbox() {
     this.isChecked = !this.isChecked;
   }
 
-  public addUser(): void {
+  public addUser() {
     this.newUser = this.userForm.value;
     this.createdUser.forEach(user => {
       if (user.email === this.newUser.email) {

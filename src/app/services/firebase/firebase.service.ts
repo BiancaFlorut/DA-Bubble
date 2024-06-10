@@ -5,15 +5,15 @@ import { Firestore, addDoc, collection, doc, updateDoc } from '@angular/fire/fir
   providedIn: 'root'
 })
 export class FirebaseService {
-  firestore: Firestore = inject(Firestore);
+  private firestore: Firestore = inject(Firestore);
 
   constructor() { }
 
-  getUsers() {
+  public getUsers() {
     return collection(this.firestore, 'users');
   }
 
-  getSingleUser(docId: string) {
+  public getSingleUser(docId: string) {
     return doc(this.getUsers(), docId)
   }
 
@@ -26,7 +26,7 @@ export class FirebaseService {
       )
   }
 
-  async updateUser(user: any, id: string) {
+  public async updateUser(user: any, id: string) {
     let docRef = this.getSingleUser(id);
     await updateDoc(docRef, user).catch(
       (err) => { console.error(err); }
