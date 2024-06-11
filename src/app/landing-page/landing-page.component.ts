@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { HandleCreateAccountService } from '../services/handle-create-account/handle-create-account.service';
 
@@ -14,18 +14,18 @@ import { HandleCreateAccountService } from '../services/handle-create-account/ha
 export class LandingPageComponent {
   public isLoginUrl: boolean = true;
 
-  constructor(private handleCreateAccount: HandleCreateAccountService, private router: Router) {
-  }
+  private handleCreateAccount = inject(HandleCreateAccountService);
+  private router = inject(Router);
 
   ngOnInit() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         if (event.url === '/landing-page/login' || event.url === '/landing-page') {
-          this.handleCreateAccount.setBoolean(true);
+          this.handleCreateAccount.isLoginUrl = true;
         } else {
-          this.handleCreateAccount.setBoolean(false);
+          this.handleCreateAccount.isLoginUrl = false;
         }
-        this.isLoginUrl = this.handleCreateAccount.getBoolean();
+        this.isLoginUrl = this.handleCreateAccount.isLoginUrl;
       }
     });
   }

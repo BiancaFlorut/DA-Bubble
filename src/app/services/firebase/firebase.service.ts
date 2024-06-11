@@ -7,8 +7,6 @@ import { Firestore, addDoc, collection, doc, updateDoc } from '@angular/fire/fir
 export class FirebaseService {
   private firestore: Firestore = inject(Firestore);
 
-  constructor() { }
-
   public getUsers() {
     return collection(this.firestore, 'users');
   }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../interfaces/user';
@@ -16,13 +16,18 @@ import { FirebaseService } from '../../services/firebase/firebase.service';
   styleUrl: './choose-avatar.component.scss'
 })
 export class ChooseAvatarComponent {
-  @ViewChild('fileInput') public fileInput: any;
   public currentUser!: User;
   public chooseAvatar: boolean = false;
   public avatar: string | ArrayBuffer | null = './assets/img/auth/profile.png';
   public showCreateUser: boolean = false;
 
-  constructor(private user: UserService, private firebase: FirebaseService, private router: Router) {
+  @ViewChild('fileInput') public fileInput: any;
+  
+  private user = inject(UserService);
+  private firebase = inject(FirebaseService);
+  private router = inject(Router);
+
+  constructor() {
     this.currentUser = this.user.getUser();
   }
 

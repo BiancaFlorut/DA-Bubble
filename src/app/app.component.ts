@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FirebaseService } from './services/firebase/firebase.service';
 import { onSnapshot } from '@angular/fire/firestore';
@@ -14,8 +14,7 @@ import 'aos/dist/aos.css';
 })
 export class AppComponent {
   public title = 'da_bubble';
-
-  constructor(private firebase: FirebaseService) { }
+  private firebase = inject(FirebaseService);
 
   ngOnInit() {
     this.getUsers();
