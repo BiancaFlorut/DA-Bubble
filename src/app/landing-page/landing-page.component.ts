@@ -12,20 +12,24 @@ import { HandleCreateAccountService } from '../services/handle-create-account/ha
   styleUrl: './landing-page.component.scss'
 })
 export class LandingPageComponent {
-  public isLoginUrl: boolean = true;
+  public isLoginUrl: boolean;
 
   private handleCreateAccount = inject(HandleCreateAccountService);
   private router = inject(Router);
+
+  constructor() {
+    this.isLoginUrl = this.handleCreateAccount.getLogin();
+  }
 
   ngOnInit() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         if (event.url === '/landing-page/login' || event.url === '/landing-page') {
-          this.handleCreateAccount.isLoginUrl = true;
+          this.handleCreateAccount.setLogin(true);
         } else {
-          this.handleCreateAccount.isLoginUrl = false;
+          this.handleCreateAccount.setLogin(false);
         }
-        this.isLoginUrl = this.handleCreateAccount.isLoginUrl;
+        this.isLoginUrl = this.handleCreateAccount.getLogin();
       }
     });
   }

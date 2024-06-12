@@ -31,6 +31,14 @@ form {
     align-items: center;
     gap: 30px;
 
+    .pos-rel-container {
+
+        span {
+            font-size: 14px;
+            color: #ED1E79;
+        }
+    }
+
     a {
         text-decoration: none;
         font-size: 18px;

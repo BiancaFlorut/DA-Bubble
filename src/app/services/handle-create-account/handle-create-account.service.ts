@@ -4,5 +4,13 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class HandleCreateAccountService {
-  public isLoginUrl = true;
+  public isLoginUrl: boolean = true;
+
+  public setLogin(isLogin: boolean) {
+    this.isLoginUrl = isLogin;
+  }
+
+  public getLogin() {
+    return this.isLoginUrl;
+  }
 }

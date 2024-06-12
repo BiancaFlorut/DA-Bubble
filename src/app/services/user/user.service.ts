@@ -19,8 +19,4 @@ export class UserService {
   public getUser() {
     return this.user;
   }
-
-  public updateUser(data: Partial<User>) {
-    this.user = { ...this.user, ...data };
-  }
 }

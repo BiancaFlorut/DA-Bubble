@@ -59,14 +59,14 @@ export class SignupComponent {
   }
 
   private emailExisting() {
-    this.createdUser.forEach(user => {
-      if (user.email === this.userForm.get('email')?.value) {
-        this.emailIsExisting = true;
-        setTimeout(() => {
-          this.emailIsExisting = false;
-        }, 2000);
-      }
-    });
+    const inputEmail = this.userForm.get('email')?.value;
+    const emailExists = this.createdUser.some(user => user.email === inputEmail);
+    if (emailExists) {
+      this.emailIsExisting = true;
+      setTimeout(() => {
+        this.emailIsExisting = false;
+      }, 2000);
+    }
   }
 
   private checkCheckbox() {
@@ -80,17 +80,8 @@ export class SignupComponent {
 
   private updateAndNavigate() {
     if (this.userForm.valid && this.isChecked && !this.emailIsExisting) {
-      this.updateUserDetails();
-      this.router.navigate(['/landing-page/signup/choose-avatar'])
-    }
-  }
-
-  private updateUserDetails() {
-    this.user.user = {
-      name: this.userForm.get('name')?.value,
-      email: this.userForm.get('email')?.value,
-      password: this.userForm.get('password')?.value,
-      avatar: ''
+      this.user.setUser(this.userForm.value);
+      this.router.navigate(['/landing-page/signup/choose-avatar']);
     }
   }
 }
