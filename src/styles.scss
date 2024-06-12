@@ -31,12 +31,26 @@ body {
         }
     }
 
-    img {
+    >img {
         position: absolute;
         top: 50%;
         bottom: 50%;
         left: 30px;
         transform: translateY(-50%);
+    }
+}
+
+@keyframes slideFromRight {
+    0% {
+        height: 0px;
+    }
+
+    25%{
+        height: 149px;
+    }
+
+    100% {
+        right: 100px;
     }
 }
 

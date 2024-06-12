@@ -172,17 +172,3 @@
         }
     }
 }
-
-@keyframes slideFromRight {
-    0% {
-        height: 0px;
-    }
-
-    25%{
-        height: 149px;
-    }
-
-    100% {
-        right: 100px;
-    }
-}

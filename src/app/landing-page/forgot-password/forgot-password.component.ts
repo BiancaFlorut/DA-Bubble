@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { FormGroup, FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { onSnapshot } from 'firebase/firestore';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Post } from '../../interfaces/post';
+import { UserData } from '../../interfaces/user-data';
 
 @Component({
   selector: 'app-forgot-password',
@@ -21,13 +22,20 @@ import { Post } from '../../interfaces/post';
 })
 export class ForgotPasswordComponent {
   public createdUser!: any[];
+  userData: UserData = {
+    email: '',
+    name: 'Passwort zurücksetzen',
+    message: 'Bitte klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen:<br><br>https://da-bubble.vitalij-schwab.com/landing-page/login/change-password',
+  };
+
   public validEmail!: boolean;
   public userForm!: FormGroup;
   private mailTest: boolean = true;
-  public currentEmail: string = '';
+  public showSendEmailMessage: boolean = false;
 
   private firebase = inject(FirebaseService);
   private http: HttpClient = inject(HttpClient);
+  private router: Router = inject(Router);
 
   post: Post = {
     endPoint: `https://da-bubble.vitalij-schwab.com/sendMail.php`,
@@ -54,16 +62,27 @@ export class ForgotPasswordComponent {
   }
 
   public onSubmit(ngForm: NgForm) {
-    if (ngForm.submitted && ngForm.form.valid && !this.mailTest) {
+    const emailExists = this.createdUser.some(user => user.email === this.userData.email);
+    if (ngForm.submitted && ngForm.form.valid && !this.mailTest && emailExists) {
       this.submitForm(ngForm);
-    } else if (ngForm.submitted && ngForm.form.valid && this.mailTest) {
+      this.showSendEmailMessage = true;
+      setTimeout(() => {
+        this.showSendEmailMessage = false;
+        this.router.navigate(['./landing-page/login'])
+      }, 2000);
+    } else if (ngForm.submitted && ngForm.form.valid && this.mailTest && emailExists) {
       ngForm.resetForm();
+      this.showSendEmailMessage = true;
+      setTimeout(() => {
+        this.showSendEmailMessage = false;
+        this.router.navigate(['./landing-page/login'])
+      }, 2000);
     }
-    this.emailExisting();
+    this.emailExisting(emailExists);
   }
 
   private submitForm(ngForm: NgForm) {
-    this.http.post(this.post.endPoint, this.post.body('http://localhost:4200/landing-page/login/change-password'))
+    this.http.post(this.post.endPoint, this.post.body(this.userData))
       .subscribe({
         next: (response) => {
           ngForm.resetForm();
@@ -75,8 +94,7 @@ export class ForgotPasswordComponent {
       });
   }
 
-  private emailExisting() {
-    const emailExists = this.createdUser.some(user => user.email === this.currentEmail);
+  private emailExisting(emailExists: boolean) {
     if (!emailExists) {
       this.validEmail = true;
       setTimeout(() => {
