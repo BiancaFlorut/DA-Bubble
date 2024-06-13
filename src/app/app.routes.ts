@@ -18,7 +18,7 @@ export const routes: Routes = [
             { path: '', redirectTo: 'login', pathMatch: 'full' },
             { path: 'login', component: LoginComponent },
             { path: 'login/forgot-password', component: ForgotPasswordComponent },
-            { path: 'login/change-password', component: ChangePasswordComponent },
+            { path: 'login/change-password/:id', component: ChangePasswordComponent },
             { path: 'signup', component: SignupComponent },
             { path: 'signup/choose-avatar', component: ChooseAvatarComponent },
             { path: 'imprint', component: ImprintComponent },

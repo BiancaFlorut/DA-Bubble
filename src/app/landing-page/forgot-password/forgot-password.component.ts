@@ -25,12 +25,12 @@ export class ForgotPasswordComponent {
   userData: UserData = {
     email: '',
     name: 'Passwort zurücksetzen',
-    message: 'Bitte klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen:<br><br>https://da-bubble.vitalij-schwab.com/landing-page/login/change-password',
+    message: '',
   };
 
   public validEmail!: boolean;
   public userForm!: FormGroup;
-  private mailTest: boolean = true;
+  private mailTest: boolean = false;
   public showSendEmailMessage: boolean = false;
 
   private firebase = inject(FirebaseService);
@@ -56,29 +56,30 @@ export class ForgotPasswordComponent {
     return onSnapshot(this.firebase.getUsers(), (users) => {
       this.createdUser = [];
       users.forEach((user) => {
-        this.createdUser.push(user.data());
+        this.createdUser.push({ id: user.id, ...user.data() });
       });
     });
   }
 
   public onSubmit(ngForm: NgForm) {
+    this.saveEmailId();
     const emailExists = this.createdUser.some(user => user.email === this.userData.email);
     if (ngForm.submitted && ngForm.form.valid && !this.mailTest && emailExists) {
       this.submitForm(ngForm);
-      this.showSendEmailMessage = true;
-      setTimeout(() => {
-        this.showSendEmailMessage = false;
-        this.router.navigate(['./landing-page/login'])
-      }, 2000);
+      this.showEmailSentMessage();
     } else if (ngForm.submitted && ngForm.form.valid && this.mailTest && emailExists) {
       ngForm.resetForm();
-      this.showSendEmailMessage = true;
-      setTimeout(() => {
-        this.showSendEmailMessage = false;
-        this.router.navigate(['./landing-page/login'])
-      }, 2000);
+      this.showEmailSentMessage();
     }
     this.emailExisting(emailExists);
+  }
+
+  private saveEmailId() {
+    this.createdUser.forEach(user => {
+      if (user.email === this.userData.email) {
+        this.userData.message = `Bitte klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen:<br><br>https://da-bubble.vitalij-schwab.com/landing-page/login/change-password/${user.id}`;
+      }
+    })
   }
 
   private submitForm(ngForm: NgForm) {
@@ -92,6 +93,14 @@ export class ForgotPasswordComponent {
         },
         complete: () => console.info('send post complete'),
       });
+  }
+
+  private showEmailSentMessage() {
+    this.showSendEmailMessage = true;
+    setTimeout(() => {
+      this.showSendEmailMessage = false;
+      this.router.navigate(['./landing-page/login'])
+    }, 2000);
   }
 
   private emailExisting(emailExists: boolean) {
