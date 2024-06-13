@@ -30,7 +30,7 @@ export class ForgotPasswordComponent {
 
   public validEmail!: boolean;
   public userForm!: FormGroup;
-  private mailTest: boolean = false;
+  private mailTest: boolean = true;
   public showSendEmailMessage: boolean = false;
 
   private firebase = inject(FirebaseService);

@@ -3,6 +3,7 @@ import { onSnapshot } from '@angular/fire/firestore';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { FirebaseService } from '../../services/firebase/firebase.service';
+import { Auth, GoogleAuthProvider, signInWithRedirect } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +24,7 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private firebase = inject(FirebaseService);
   private router = inject(Router);
+  private afAuth = inject(Auth);
 
   ngOnInit() {
     this.userForm = this.fb.group({
@@ -47,8 +49,8 @@ export class LoginComponent {
     this.navigateToMainPage();
   }
 
-  public loginWithGoggle() {
-
+  public async loginWithGoggle() {
+    await signInWithRedirect(this.afAuth, new GoogleAuthProvider());
   }
 
   private emailExisting() {
