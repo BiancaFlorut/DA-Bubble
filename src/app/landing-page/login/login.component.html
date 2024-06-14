@@ -4,7 +4,7 @@
     <form [formGroup]="userForm" (ngSubmit)="login()">
         <div class="pos-rel-container">
             <input type="email" formControlName="email" id="email" placeholder="beispielnamen@email.com">
-            <img src="./assets/img/auth/email.png" alt="email">
+            <img src="./assets/img/landing-page/email.png" alt="email">
             @if (userForm.get('email')?.touched && userForm.get('email')?.invalid) {
             @if(userForm.get('email')?.errors?.['required']) {
             <span>Bitte schreiben Sie eine E-Mail</span>
@@ -19,9 +19,9 @@
         </div>
         <div class="pos-rel-container">
             <input type="password" formControlName="password" id="password" placeholder="Passwort">
-            <img src="./assets/img/auth/lock.png" alt="lock">
+            <img src="./assets/img/landing-page/lock.png" alt="lock">
             @if (userForm.get('password')?.touched && userForm.get('password')?.invalid) {
-            @if(validPassword && userForm.get('password')?.errors?.['required']) {
+            @if(userForm.get('password')?.errors?.['required']) {
             <span>Bitte geben Sie ein Passwort ein.</span>
             }
             @if (userForm.get('password')?.errors?.['pattern']) {
@@ -38,13 +38,14 @@
             <span>ODER</span>
             <div class="line-container"></div>
         </div>
-        <div (click)="loginWithGoggle()" class="google-login-container">
-            <img src="./assets/img/auth/google.png" alt="google">
+        <div (click)="loginWithGoogle()" class="google-login-container">
+            <img src="./assets/img/landing-page/google.png" alt="google">
             <span>Anmelden mit Google</span>
         </div>
         <div class="login-button-container">
-            <button type="submit">Anmelden</button>
-            <button>Gäste-Login</button>
+            <button class="inactive-button" [ngClass]="{'active-button': userForm.valid}" [disabled]="userForm.invalid"
+                type="submit">Anmelden</button>
+            <button type="button" (click)="guestLogin()">Gäste-Login</button>
         </div>
     </form>
 </div>

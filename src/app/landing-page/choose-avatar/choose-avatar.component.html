@@ -9,7 +9,7 @@
         <span>Aus der Liste wählen</span>
         <div class="avatar">
             @for (avatar of [0,1,2,3,4,5]; track $index) {
-            <img (click)="selectedAvatar(avatar)" src="./assets/img/auth/character{{avatar}}.png" alt="character">
+            <img (click)="selectedAvatar(avatar)" src="./assets/img/character{{avatar}}.png" alt="character">
             }
         </div>
         <div class="personal-img-container">

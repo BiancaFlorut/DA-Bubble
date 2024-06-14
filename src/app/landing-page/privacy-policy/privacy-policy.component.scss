@@ -1,0 +1,50 @@
+.privacy-policy-container {
+    width: 676px;
+    height: 769px;
+    border-radius: 30px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 10px 0px #00000014;
+    padding: 110px 56px 48px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+
+    .back-arrow {
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        top: 48px;
+        left: 56px;
+        background-image: url(./../../../assets/img/landing-page/arrow_back.png);
+        background-size: cover;
+        background-repeat: no-repeat;
+
+        &:hover {
+            background-image: url(./../../../assets/img/landing-page/arrow_back_hover.png);
+        }
+    }
+
+    .scroll-container {
+        overflow: scroll;
+
+        h2 {
+            font-weight: 700;
+            color: #444DF2;
+            font-size: 32px;
+
+            &:first-child {
+                font-size: 46px;
+            }
+        }
+
+        h3 {
+            font-size: 24px;
+        }
+
+        p {
+            font-size: 20px;
+        }
+    }
+}

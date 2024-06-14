@@ -1,9 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { onSnapshot } from '@angular/fire/firestore';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { FirebaseService } from '../../services/firebase/firebase.service';
-import { Auth, GoogleAuthProvider, signInWithRedirect } from '@angular/fire/auth';
+import { CommonModule } from '@angular/common';
+import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { GoogleAuthProvider } from 'firebase/auth';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +13,9 @@ import { Auth, GoogleAuthProvider, signInWithRedirect } from '@angular/fire/auth
   imports: [
     RouterModule,
     ReactiveFormsModule,
+    CommonModule,
+    FormsModule,
+    AngularFireAuthModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -24,7 +29,7 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private firebase = inject(FirebaseService);
   private router = inject(Router);
-  private afAuth = inject(Auth);
+  // private angularAuth = inject(AngularFireAuth);
 
   ngOnInit() {
     this.userForm = this.fb.group({
@@ -38,7 +43,7 @@ export class LoginComponent {
     return onSnapshot(this.firebase.getUsers(), (users) => {
       this.createdUser = [];
       users.forEach((user) => {
-        this.createdUser.push(user.data());
+        this.createdUser.push({ id: user.id, ...user.data() });
       });
     });
   }
@@ -49,8 +54,18 @@ export class LoginComponent {
     this.navigateToMainPage();
   }
 
-  public async loginWithGoggle() {
-    await signInWithRedirect(this.afAuth, new GoogleAuthProvider());
+  public guestLogin() {
+    this.router.navigate([`main-page/guest`]);
+  }
+
+  public async loginWithGoogle() {
+    // this.angularAuth.signInWithPopup(new GoogleAuthProvider).then(() => {
+    //   console.log('gut');
+    // })
+    // .catch(error => {
+    //   console.log(error)
+    // });
+    // this.router.navigate(['main-page']);
   }
 
   private emailExisting() {
@@ -77,7 +92,11 @@ export class LoginComponent {
 
   private navigateToMainPage() {
     if (this.userForm.valid && !this.validEmail && !this.validPassword) {
-      this.router.navigate(['']);
+      this.createdUser.forEach(user => {
+        if (user.email === this.userForm.get('email')?.value) {
+          this.router.navigate([`main-page/${user.id}`]);
+        }
+      });
     }
   }
 }

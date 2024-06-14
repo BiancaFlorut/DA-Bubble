@@ -7,6 +7,7 @@ import { PrivacyPolicyComponent } from './landing-page/privacy-policy/privacy-po
 import { ChangePasswordComponent } from './landing-page/change-password/change-password.component';
 import { ChooseAvatarComponent } from './landing-page/choose-avatar/choose-avatar.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
+import { MainPageComponent } from './main-page/main-page.component';
 
 
 export const routes: Routes = [
@@ -25,4 +26,6 @@ export const routes: Routes = [
             { path: 'privacy-policy', component: PrivacyPolicyComponent },
         ]
     },
+    { path: 'main-page/:id', component: MainPageComponent },
+    { path: 'main-page', component: MainPageComponent },
 ];

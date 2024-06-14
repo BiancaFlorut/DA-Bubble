@@ -18,12 +18,12 @@
         position: absolute;
         top: 50px;
         left: 25px;
-        background-image: url(./../../../assets/img/auth/arrow_back.png);
+        background-image: url(./../../../assets/img/landing-page/arrow_back.png);
         background-size: cover;
         background-repeat: no-repeat;
 
         &:hover {
-            background-image: url(./../../../assets/img/auth/arrow_back_hover.png);
+            background-image: url(./../../../assets/img/landing-page/arrow_back_hover.png);
         }
     }
 
@@ -111,18 +111,18 @@ form {
 }
 
 .unchecked {
-    background-image: url(./../../../assets/img/auth/check.png);
+    background-image: url(./../../../assets/img/landing-page/check.png);
 
     &:hover {
-        background-image: url(./../../../assets/img/auth/check_hover.png);
+        background-image: url(./../../../assets/img/landing-page/check_hover.png);
     }
 }
 
 .checked {
-    background-image: url(./../../../assets/img/auth/checked.png);
+    background-image: url(./../../../assets/img/landing-page/checked.png);
 
     &:hover {
-        background-image: url(./../../../assets/img/auth/checked_hover.png);
+        background-image: url(./../../../assets/img/landing-page/checked_hover.png);
     }
 }
 

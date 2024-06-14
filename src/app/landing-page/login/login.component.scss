@@ -106,12 +106,7 @@ form {
 
         &:first-child {
             border: 1px solid transparent;
-            background-color: #444DF2;
             color: white;
-
-            &:hover {
-                background-color: #797EF3;
-            }
         }
 
         &:last-child {
@@ -124,5 +119,17 @@ form {
                 color: white;
             }
         }
+    }
+}
+
+.inactive-button{
+    background-color: #686868;
+}
+
+.active-button{
+    background-color: #444DF2;
+
+    &:hover {
+        background-color: #797EF3;
     }
 }

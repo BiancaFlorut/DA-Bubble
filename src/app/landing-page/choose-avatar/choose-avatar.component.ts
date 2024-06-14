@@ -18,7 +18,7 @@ import { FirebaseService } from '../../services/firebase/firebase.service';
 export class ChooseAvatarComponent {
   public currentUser!: User;
   public chooseAvatar: boolean = false;
-  public avatar: string | ArrayBuffer | null = './assets/img/auth/profile.png';
+  public avatar: string | ArrayBuffer | null = './assets/img/profile.png';
   public showCreateUser: boolean = false;
 
   @ViewChild('fileInput') public fileInput: any;
@@ -32,7 +32,7 @@ export class ChooseAvatarComponent {
   }
 
   public selectedAvatar(avatar: number) {
-    this.avatar = `./assets/img/auth/character${avatar}.png`;
+    this.avatar = `./assets/img/character${avatar}.png`;
     this.chooseAvatar = true;
   }
 
