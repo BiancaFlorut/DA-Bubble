@@ -37,6 +37,7 @@ export class LoginComponent {
       password: ['', [Validators.required, Validators.pattern(/^.{8,}$/)]]
     });
     this.getUser();
+    this.handleLoggedUser();
   }
 
   public getUser() {
@@ -48,6 +49,12 @@ export class LoginComponent {
     });
   }
 
+  private handleLoggedUser() {
+    if (localStorage.getItem('user')) {
+      localStorage.removeItem('user');
+    }
+  }
+
   public login() {
     this.emailExisting();
     this.passwordExisting();
@@ -55,10 +62,12 @@ export class LoginComponent {
   }
 
   public guestLogin() {
+    localStorage.setItem('user', 'logged');
     this.router.navigate([`main-page/guest`]);
   }
 
   public async loginWithGoogle() {
+    localStorage.setItem('user', 'logged');
     // this.angularAuth.signInWithPopup(new GoogleAuthProvider).then(() => {
     //   console.log('gut');
     // })
@@ -94,6 +103,7 @@ export class LoginComponent {
     if (this.userForm.valid && !this.validEmail && !this.validPassword) {
       this.createdUser.forEach(user => {
         if (user.email === this.userForm.get('email')?.value) {
+          localStorage.setItem('user', 'logged');
           this.router.navigate([`main-page/${user.id}`]);
         }
       });

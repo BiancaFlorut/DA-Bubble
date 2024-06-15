@@ -1,0 +1,46 @@
+<div class="header-container">
+    <img src="./assets/img/logo.png" alt="logo">
+    <div class="input-container">
+        <img src="./assets/img/main-page/header/search.png" alt="search">
+        <input type="text" name="search" id="search" placeholder="Code learning durchsuchen">
+    </div>
+    <div class="user-header-container">
+        <span>{{currentUser.name}}</span>
+        <div class="avatar-container">
+            <img src="{{currentUser.avatar}}" alt="avatar">
+            <div class="active-icon"></div>
+        </div>
+        <img (click)="toggleMenu()" src="./assets/img/main-page/header/arrow_down.png" alt="arrow down">
+    </div>
+</div>
+<div (click)="toggleMenu()" class="user-menu-container" [ngStyle]="{ 'display': isUserMenuActive ? 'unset' : 'none' }">
+    @if (!showProfile) {
+    <div class="choose-container" (click)="$event.stopPropagation()">
+        <span (click)="toggleProfile($event)">Profil</span>
+        <span routerLink="/landing-page">Log out</span>
+    </div>
+    } @else {
+    <div (click)="$event.stopPropagation()" class="profile-container">
+        <div class="top-container">
+            <span>Profil</span>
+            <div (click)="toggleProfile($event)" class="close-icon"></div>
+        </div>
+        <img class="avatar-icon" src="{{currentUser.avatar}}" alt="avatar">
+        <div class="middle-container">
+            <span>{{currentUser.name}}</span>
+            <span>Bearbeiten</span>
+        </div>
+        <div class="status-container">
+            <div class="active-icon"></div>
+            <span>Aktive</span>
+        </div>
+        <div class="bottom-container">
+            <div>
+                <img src="./assets/img/main-page/header/email.png" alt="email">
+                <span>E-Mail-Adresse</span>
+            </div>
+            <a href="mailto:{{currentUser.email}}">{{currentUser.email}}</a>
+        </div>
+    </div>
+    }
+</div>

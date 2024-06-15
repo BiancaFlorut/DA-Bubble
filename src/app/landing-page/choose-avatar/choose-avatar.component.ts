@@ -43,7 +43,7 @@ export class ChooseAvatarComponent {
       this.showCreateUser = true;
       setTimeout(() => {
         this.showCreateUser = false;
-        this.router.navigate(['./landing-page/login'])
+        this.router.navigate(['./landing-page/login']);
       }, 2000);
     }
   }
