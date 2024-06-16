@@ -3,7 +3,7 @@ import { Component, ViewChild, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../interfaces/user';
-import { FirebaseService } from '../../services/firebase/firebase.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-choose-avatar',
@@ -18,14 +18,14 @@ import { FirebaseService } from '../../services/firebase/firebase.service';
 export class ChooseAvatarComponent {
   public currentUser!: User;
   public chooseAvatar: boolean = false;
-  public avatar: string | ArrayBuffer | null = './assets/img/profile.png';
+  public avatar: string = './assets/img/profile.png';
   public showCreateUser: boolean = false;
 
   @ViewChild('fileInput') public fileInput: any;
-  
+
   private user = inject(UserService);
-  private firebase = inject(FirebaseService);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   constructor() {
     this.currentUser = this.user.getUser();
@@ -39,12 +39,14 @@ export class ChooseAvatarComponent {
   public async saveUser() {
     if (this.chooseAvatar) {
       this.currentUser.avatar = this.avatar;
-      await this.firebase.addUser(this.currentUser);
-      this.showCreateUser = true;
-      setTimeout(() => {
-        this.showCreateUser = false;
-        this.router.navigate(['./landing-page/login']);
-      }, 2000);
+      this.authService.register(this.currentUser.name, this.currentUser.email, this.currentUser.password, this.currentUser.avatar)
+        .subscribe(() => {
+          this.showCreateUser = true;
+          setTimeout(() => {
+            this.showCreateUser = false;
+            this.router.navigate(['./landing-page/login']);
+          }, 2000);
+        });
     }
   }
 
@@ -58,7 +60,7 @@ export class ChooseAvatarComponent {
       const file = fileInput.files[0];
       const reader = new FileReader();
       reader.onload = () => {
-        this.avatar = reader.result;
+        this.avatar = reader.result as string;
         this.chooseAvatar = true;
       };
       reader.readAsDataURL(file);

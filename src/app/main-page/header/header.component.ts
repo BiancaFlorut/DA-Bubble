@@ -1,11 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { onSnapshot } from 'firebase/firestore';
-import { FirebaseService } from '../../services/firebase/firebase.service';
-import { User } from '../../interfaces/user';
-import { Unsubscribe } from 'firebase/app-check';
+import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth/auth.service';
+import { User } from '../../interfaces/user';
 
 @Component({
   selector: 'app-header',
@@ -19,17 +17,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-  private route: ActivatedRoute = inject(ActivatedRoute);
-  private firebase: FirebaseService = inject(FirebaseService);
   private router: Router = inject(Router);
   private fb = inject(FormBuilder);
-
-  public currentUser: User = {
-    name: '',
-    email: '',
-    avatar: '',
-    password: ''
-  };
+  public authService = inject(AuthService);
 
   public isUserMenuActive: boolean = false;
   public loggedAsGuest: boolean = false;
@@ -38,45 +28,49 @@ export class HeaderComponent {
   public emailIsExisting: boolean = false;
   public userForm!: FormGroup;
 
-  private unsubscribe: Unsubscribe | null = null;
+  public currentUser: User = {
+    name: '',
+    email: '',
+    password: '',
+    avatar: '',
+  };
 
   ngOnInit(): void {
     this.userForm = this.fb.group({
       name: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+\s[A-Z][a-zA-Z]+$/)]],
       email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
     });
-    this.getUser();
-    this.isUserLogged();
+    this.loggedGuest();
+    this.loggedUser();
+    this.loggedOut();
   }
 
-  ngOnDestroy(): void {
-    if (this.unsubscribe) {
-      this.unsubscribe();
+  private loggedOut() {
+    if (this.authService.currentUserSig() === null) {
+      this.router.navigate(['/landing-page']);
     }
   }
 
-  public getUser() {
-    this.route.params.subscribe((params) => {
-      return onSnapshot(this.firebase.getUsers(), (users) => {
-        users.forEach((user) => {
-          if (user.id === params['id']) {
-            this.currentUser = user.data() as User;
-          } else if (params['id'] === 'guest') {
-            this.currentUser.name = 'Guest';
-            this.currentUser.email = 'guest@gmail.com';
-            this.currentUser.avatar = './assets/img/profile.png';
-            this.currentUser.password = '';
-            this.loggedAsGuest = true;
-          }
-        });
-      });
+  private loggedGuest() {
+    if (this.router.url.includes('guest')) {
+      this.currentUser.name = 'Guest';
+      this.currentUser.email = 'guest@gmail.com';
+      this.currentUser.avatar = './assets/img/profile.png';
+      this.currentUser.password = '';
+      this.loggedAsGuest = true;
+    }
+  }
+
+  private loggedUser() {
+    this.authService.user$.forEach(user => {
+      if (this.router.url.includes(`main-page/${user?.uid}`)) {
+        if (user) {
+          this.currentUser.name = user.displayName!;
+          this.currentUser.email = user.email!;
+          this.currentUser.avatar = user.photoURL!;
+        }
+      }
     });
-  }
-
-  private isUserLogged() {
-    if (!localStorage.getItem('user')) {
-      this.router.navigate(['./landing-page/login']);
-    }
   }
 
   public toggleMenu() {
@@ -91,10 +85,12 @@ export class HeaderComponent {
     event.stopPropagation()
     this.showProfile = !this.showProfile;
     this.editUser = false;
+    this.userForm.reset();
   }
 
   public toggleEditMenu() {
     this.editUser = !this.editUser;
+    this.userForm.reset();
   }
 
   public async editUserData() {
@@ -103,7 +99,14 @@ export class HeaderComponent {
     if (emailExists) {
       this.emailExisting();
     } else {
-      await this.firebase.addUser(this.currentUser);
+      this.currentUser.name = this.userForm.get('name')?.value;
+      this.currentUser.email = this.userForm.get('email')?.value;
+      this.authService.user$.subscribe(user => {
+        if (user) {
+          this.authService.updateEmail(this.currentUser.name, this.currentUser.email);
+        }
+      });
+      this.userForm.reset();
       this.toggleEditMenu();
     }
   }

@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../../services/user/user.service';
-import { FirebaseService } from '../../services/firebase/firebase.service';
-import { onSnapshot } from '@angular/fire/firestore';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -21,14 +20,14 @@ import { onSnapshot } from '@angular/fire/firestore';
 export class SignupComponent {
   public isChecked: boolean = false;
   public showCheckboxFeedback: boolean = false;
-  public createdUser!: any[];
+  public createdEmail: any[] = [];
   public emailIsExisting: boolean = false;
   public userForm!: FormGroup;
 
   private user = inject(UserService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
-  private firebase = inject(FirebaseService);
+  private authService = inject(AuthService);
 
   ngOnInit() {
     this.userForm = this.fb.group({
@@ -36,15 +35,14 @@ export class SignupComponent {
       email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
       password: ['', [Validators.required, Validators.pattern(/^.{8,}$/)]]
     });
-    this.getUser();
+    this.getUsersEmail();
   }
 
-  public getUser() {
-    return onSnapshot(this.firebase.getUsers(), (users) => {
-      this.createdUser = [];
-      users.forEach((user) => {
-        this.createdUser.push(user.data());
-      });
+  public getUsersEmail() {
+    this.authService.user$.forEach(user => {
+      if (user) {
+        this.createdEmail.push(user.email);
+      }
     });
   }
 
@@ -60,12 +58,14 @@ export class SignupComponent {
 
   private emailExisting() {
     const inputEmail = this.userForm.get('email')?.value;
-    const emailExists = this.createdUser.some(user => user.email === inputEmail);
-    if (emailExists) {
-      this.emailIsExisting = true;
-      setTimeout(() => {
-        this.emailIsExisting = false;
-      }, 2000);
+    if (this.createdEmail.length > 0) {
+      const emailExists = this.createdEmail.some(user => user.email === inputEmail);
+      if (emailExists) {
+        this.emailIsExisting = true;
+        setTimeout(() => {
+          this.emailIsExisting = false;
+        }, 2000);
+      }
     }
   }
 
