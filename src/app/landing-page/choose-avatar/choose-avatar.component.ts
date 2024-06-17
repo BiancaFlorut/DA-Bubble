@@ -39,14 +39,16 @@ export class ChooseAvatarComponent {
   public async saveUser() {
     if (this.chooseAvatar) {
       this.currentUser.avatar = this.avatar;
-      this.authService.register(this.currentUser.name, this.currentUser.email, this.currentUser.password, this.currentUser.avatar)
-        .subscribe(() => {
-          this.showCreateUser = true;
-          setTimeout(() => {
-            this.showCreateUser = false;
-            this.router.navigate(['./landing-page/login']);
-          }, 2000);
-        });
+      if (this.currentUser.password) {
+        this.authService.register(this.currentUser.name, this.currentUser.email, this.currentUser.password, this.currentUser.avatar)
+          .subscribe(() => {
+            this.showCreateUser = true;
+            setTimeout(() => {
+              this.showCreateUser = false;
+              this.router.navigate(['./landing-page/login']);
+            }, 2000);
+          });
+      }
     }
   }
 
@@ -58,12 +60,15 @@ export class ChooseAvatarComponent {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput.files && fileInput.files[0]) {
       const file = fileInput.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.avatar = reader.result as string;
-        this.chooseAvatar = true;
-      };
-      reader.readAsDataURL(file);
+      this.authService.uploadProfileImageTemp(file).subscribe({
+        next: (downloadURL: string) => {
+          this.avatar = downloadURL;
+          this.chooseAvatar = true;
+        },
+        error: (error) => {
+          console.error('Error uploading image: ', error);
+        }
+      });
     }
   }
 }

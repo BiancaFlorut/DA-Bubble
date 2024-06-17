@@ -42,9 +42,22 @@ export class LoginComponent {
           });
         },
         error: err => {
-          this.errorMessage = err.code;
+          if (err.code === 'auth/user-not-found') {
+            this.errorMessage = 'email';
+          } else if (err.code === 'auth/wrong-password') {
+            this.errorMessage = 'password';
+          } else {
+            this.errorMessage = err.code;
+          }
+          this.setTimeOutErrorMessage();
         }
       });
+  }
+
+  private setTimeOutErrorMessage() {
+    setTimeout(() => {
+      this.errorMessage = '';
+    }, 2000);
   }
 
   public loginAsGuest() {

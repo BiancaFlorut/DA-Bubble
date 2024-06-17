@@ -1,16 +1,27 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateEmail, updateProfile, user } from '@angular/fire/auth';
-import { Observable, from, throwError } from 'rxjs';
+import { Auth, confirmPasswordReset, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, updateEmail, updateProfile, user } from '@angular/fire/auth';
+import { Observable, catchError, from, throwError } from 'rxjs';
 import { User } from '../../interfaces/user';
-import { EmailAuthProvider, reauthenticateWithCredential, signOut } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
+import { getStorage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private firebaseAuth = inject(Auth);
+  firebaseAuth = inject(Auth);
+  storage = getStorage();
   user$ = user(this.firebaseAuth);
   currentUserSig = signal<User | null | undefined>(undefined);
+
+  uploadProfileImageTemp(file: File): Observable<string> {
+    const storageRef = ref(this.storage, `temp/avatars/${Date.now()}_${file.name}`);
+    const uploadTask = uploadBytes(storageRef, file).then(async (snapshot) => {
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      return downloadURL;
+    });
+    return from(uploadTask);
+  }
 
   register(name: string, email: string, password: string, avatar: string): Observable<void> {
     const promise = createUserWithEmailAndPassword(this.firebaseAuth, email, password)
@@ -34,84 +45,43 @@ export class AuthService {
     return from(promise);
   }
 
-  //   updateEmail(newName: string, newEmail: string, password: string): Observable<void> {
-  //     const user = this.firebaseAuth.currentUser;
-  //     if (!user) {
-  //       throw new Error('User not authenticated');
-  //     }
-  //     const credential = EmailAuthProvider.credential(user.email!, password);
-  //     const promise = reauthenticateWithCredential(user, credential)
-  //       .then(() => updateEmail(user, newEmail))
-  //       .then(() => {
-  //         // Update the signal after email change
-  //         this.currentUserSig.set({
-  //           ...this.currentUserSig()!,
-  //           name: newName,
-  //           email: newEmail,
-  //         });
-  //       });
-  //     return from(promise);
-  //   }
-  // }
-
-  //   updateEmail(newName: string, newEmail: string): Observable<void> {
-  //     const user = this.firebaseAuth.currentUser;
-  //     if (!user) {
-  //       throw new Error('User not authenticated');
-  //     }
-
-  //     return from(updateEmail(user, newEmail).then(() => {
-  //       const currentUser = this.currentUserSig();
-  //       this.currentUserSig.set({
-  //         ...currentUser!,
-  //         name: newName,
-  //         email: newEmail
-  //       });
-  //     }));
-  //   }
-  // }
-
-  updateEmail(newName: string, newEmail: string): Observable<void> {
+  updateUserName(name: string): Observable<void> {
     const user = this.firebaseAuth.currentUser;
-    if (!user) {
-      throw new Error('User not authenticated');
-    }
-
-    // Überprüfen, ob die neue E-Mail-Adresse bereits verifiziert ist
-    if (!user.emailVerified) {
-      return throwError('New email address is not verified');
-    }
-
-    // Firebase aktualisiert die E-Mail-Adresse nur, wenn sie bereits verifiziert ist
-    return from(updateEmail(user, newEmail).then(() => {
-      const currentUser = this.currentUserSig();
-      this.currentUserSig.set({
-        ...currentUser!,
-        name: newName,
-        email: newEmail
+    if (user) {
+      const promise = updateProfile(user, {
+        displayName: name
       });
-    }));
+      return from(promise);
+    } else {
+      return throwError(() => new Error('User not authenticated'));
+    }
+  }
+
+  updateUserEmail(email: string): Observable<void> {
+    const user = this.firebaseAuth.currentUser;
+    if (user) {
+      const promise = updateEmail(user, email);
+      return from(promise);
+    } else {
+      return throwError(() => new Error('User not authenticated'));
+    }
+  }
+
+  sendPasswordReset(email: string): Observable<void> {
+    const promise = sendPasswordResetEmail(this.firebaseAuth, email);
+    return from(promise).pipe(
+      catchError((error) => {
+        return throwError(() => new Error(`Error sending password reset email: ${error.message}`));
+      })
+    );
+  }
+
+  resetPassword(code: string, newPassword: string): Observable<void> {
+    if (code && newPassword) {
+      const promise = confirmPasswordReset(this.firebaseAuth, code, newPassword);
+      return from(promise);
+    } else {
+      return throwError(() => new Error('Code oder neues Passwort nicht angegeben'));
+    }
   }
 }
-
-// updateEmail(newEmail: string): Observable<void> {
-//   const user = this.firebaseAuth.currentUser;
-//   if (!user) {
-//     throw new Error('User not authenticated');
-//   }
-
-//   // Überprüfen, ob die neue E-Mail-Adresse bereits verifiziert ist
-//   if (!user.emailVerified) {
-//     // Wenn die E-Mail-Adresse nicht verifiziert ist, wird eine Fehlermeldung zurückgegeben
-//     return throwError('New email address is not verified');
-//   }
-
-//   // Firebase aktualisiert die E-Mail-Adresse nur, wenn sie bereits verifiziert ist
-//   return from(updateEmail(user, newEmail).then(() => {
-//     const currentUser = this.currentUserSig();
-//     this.currentUserSig.set({
-//       ...currentUser!,
-//       email: newEmail
-//     });
-//   }));
-// }

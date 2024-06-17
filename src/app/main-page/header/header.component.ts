@@ -14,7 +14,7 @@ import { User } from '../../interfaces/user';
     ReactiveFormsModule
   ],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrls: ['./header.component.scss', './edit-user.component.scss']
 })
 export class HeaderComponent {
   private router: Router = inject(Router);
@@ -45,7 +45,7 @@ export class HeaderComponent {
     this.loggedOut();
   }
 
-  private loggedOut() {
+  public loggedOut() {
     if (this.authService.currentUserSig() === null) {
       this.router.navigate(['/landing-page']);
     }
@@ -101,12 +101,8 @@ export class HeaderComponent {
     } else {
       this.currentUser.name = this.userForm.get('name')?.value;
       this.currentUser.email = this.userForm.get('email')?.value;
-      this.authService.user$.subscribe(user => {
-        if (user) {
-          this.authService.updateEmail(this.currentUser.name, this.currentUser.email);
-        }
-      });
-      this.userForm.reset();
+      this.authService.updateUserName(this.currentUser.name);
+      this.authService.updateUserEmail(this.currentUser.email);
       this.toggleEditMenu();
     }
   }

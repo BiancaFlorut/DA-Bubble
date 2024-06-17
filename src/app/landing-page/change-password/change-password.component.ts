@@ -1,10 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { onSnapshot } from 'firebase/firestore';
-import { FirebaseService } from '../../services/firebase/firebase.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { User } from '../../interfaces/user';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-change-password',
@@ -20,34 +18,29 @@ import { User } from '../../interfaces/user';
 })
 export class ChangePasswordComponent {
   private route: ActivatedRoute = inject(ActivatedRoute);
-  private firebase: FirebaseService = inject(FirebaseService);
   private fb: FormBuilder = inject(FormBuilder);
   private router: Router = inject(Router)
+  private authService = inject(AuthService);
 
-  public createdUser!: User;
   public userForm!: FormGroup;
   public isPasswordMatch: boolean = true;
-  public userId!: string;
   public showResetMessage: boolean = false;
+
+  mode!: string;
+  oobCode!: string;
+  apiKey!: string;
+  lang!: string;
 
   ngOnInit() {
     this.userForm = this.fb.group({
       password: ['', [Validators.required, Validators.pattern(/^.{8,}$/)]],
       newPassword: ['', [Validators.required, Validators.pattern(/^.{8,}$/)]]
     });
-    this.getUser();
-  }
-
-  public getUser() {
-    this.route.params.subscribe((params) => {
-      return onSnapshot(this.firebase.getUsers(), (users) => {
-        users.forEach((user) => {
-          if (user.id === params['id']) {
-            this.userId = params['id'];
-            this.createdUser = { ...user.data() } as User;
-          }
-        });
-      });
+    this.route.queryParams.subscribe(params => {
+      this.mode = params['mode'];
+      this.oobCode = params['oobCode'];
+      this.apiKey = params['apiKey'];
+      this.lang = params['lang'];
     });
   }
 
@@ -55,8 +48,8 @@ export class ChangePasswordComponent {
     if (this.userForm.get('password')?.value !== this.userForm.get('newPassword')?.value) {
       this.handleIsPasswordMatchMessage();
     } else if (this.userForm.valid) {
-      this.createdUser.password = this.userForm.get('password')?.value;
-      this.firebase.updateUser(this.createdUser, this.userId);
+      let userPassword = this.userForm.get('password')?.value;
+      this.authService.resetPassword(this.oobCode, userPassword);
       this.showMessage();
     }
   }

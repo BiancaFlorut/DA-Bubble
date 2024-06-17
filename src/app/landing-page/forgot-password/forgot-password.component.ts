@@ -1,12 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { FormGroup, FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { onSnapshot } from 'firebase/firestore';
-import { FirebaseService } from '../../services/firebase/firebase.service';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Post } from '../../interfaces/post';
-import { UserData } from '../../interfaces/user-data';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -21,79 +18,60 @@ import { UserData } from '../../interfaces/user-data';
   styleUrl: './forgot-password.component.scss'
 })
 export class ForgotPasswordComponent {
-  public createdUser!: any[];
-  userData: UserData = {
-    email: '',
-    name: 'Passwort zurücksetzen',
-    message: '',
-  };
-
   public validEmail!: boolean;
   public userForm!: FormGroup;
-  private mailTest: boolean = true;
+  public emailSent: boolean = false;
+  public errorMessage: string = '';
   public showSendEmailMessage: boolean = false;
 
-  private firebase = inject(FirebaseService);
   private http: HttpClient = inject(HttpClient);
   private router: Router = inject(Router);
+  public authService = inject(AuthService);
+  private fb = inject(FormBuilder);
 
-  post: Post = {
-    endPoint: `https://da-bubble.vitalij-schwab.com/sendMail.php`,
-    body: (payload: any) => JSON.stringify(payload),
-    options: {
-      headers: {
-        'Content-Type': 'text/plain',
-        responseType: 'text',
-      },
-    },
-  };
-
-  ngOnInit() {
-    this.getUser();
-  }
-
-  public getUser() {
-    return onSnapshot(this.firebase.getUsers(), (users) => {
-      this.createdUser = [];
-      users.forEach((user) => {
-        this.createdUser.push({ id: user.id, ...user.data() });
-      });
+  ngOnInit(): void {
+    this.userForm = this.fb.group({
+      email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]]
     });
   }
 
-  public onSubmit(ngForm: NgForm) {
-    this.saveEmailId();
-    const emailExists = this.createdUser.some(user => user.email === this.userData.email);
-    if (ngForm.submitted && ngForm.form.valid && !this.mailTest && emailExists) {
-      this.submitForm(ngForm);
-      this.showEmailSentMessage();
-    } else if (ngForm.submitted && ngForm.form.valid && this.mailTest && emailExists) {
-      ngForm.resetForm();
-      this.showEmailSentMessage();
-    }
-    this.emailExisting(emailExists);
-  }
-
-  private saveEmailId() {
-    this.createdUser.forEach(user => {
-      if (user.email === this.userData.email) {
-        this.userData.message = `Bitte klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen:<br><br>https://da-bubble.vitalij-schwab.com/landing-page/login/change-password/${user.id}`;
+  public sendPasswordResetEmail() {
+    const email = this.userForm.get('email')?.value;
+    if (email) {
+      this.authService.sendPasswordReset(email).subscribe({
+      next: () => {
+        this.emailSent = true;
+        this.errorMessage = '';
+        this.showEmailSentMessage();
+      },
+      error: (error) => {
+        this.errorMessage = error.message;
+        this.emailSent = false;
       }
-    })
+    });
+  }
   }
 
-  private submitForm(ngForm: NgForm) {
-    this.http.post(this.post.endPoint, this.post.body(this.userData))
-      .subscribe({
-        next: (response) => {
-          ngForm.resetForm();
-        },
-        error: (error) => {
-          console.error(error);
-        },
-        complete: () => console.info('send post complete'),
-      });
-  }
+  // private saveEmailId() {
+  //   this.createdUser.forEach(user => {
+  //     if (user.email === this.userData.email) {
+  //       this.userData.message = `Bitte klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen:<br><br>https://da-bubble.vitalij-schwab.com/landing-page/login/change-password/${user.id}`;
+  //     }
+  //   })
+  // }
+
+  // private submitForm(ngForm: NgForm) {
+  //   this.http.post(this.post.endPoint, this.post.body(this.userData))
+  //     .subscribe({
+  //       next: (response) => {
+  //         ngForm.resetForm();
+  //       },
+  //       error: (error) => {
+  //         console.error(error);
+  //       },
+  //       complete: () => console.info('send post complete'),
+  //     });
+  // }
 
   private showEmailSentMessage() {
     this.showSendEmailMessage = true;
@@ -101,14 +79,5 @@ export class ForgotPasswordComponent {
       this.showSendEmailMessage = false;
       this.router.navigate(['./landing-page/login'])
     }, 2000);
-  }
-
-  private emailExisting(emailExists: boolean) {
-    if (!emailExists) {
-      this.validEmail = true;
-      setTimeout(() => {
-        this.validEmail = false;
-      }, 2000);
-    }
   }
 }
