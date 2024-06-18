@@ -26,6 +26,9 @@
             <span>Diese E-Mail-Adresse ist leider ungültig.</span>
             }
             }
+            @if (errorMessage !== null) {
+            <span>*Diese E-Mail-Adresse ist leider schon vergeben.</span>
+            }
         </div>
         <div class="pos-rel-container">
             <input type="password" formControlName="password" id="password" placeholder="Passwort">

@@ -18,7 +18,7 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class LoginComponent {
   public userForm!: FormGroup;
-  public errorMessage: string | null = null;
+  public errorMessage!: string;
 
   private fb = inject(FormBuilder);
   private router = inject(Router);

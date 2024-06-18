@@ -20,6 +20,7 @@ export class SignupComponent {
   public isChecked: boolean = false;
   public showCheckboxFeedback: boolean = false;
   public userForm!: FormGroup;
+  public errorMessage!: string | null;
 
   private user = inject(UserService);
   private fb = inject(FormBuilder);
@@ -27,10 +28,19 @@ export class SignupComponent {
 
   ngOnInit() {
     this.userForm = this.fb.group({
-      name: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+\s[A-Z][a-zA-Z]+$/)]],
-      email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
-      password: ['', [Validators.required, Validators.pattern(/^.{8,}$/)]]
+      name: [this.user.user.name, [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+\s[A-Z][a-zA-Z]+$/)]],
+      email: [this.user.user.email, [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
+      password: [this.user.user.password, [Validators.required, Validators.pattern(/^.{8,}$/)]]
     });
+    this.setTimeoutErrorMessage();
+  }
+
+  private setTimeoutErrorMessage() {
+    this.errorMessage = localStorage.getItem('error');
+    setTimeout(() => {
+      localStorage.removeItem('error');
+      this.errorMessage = null;
+    }, 3000);
   }
 
   public handleCheckbox() {

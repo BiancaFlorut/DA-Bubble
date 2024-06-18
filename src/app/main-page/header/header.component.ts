@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../interfaces/user';
+import { User as FirebaseAuthUser } from '@firebase/auth';
 
 @Component({
   selector: 'app-header',
@@ -27,6 +28,7 @@ export class HeaderComponent {
   public editUser: boolean = false;
   public emailIsExisting: boolean = false;
   public userForm!: FormGroup;
+  public errorMessage!: string;
 
   public currentUser: User = {
     name: '',
@@ -81,6 +83,22 @@ export class HeaderComponent {
     }
   }
 
+  public logOutUser() {
+    if (this.router.url.includes('guest')) {
+      this.router.navigate(['/landing-page/login']);
+    } else {
+      this.authService.logOut()
+        .subscribe({
+          next: () => {
+            this.router.navigate(['/landing-page/login']);
+          },
+          error: (error) => {
+            console.error('Logout failed', error);
+          }
+        });
+    }
+  }
+
   public toggleProfile(event: Event) {
     event.stopPropagation()
     this.showProfile = !this.showProfile;
@@ -101,10 +119,40 @@ export class HeaderComponent {
     } else {
       this.currentUser.name = this.userForm.get('name')?.value;
       this.currentUser.email = this.userForm.get('email')?.value;
-      this.authService.updateUserName(this.currentUser.name);
-      this.authService.updateUserEmail(this.currentUser.email);
-      this.toggleEditMenu();
+      this.authService.user$
+        .subscribe(user => {
+          if (user) {
+            this.subcribeUpdateUserName(user);
+            this.subcribeUpdateUserEmail(user);
+          }
+        });
     }
+  }
+
+  private subcribeUpdateUserName(user: FirebaseAuthUser) {
+    this.authService.updateUserName(user, this.currentUser.name)
+      .subscribe({
+        error: err => {
+          if (err.code === 'auth/user-token-expired') {
+            this.errorMessage = 'auth/user-token-expired';
+          } else {
+            this.toggleEditMenu();
+          }
+        }
+      });
+  }
+
+  private subcribeUpdateUserEmail(user: FirebaseAuthUser) {
+    this.authService.updateUserEmail(user, this.currentUser.email)
+      .subscribe({
+        error: err => {
+          if (err.code === 'auth/user-token-expired') {
+            this.errorMessage = 'auth/user-token-expired';
+          } else {
+            this.toggleEditMenu();
+          }
+        }
+      });
   }
 
   private emailExisting() {

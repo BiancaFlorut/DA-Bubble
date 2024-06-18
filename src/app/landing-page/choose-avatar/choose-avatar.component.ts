@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
 import { User } from '../../interfaces/user';
 import { AuthService } from '../../services/auth/auth.service';
+import { updateProfile } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-choose-avatar',
@@ -36,20 +37,41 @@ export class ChooseAvatarComponent {
     this.chooseAvatar = true;
   }
 
-  public async saveUser() {
+  public saveUser() {
     if (this.chooseAvatar) {
       this.currentUser.avatar = this.avatar;
       if (this.currentUser.password) {
-        this.authService.register(this.currentUser.name, this.currentUser.email, this.currentUser.password, this.currentUser.avatar)
-          .subscribe(() => {
-            this.showCreateUser = true;
-            setTimeout(() => {
-              this.showCreateUser = false;
-              this.router.navigate(['./landing-page/login']);
-            }, 2000);
+        this.authService.register(this.currentUser.email, this.currentUser.password)
+          .subscribe({
+            next: () => {
+              const user = this.authService.firebaseAuth.currentUser;
+              if (user) {
+                updateProfile(user, {
+                  displayName: this.currentUser.name,
+                  photoURL: this.currentUser.avatar,
+                });
+              }
+              this.showCreateUserAndNavigateToLogin();
+            },
+            error: error => {
+              localStorage.setItem('error', `${error}`);
+              this.router.navigate(['./landing-page/signup']);
+            }
           });
       }
     }
+  }
+
+  private showCreateUserAndNavigateToLogin() {
+    this.showCreateUser = true;
+    setTimeout(() => {
+      this.showCreateUser = false;
+      this.user.user.name = '';
+      this.user.user.email = '';
+      this.user.user.password = '';
+      this.user.user.avatar = '';
+      this.router.navigate(['./landing-page/login']);
+    }, 2000);
   }
 
   public onUploadButtonClick() {

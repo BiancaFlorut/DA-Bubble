@@ -19,7 +19,7 @@
         @if (!loggedAsGuest) {
         <span (click)="toggleProfile($event)">Profil</span>
         }
-        <span (click)="authService.logOut()">Log out</span>
+        <span (click)="logOutUser()">Log out</span>
     </div>
     } @else {
     <div (click)="$event.stopPropagation()" class="profile-container">
@@ -67,6 +67,9 @@
                     <span>Vor- und Nachname müssen mit Großbuchstaben beginnen.</span>
                     }
                     }
+                    @if(errorMessage === 'auth/user-token-expired') {
+                    <span>Ihr Anmelde-Token ist abgelaufen. Bitte Passwort zurücksetzen.</span>
+                    }
                 </div>
             </div>
             <div class="edit-user-container">
@@ -86,6 +89,9 @@
                     }
                     @if(emailIsExisting) {
                     <span>Diese E-Mail-Adresse ist bereits registriert.</span>
+                    }
+                    @if(errorMessage === 'auth/user-token-expired') {
+                    <span>Ihr Anmelde-Token ist abgelaufen. Bitte Passwort zurücksetzen.</span>
                     }
                 </div>
             </div>

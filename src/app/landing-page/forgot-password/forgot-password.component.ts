@@ -1,8 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
@@ -20,11 +19,9 @@ import { AuthService } from '../../services/auth/auth.service';
 export class ForgotPasswordComponent {
   public validEmail!: boolean;
   public userForm!: FormGroup;
-  public emailSent: boolean = false;
-  public errorMessage: string = '';
+  public errorMessage!: string;
   public showSendEmailMessage: boolean = false;
 
-  private http: HttpClient = inject(HttpClient);
   private router: Router = inject(Router);
   public authService = inject(AuthService);
   private fb = inject(FormBuilder);
@@ -38,26 +35,32 @@ export class ForgotPasswordComponent {
   public sendPasswordResetEmail() {
     const email = this.userForm.get('email')?.value;
     if (email) {
-      this.authService.sendPasswordReset(email).subscribe({
-        next: () => {
-          this.emailSent = true;
-          this.errorMessage = '';
-          this.showEmailSentMessage();
-        },
-        error: (err) => {
-          if (err.code === 'auth/user-not-found') {
-            this.errorMessage = 'user-not-found';
+      this.authService.sendPasswordReset(email)
+        .subscribe({
+          next: () => {
+            this.showEmailSentMessage();
+          },
+          error: (err) => {
+            if (err.code === 'auth/user-not-found') {
+              this.errorMessage = 'user-not-found';
+            }
+            this.setTimeOutErrorMessage();
           }
-        }
-      });
+        });
     }
+  }
+
+  private setTimeOutErrorMessage() {
+    setTimeout(() => {
+      this.errorMessage = '';
+    }, 2000);
   }
 
   private showEmailSentMessage() {
     this.showSendEmailMessage = true;
     setTimeout(() => {
       this.showSendEmailMessage = false;
-      this.router.navigate(['./landing-page/login'])
+      this.router.navigate(['./landing-page/login']);
     }, 2000);
   }
 }

@@ -162,6 +162,8 @@
     .avatar-icon {
         width: 200px;
         height: 200px;
+        min-height: 200px;
         border-radius: 500px;
+        object-fit: cover;
     }
 }

@@ -49,8 +49,17 @@ export class ChangePasswordComponent {
       this.handleIsPasswordMatchMessage();
     } else if (this.userForm.valid) {
       let userPassword = this.userForm.get('password')?.value;
-      this.authService.resetPassword(this.oobCode, userPassword);
-      this.showMessage();
+      if (this.oobCode && userPassword) {
+        this.authService.resetPassword(this.oobCode, userPassword)
+          .subscribe({
+            next: () => {
+              this.showMessage();
+            },
+            error: error => {
+              console.log(error);
+            }
+          });
+      }
     }
   }
 
