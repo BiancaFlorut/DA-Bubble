@@ -14,7 +14,7 @@ import { User } from '../../interfaces/user';
     ReactiveFormsModule
   ],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss', './edit-user.component.scss']
+  styleUrls: ['./header.component.scss', './header.component.edit-user.scss']
 })
 export class HeaderComponent {
   private router: Router = inject(Router);
@@ -42,12 +42,12 @@ export class HeaderComponent {
     });
     this.loggedGuest();
     this.loggedUser();
-    this.loggedOut();
+    this.redirectLogin();
   }
 
-  public loggedOut() {
-    if (this.authService.currentUserSig() === null) {
-      this.router.navigate(['/landing-page']);
+  public redirectLogin() {
+    if (this.authService.currentUserSig() === null || this.router.url.includes('undefined')) {
+      this.router.navigate(['/landing-page/login']);
     }
   }
 

@@ -39,39 +39,19 @@ export class ForgotPasswordComponent {
     const email = this.userForm.get('email')?.value;
     if (email) {
       this.authService.sendPasswordReset(email).subscribe({
-      next: () => {
-        this.emailSent = true;
-        this.errorMessage = '';
-        this.showEmailSentMessage();
-      },
-      error: (error) => {
-        this.errorMessage = error.message;
-        this.emailSent = false;
-      }
-    });
+        next: () => {
+          this.emailSent = true;
+          this.errorMessage = '';
+          this.showEmailSentMessage();
+        },
+        error: (err) => {
+          if (err.code === 'auth/user-not-found') {
+            this.errorMessage = 'user-not-found';
+          }
+        }
+      });
+    }
   }
-  }
-
-  // private saveEmailId() {
-  //   this.createdUser.forEach(user => {
-  //     if (user.email === this.userData.email) {
-  //       this.userData.message = `Bitte klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen:<br><br>https://da-bubble.vitalij-schwab.com/landing-page/login/change-password/${user.id}`;
-  //     }
-  //   })
-  // }
-
-  // private submitForm(ngForm: NgForm) {
-  //   this.http.post(this.post.endPoint, this.post.body(this.userData))
-  //     .subscribe({
-  //       next: (response) => {
-  //         ngForm.resetForm();
-  //       },
-  //       error: (error) => {
-  //         console.error(error);
-  //       },
-  //       complete: () => console.info('send post complete'),
-  //     });
-  // }
 
   private showEmailSentMessage() {
     this.showSendEmailMessage = true;

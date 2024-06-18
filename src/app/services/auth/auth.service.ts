@@ -2,14 +2,17 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Auth, confirmPasswordReset, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, updateEmail, updateProfile, user } from '@angular/fire/auth';
 import { Observable, catchError, from, throwError } from 'rxjs';
 import { User } from '../../interfaces/user';
-import { signOut } from 'firebase/auth';
 import { getStorage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
+import { Router } from '@angular/router';
+import { GoogleAuthProvider, getRedirectResult, signInWithPopup, signInWithRedirect, signOut } from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   firebaseAuth = inject(Auth);
+  router = inject(Router);
   storage = getStorage();
   user$ = user(this.firebaseAuth);
   currentUserSig = signal<User | null | undefined>(undefined);
@@ -36,13 +39,30 @@ export class AuthService {
 
   login(email: string, password: string): Observable<void> {
     const promise = signInWithEmailAndPassword(this.firebaseAuth, email, password)
-      .then(() => { });
-    return from(promise);
+      .then(() => { })
+      .catch((error: FirebaseError) => {
+        if (error.code === 'auth/user-not-found') {
+          throw new Error('Benutzer existiert nicht');
+        } else {
+          throw new Error(error.message);
+        }
+      });
+    return from(promise).pipe(
+      catchError((error: Error) => {
+        return throwError(() => error);
+      })
+    );
   }
 
   logOut(): Observable<void> {
-    const promise = signOut(this.firebaseAuth);
-    return from(promise);
+    const user = this.firebaseAuth.currentUser;
+    if (user) {
+      const promise = signOut(this.firebaseAuth);
+      this.router.navigate(['/landing-page/login']);
+      return from(promise);
+    } else {
+      return throwError(() => new Error('User not authenticated'));
+    }
   }
 
   updateUserName(name: string): Observable<void> {
@@ -83,5 +103,9 @@ export class AuthService {
     } else {
       return throwError(() => new Error('Code oder neues Passwort nicht angegeben'));
     }
+  }
+
+  googleSignIn() {
+    return signInWithRedirect(this.firebaseAuth, new GoogleAuthProvider);
   }
 }

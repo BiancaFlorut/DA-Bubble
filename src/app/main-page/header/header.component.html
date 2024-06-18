@@ -19,7 +19,7 @@
         @if (!loggedAsGuest) {
         <span (click)="toggleProfile($event)">Profil</span>
         }
-        <span (click)="authService.logOut()" routerLink="/landing-page">Log out</span>
+        <span (click)="authService.logOut()">Log out</span>
     </div>
     } @else {
     <div (click)="$event.stopPropagation()" class="profile-container">

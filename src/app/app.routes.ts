@@ -27,4 +27,5 @@ export const routes: Routes = [
         ]
     },
     { path: 'main-page/:id', component: MainPageComponent },
+    { path: 'main-page', redirectTo: 'landing-page/login', pathMatch: 'full' },
 ];

@@ -31,7 +31,9 @@ export class LoginComponent {
     });
   }
 
-  public async loginWithGoogle() { }
+  public async loginWithGoogle() {
+    this.authService.googleSignIn();
+  }
 
   public login() {
     this.authService.login(this.userForm.get('email')?.value, this.userForm.get('password')?.value)
@@ -43,11 +45,11 @@ export class LoginComponent {
         },
         error: err => {
           if (err.code === 'auth/user-not-found') {
-            this.errorMessage = 'email';
+            this.errorMessage = 'user-not-found';
           } else if (err.code === 'auth/wrong-password') {
-            this.errorMessage = 'password';
-          } else {
-            this.errorMessage = err.code;
+            this.errorMessage = 'wrong-password';
+          } else if (err.code === 'auth/too-many-requests') {
+            this.errorMessage = 'too-many-requests';
           }
           this.setTimeOutErrorMessage();
         }
