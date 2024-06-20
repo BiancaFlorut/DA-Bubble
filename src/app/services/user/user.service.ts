@@ -6,10 +6,11 @@ import { User } from '../../interfaces/user';
 })
 export class UserService {
   public user: User = {
+    uid: '',
     name: '',
     email: '',
     password: '',
-    avatar: ''
+    avatar: '',
   };
 
   public setUser(user: User) {
@@ -22,10 +23,11 @@ export class UserService {
 
   public resetUser() {
     this.user = {
+      uid: '',
       name: '',
       email: '',
       password: '',
-      avatar: ''
+      avatar: '',
     };
   }
 }

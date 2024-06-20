@@ -23,7 +23,7 @@ export class HeaderComponent {
   private fb: FormBuilder = inject(FormBuilder);
   private authService: AuthService = inject(AuthService);
   public userService: UserService = inject(UserService);
-  private firebase = inject(FirebaseService);
+  private firebase: FirebaseService = inject(FirebaseService);
 
   public isUserMenuActive: boolean = false;
   public showProfile: boolean = false;
@@ -45,10 +45,11 @@ export class HeaderComponent {
   private userIsLogged(): void {
     this.authService.user$
       .subscribe(user => {
-        this.userService.user.id = user?.uid || 'guestId';
+        this.userService.user.uid = user?.uid || 'guestId';
         this.userService.user.name = user?.displayName! || 'Guest';
         this.userService.user.email = user?.email! || 'guest@gmail.com';
         this.userService.user.avatar = user?.photoURL! || './assets/img/profile.png';
+        this.firebase.connectUser(this.userService.user);
       });
   }
 
