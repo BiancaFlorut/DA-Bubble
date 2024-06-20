@@ -4,4 +4,6 @@ export interface User {
     email: string;
     password?: string;
     avatar?: string;
+    uid?: string;
+    online?: boolean;
 }

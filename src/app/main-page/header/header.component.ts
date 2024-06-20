@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { User as FirebaseAuthUser } from '@firebase/auth';
+import { FirebaseService } from '../../services/firebase/firebase.service';
 import { UserService } from '../../services/user/user.service';
 
 @Component({
@@ -22,6 +23,7 @@ export class HeaderComponent {
   private fb: FormBuilder = inject(FormBuilder);
   private authService: AuthService = inject(AuthService);
   public userService: UserService = inject(UserService);
+  private firebase = inject(FirebaseService);
 
   public isUserMenuActive: boolean = false;
   public showProfile: boolean = false;
