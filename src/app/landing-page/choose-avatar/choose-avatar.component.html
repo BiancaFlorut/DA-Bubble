@@ -3,7 +3,7 @@
     <h2>Wähle deinen Avatar</h2>
     <div class="profile-container">
         <img (click)="onUploadButtonClick()" src="{{avatar}}" alt="profile">
-        <span>{{currentUser.name}}</span>
+        <span>{{userService.user.name}}</span>
     </div>
     <div class="avatar-container">
         <span>Aus der Liste wählen</span>

@@ -2,9 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, ViewChild, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user/user.service';
-import { User } from '../../interfaces/user';
 import { AuthService } from '../../services/auth/auth.service';
 import { updateProfile } from '@angular/fire/auth';
+import { UploadResult } from 'firebase/storage';
+import { getDownloadURL } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-choose-avatar',
@@ -17,20 +18,15 @@ import { updateProfile } from '@angular/fire/auth';
   styleUrl: './choose-avatar.component.scss'
 })
 export class ChooseAvatarComponent {
-  public currentUser!: User;
   public chooseAvatar: boolean = false;
   public avatar: string = './assets/img/profile.png';
   public showCreateUser: boolean = false;
 
   @ViewChild('fileInput') public fileInput: any;
 
-  private user = inject(UserService);
+  public userService = inject(UserService);
   private router = inject(Router);
   private authService = inject(AuthService);
-
-  constructor() {
-    this.currentUser = this.user.getUser();
-  }
 
   public selectedAvatar(avatar: number) {
     this.avatar = `./assets/img/character${avatar}.png`;
@@ -39,16 +35,16 @@ export class ChooseAvatarComponent {
 
   public saveUser() {
     if (this.chooseAvatar) {
-      this.currentUser.avatar = this.avatar;
-      if (this.currentUser.password) {
-        this.authService.register(this.currentUser.email, this.currentUser.password)
+      this.userService.user.avatar = this.avatar;
+      if (this.userService.user.password) {
+        this.authService.register(this.userService.user.email, this.userService.user.password)
           .subscribe({
             next: () => {
               const user = this.authService.firebaseAuth.currentUser;
               if (user) {
                 updateProfile(user, {
-                  displayName: this.currentUser.name,
-                  photoURL: this.currentUser.avatar,
+                  displayName: this.userService.user.name,
+                  photoURL: this.userService.user.avatar,
                 });
               }
               this.showCreateUserAndNavigateToLogin();
@@ -66,10 +62,7 @@ export class ChooseAvatarComponent {
     this.showCreateUser = true;
     setTimeout(() => {
       this.showCreateUser = false;
-      this.user.user.name = '';
-      this.user.user.email = '';
-      this.user.user.password = '';
-      this.user.user.avatar = '';
+      this.userService.resetUser();
       this.router.navigate(['./landing-page/login']);
     }, 2000);
   }
@@ -83,14 +76,23 @@ export class ChooseAvatarComponent {
     if (fileInput.files && fileInput.files[0]) {
       const file = fileInput.files[0];
       this.authService.uploadProfileImageTemp(file).subscribe({
-        next: (downloadURL: string) => {
-          this.avatar = downloadURL;
-          this.chooseAvatar = true;
+        next: (uploadResult: UploadResult) => {
+          this.handleDownloadURL(uploadResult);
         },
         error: (error) => {
           console.error('Error uploading image: ', error);
         }
       });
     }
+  }
+
+  handleDownloadURL(uploadResult: UploadResult) {
+    getDownloadURL(uploadResult.ref)
+      .then((downloadURL: string) => {
+        this.avatar = downloadURL;
+        this.chooseAvatar = true;
+      }).catch((error) => {
+        console.error('Error getting download URL: ', error);
+      });
   }
 }

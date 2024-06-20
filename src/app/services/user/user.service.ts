@@ -19,4 +19,13 @@ export class UserService {
   public getUser() {
     return this.user;
   }
+
+  public resetUser() {
+    this.user = {
+      name: '',
+      email: '',
+      password: '',
+      avatar: ''
+    };
+  }
 }

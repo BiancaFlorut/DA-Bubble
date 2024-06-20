@@ -5,9 +5,9 @@
         <input type="text" name="search" id="search" placeholder="Code learning durchsuchen">
     </div>
     <div class="user-header-container">
-        <span>{{currentUser.name}}</span>
+        <span>{{userService.user.name}}</span>
         <div class="avatar-container">
-            <img src="{{currentUser.avatar}}" alt="avatar">
+            <img src="{{userService.user.avatar}}" alt="avatar">
             <div class="active-icon"></div>
         </div>
         <img (click)="toggleMenu()" src="./assets/img/main-page/header/arrow_down.png" alt="arrow down">
@@ -16,7 +16,7 @@
 <div (click)="toggleMenu()" class="user-menu-container" [ngStyle]="{ 'display': isUserMenuActive ? 'unset' : 'none' }">
     @if (!showProfile) {
     <div class="choose-container" (click)="$event.stopPropagation()">
-        @if (!loggedAsGuest) {
+        @if (!showProfileButton) {
         <span (click)="toggleProfile($event)">Profil</span>
         }
         <span (click)="logOutUser()">Log out</span>
@@ -31,11 +31,11 @@
             }
             <div (click)="toggleProfile($event)" class="close-icon"></div>
         </div>
-        <img class="avatar-icon" src="{{currentUser.avatar}}" alt="avatar">
+        <img class="avatar-icon" src="{{userService.user.avatar}}" alt="avatar">
         @if(!editUser) {
         <div class="user-data-container">
             <div class="middle-container">
-                <span>{{currentUser.name}}</span>
+                <span>{{userService.user.name}}</span>
                 <span (click)="toggleEditMenu()">Bearbeiten</span>
             </div>
             <div class="status-container">
@@ -47,7 +47,7 @@
                     <img src="./assets/img/main-page/header/email.png" alt="email">
                     <span>E-Mail-Adresse</span>
                 </div>
-                <a href="mailto:{{currentUser.email}}">{{currentUser.email}}</a>
+                <a href="mailto:{{userService.user.email}}">{{userService.user.email}}</a>
             </div>
         </div>
         } @else{
@@ -58,7 +58,7 @@
                     <span>Vollständiger Name</span>
                 </div>
                 <div class="valid-container">
-                    <input type="text" formControlName="name" id="name" placeholder="{{currentUser.name}}">
+                    <input type="text" formControlName="name" id="name" placeholder="{{userService.user.name}}">
                     @if (userForm.get('name')?.touched && userForm.get('name')?.invalid) {
                     @if (userForm.get('name')?.errors?.['required']) {
                     <span>Bitte schreiben Sie einen Namen.</span>
@@ -66,9 +66,6 @@
                     @if (userForm.get('name')?.errors?.['pattern']) {
                     <span>Vor- und Nachname müssen mit Großbuchstaben beginnen.</span>
                     }
-                    }
-                    @if(errorMessage === 'auth/user-token-expired') {
-                    <span>Ihr Anmelde-Token ist abgelaufen. Bitte Passwort zurücksetzen.</span>
                     }
                 </div>
             </div>
@@ -78,7 +75,7 @@
                     <span>E-Mail-Adresse</span>
                 </div>
                 <div class="valid-container">
-                    <input type="email" formControlName="email" id="email" placeholder="{{currentUser.email}}">
+                    <input type="email" formControlName="email" id="email" placeholder="{{userService.user.email}}">
                     @if (userForm.get('email')?.touched && userForm.get('email')?.invalid) {
                     @if (userForm.get('email')?.errors?.['required']) {
                     <span>Bitte schreiben Sie eine E-Mail</span>
@@ -89,9 +86,6 @@
                     }
                     @if(emailIsExisting) {
                     <span>Diese E-Mail-Adresse ist bereits registriert.</span>
-                    }
-                    @if(errorMessage === 'auth/user-token-expired') {
-                    <span>Ihr Anmelde-Token ist abgelaufen. Bitte Passwort zurücksetzen.</span>
                     }
                 </div>
             </div>

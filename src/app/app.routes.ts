@@ -26,6 +26,6 @@ export const routes: Routes = [
             { path: 'privacy-policy', component: PrivacyPolicyComponent },
         ]
     },
+    { path: 'main-page', redirectTo: 'main-page/:id', pathMatch: 'full' },
     { path: 'main-page/:id', component: MainPageComponent },
-    { path: 'main-page', redirectTo: 'landing-page/login', pathMatch: 'full' },
 ];

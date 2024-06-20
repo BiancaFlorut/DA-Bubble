@@ -3,8 +3,8 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
-import { User } from '../../interfaces/user';
 import { User as FirebaseAuthUser } from '@firebase/auth';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-header',
@@ -19,63 +19,53 @@ import { User as FirebaseAuthUser } from '@firebase/auth';
 })
 export class HeaderComponent {
   private router: Router = inject(Router);
-  private fb = inject(FormBuilder);
-  public authService = inject(AuthService);
+  private fb: FormBuilder = inject(FormBuilder);
+  private authService: AuthService = inject(AuthService);
+  public userService: UserService = inject(UserService);
 
   public isUserMenuActive: boolean = false;
-  public loggedAsGuest: boolean = false;
   public showProfile: boolean = false;
   public editUser: boolean = false;
   public emailIsExisting: boolean = false;
   public userForm!: FormGroup;
-  public errorMessage!: string;
-
-  public currentUser: User = {
-    name: '',
-    email: '',
-    password: '',
-    avatar: '',
-  };
+  public showProfileButton: boolean = false;
 
   ngOnInit(): void {
     this.userForm = this.fb.group({
       name: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+\s[A-Z][a-zA-Z]+$/)]],
       email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
     });
-    this.loggedGuest();
-    this.loggedUser();
+    this.userIsLogged();
+    this.isLoggedAsGuestOrGoogleUser();
     this.redirectLogin();
   }
 
-  public redirectLogin() {
+  private userIsLogged(): void {
+    this.authService.user$
+      .subscribe(user => {
+        this.userService.user.id = user?.uid || 'guestId';
+        this.userService.user.name = user?.displayName! || 'Guest';
+        this.userService.user.email = user?.email! || 'guest@gmail.com';
+        this.userService.user.avatar = user?.photoURL! || './assets/img/profile.png';
+      });
+  }
+
+  private isLoggedAsGuestOrGoogleUser(): void {
+    if (localStorage.getItem('loggedAsGuestOrGoogleUser') !== null) {
+      localStorage.removeItem('loggedAsGuestOrGoogleUser');
+      this.showProfileButton = true;
+    } else {
+      this.showProfileButton = false;
+    }
+  }
+
+  private redirectLogin(): void {
     if (this.authService.currentUserSig() === null || this.router.url.includes('undefined')) {
       this.router.navigate(['/landing-page/login']);
     }
   }
 
-  private loggedGuest() {
-    if (this.router.url.includes('guest')) {
-      this.currentUser.name = 'Guest';
-      this.currentUser.email = 'guest@gmail.com';
-      this.currentUser.avatar = './assets/img/profile.png';
-      this.currentUser.password = '';
-      this.loggedAsGuest = true;
-    }
-  }
-
-  private loggedUser() {
-    this.authService.user$.forEach(user => {
-      if (this.router.url.includes(`main-page/${user?.uid}`)) {
-        if (user) {
-          this.currentUser.name = user.displayName!;
-          this.currentUser.email = user.email!;
-          this.currentUser.avatar = user.photoURL!;
-        }
-      }
-    });
-  }
-
-  public toggleMenu() {
+  public toggleMenu(): void {
     if (this.showProfile) {
       this.showProfile = !this.showProfile;
     } else {
@@ -83,7 +73,58 @@ export class HeaderComponent {
     }
   }
 
-  public logOutUser() {
+  public toggleProfile(event: Event): void {
+    event.stopPropagation()
+    this.showProfile = !this.showProfile;
+    this.editUser = false;
+    this.userForm.reset();
+  }
+
+  public toggleEditMenu(): void {
+    this.editUser = !this.editUser;
+    this.userForm.reset();
+  }
+
+  public editUserData(): void {
+    const inputName = this.userForm.get('name')?.value;
+    const inputEmail = this.userForm.get('email')?.value;
+    const emailExists = this.userService.user.email === inputEmail;
+    if (emailExists) {
+      this.emailExisting();
+    } else {
+      this.updateAndSubscribeUserDetails(inputName, inputEmail);
+    }
+  }
+
+  private updateAndSubscribeUserDetails(inputName: string, inputEmail: string): void {
+    this.userService.user.name = inputName;
+    this.userService.user.email = inputEmail;
+    this.authService.user$
+      .subscribe(user => {
+        if (user) {
+          this.subcribeUpdateUserName(user);
+          this.subcribeUpdateUserEmail(user);
+          this.toggleEditMenu();
+        }
+      });
+  }
+
+  private emailExisting(): void {
+    this.emailIsExisting = true;
+    setTimeout(() => {
+      this.emailIsExisting = false;
+    }, 2000);
+  }
+
+  private subcribeUpdateUserName(user: FirebaseAuthUser): void {
+    this.authService.updateUserName(user, this.userService.user.name);
+  }
+
+  private subcribeUpdateUserEmail(user: FirebaseAuthUser): void {
+    this.authService.updateUserEmail(user, this.userService.user.email);
+  }
+
+  public logOutUser(): void {
     if (this.router.url.includes('guest')) {
       this.router.navigate(['/landing-page/login']);
     } else {
@@ -97,68 +138,5 @@ export class HeaderComponent {
           }
         });
     }
-  }
-
-  public toggleProfile(event: Event) {
-    event.stopPropagation()
-    this.showProfile = !this.showProfile;
-    this.editUser = false;
-    this.userForm.reset();
-  }
-
-  public toggleEditMenu() {
-    this.editUser = !this.editUser;
-    this.userForm.reset();
-  }
-
-  public async editUserData() {
-    const inputEmail = this.userForm.get('email')?.value;
-    const emailExists = this.currentUser.email === inputEmail;
-    if (emailExists) {
-      this.emailExisting();
-    } else {
-      this.currentUser.name = this.userForm.get('name')?.value;
-      this.currentUser.email = this.userForm.get('email')?.value;
-      this.authService.user$
-        .subscribe(user => {
-          if (user) {
-            this.subcribeUpdateUserName(user);
-            this.subcribeUpdateUserEmail(user);
-          }
-        });
-    }
-  }
-
-  private subcribeUpdateUserName(user: FirebaseAuthUser) {
-    this.authService.updateUserName(user, this.currentUser.name)
-      .subscribe({
-        error: err => {
-          if (err.code === 'auth/user-token-expired') {
-            this.errorMessage = 'auth/user-token-expired';
-          } else {
-            this.toggleEditMenu();
-          }
-        }
-      });
-  }
-
-  private subcribeUpdateUserEmail(user: FirebaseAuthUser) {
-    this.authService.updateUserEmail(user, this.currentUser.email)
-      .subscribe({
-        error: err => {
-          if (err.code === 'auth/user-token-expired') {
-            this.errorMessage = 'auth/user-token-expired';
-          } else {
-            this.toggleEditMenu();
-          }
-        }
-      });
-  }
-
-  private emailExisting() {
-    this.emailIsExisting = true;
-    setTimeout(() => {
-      this.emailIsExisting = false;
-    }, 2000);
   }
 }

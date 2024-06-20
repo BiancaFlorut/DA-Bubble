@@ -5,14 +5,16 @@ import {
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  signInWithRedirect,
   updateEmail,
   updateProfile,
   user
 } from '@angular/fire/auth';
 import { Observable, from } from 'rxjs';
 import { User } from '../../interfaces/user';
-import { getStorage, ref, uploadBytes, getDownloadURL } from '@angular/fire/storage';
-import { GoogleAuthProvider, UserCredential, signInWithRedirect, signOut } from 'firebase/auth';
+import { getStorage, ref, uploadBytes, UploadResult } from '@angular/fire/storage';
+import { GoogleAuthProvider, UserCredential, signOut } from 'firebase/auth';
 import { User as FirebaseAuthUser } from '@firebase/auth';
 
 @Injectable({
@@ -24,16 +26,9 @@ export class AuthService {
   user$ = user(this.firebaseAuth);
   currentUserSig = signal<User | null | undefined>(undefined);
 
-  uploadProfileImageTemp(file: File): Observable<string> {
+  uploadProfileImageTemp(file: File): Observable<UploadResult> {
     const storageRef = ref(this.storage, `temp/avatars/${Date.now()}_${file.name}`);
     const uploadTask = uploadBytes(storageRef, file)
-    .then(async (snapshot) => {
-      const downloadURL = await getDownloadURL(snapshot.ref);
-      return downloadURL;
-    }).catch((error) => {
-      console.error('Error uploading profile image:', error);
-      return Promise.reject('Error uploading profile image. Please try again.');
-    });
     return from(uploadTask);
   }
 
