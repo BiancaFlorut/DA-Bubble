@@ -1,5 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, addDoc, collection, doc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, doc, getDoc, updateDoc } from '@angular/fire/firestore';
+import { DocumentData, DocumentReference, setDoc } from 'firebase/firestore';
+import { User } from '../../interfaces/user';
 
 @Injectable({
   providedIn: 'root'
@@ -15,19 +17,26 @@ export class FirebaseService {
     return doc(this.getUsers(), docId)
   }
 
-  public async addUser(newUser: {}) {
-    await addDoc(this.getUsers(), newUser)
+  public async setNewUser(docRef: DocumentReference<DocumentData, DocumentData>, newUser: User) {
+    newUser.online = true;
+    await setDoc(docRef, newUser)
       .catch((err) => { console.error(err) })
       .then((result) => {
-        console.log('Adding user finished: ', result)
+        console.log('Adding user in firebase finished: ', result)
       }
       )
   }
 
-  public async updateUser(user: any, id: string) {
-    let docRef = this.getSingleUser(id);
-    await updateDoc(docRef, user).catch(
-      (err) => { console.error(err); }
-    );
+  async connectUser(user: User) {
+    if (user && user.uid) {
+      let docRef = this.getSingleUser(user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        updateDoc(docRef, { online: true }).catch(
+          (err) => { console.error(err); }
+        );
+        console.log('User updated: ', docSnap.data());
+      } else this.setNewUser(docRef, user);
+    }
   }
 }

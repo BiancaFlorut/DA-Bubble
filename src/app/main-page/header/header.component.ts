@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../interfaces/user';
 import { User as FirebaseAuthUser } from '@firebase/auth';
+import { FirebaseService } from '../../services/firebase/firebase.service';
 
 @Component({
   selector: 'app-header',
@@ -21,6 +22,7 @@ export class HeaderComponent {
   private router: Router = inject(Router);
   private fb = inject(FormBuilder);
   public authService = inject(AuthService);
+  private firebase = inject(FirebaseService);
 
   public isUserMenuActive: boolean = false;
   public loggedAsGuest: boolean = false;
@@ -35,6 +37,7 @@ export class HeaderComponent {
     email: '',
     password: '',
     avatar: '',
+    uid: ''
   };
 
   ngOnInit(): void {
@@ -64,12 +67,15 @@ export class HeaderComponent {
   }
 
   private loggedUser() {
-    this.authService.user$.forEach(user => {
+    this.authService.user$.forEach(async user => {
       if (this.router.url.includes(`main-page/${user?.uid}`)) {
         if (user) {
           this.currentUser.name = user.displayName!;
           this.currentUser.email = user.email!;
           this.currentUser.avatar = user.photoURL!;
+          // firebase user check and load data or add new user to firebase
+          this.currentUser.uid = user.uid;
+          this.firebase.connectUser(this.currentUser);
         }
       }
     });
