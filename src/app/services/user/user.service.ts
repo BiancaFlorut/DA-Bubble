@@ -11,6 +11,7 @@ export class UserService {
     email: '',
     password: '',
     avatar: '',
+    online: false
   };
 
   public setUser(user: User) {
@@ -28,6 +29,7 @@ export class UserService {
       email: '',
       password: '',
       avatar: '',
+      online: false
     };
   }
 }
