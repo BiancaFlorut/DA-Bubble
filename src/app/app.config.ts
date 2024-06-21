@@ -6,7 +6,6 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { routes } from './app.routes';
-import { provideAngularSvgIcon } from 'angular-svg-icon';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB4VNMwgPi02CgsIe-gBiO6xRgBluHYfBE",
@@ -24,7 +23,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideAngularSvgIcon()
+    provideFirestore(() => getFirestore())
   ]
 };
