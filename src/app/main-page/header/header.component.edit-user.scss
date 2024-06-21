@@ -42,9 +42,13 @@
         gap: 15px;
 
         span {
+            cursor: pointer;
             font-size: 20px;
             line-height: 27.28px;
-            color: #92C83E;
+
+            &:hover {
+                transform: scale(1.1);
+            }
         }
     }
 
@@ -171,4 +175,12 @@
             }
         }
     }
+}
+
+.active-span {
+    color: #92C83E;
+}
+
+.inactive-span {
+    color: #686868;
 }

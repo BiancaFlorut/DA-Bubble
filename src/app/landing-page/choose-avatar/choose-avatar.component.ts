@@ -36,8 +36,8 @@ export class ChooseAvatarComponent {
   public saveUser() {
     if (this.chooseAvatar) {
       this.userService.user.avatar = this.avatar;
-      if (this.userService.user.password) {
-        this.authService.register(this.userService.user.email, this.userService.user.password)
+      if (this.userService.userPassword) {
+        this.authService.register(this.userService.user.email, this.userService.userPassword)
           .subscribe({
             next: () => {
               const user = this.authService.firebaseAuth.currentUser;
@@ -62,7 +62,6 @@ export class ChooseAvatarComponent {
     this.showCreateUser = true;
     setTimeout(() => {
       this.showCreateUser = false;
-      this.userService.resetUser();
       this.router.navigate(['./landing-page/login']);
     }, 2000);
   }
@@ -75,14 +74,15 @@ export class ChooseAvatarComponent {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput.files && fileInput.files[0]) {
       const file = fileInput.files[0];
-      this.authService.uploadProfileImageTemp(file).subscribe({
-        next: (uploadResult: UploadResult) => {
-          this.handleDownloadURL(uploadResult);
-        },
-        error: (error) => {
-          console.error('Error uploading image: ', error);
-        }
-      });
+      this.authService.uploadProfileImageTemp(file)
+        .subscribe({
+          next: (uploadResult: UploadResult) => {
+            this.handleDownloadURL(uploadResult);
+          },
+          error: (error) => {
+            console.error('Error uploading image: ', error);
+          }
+        });
     }
   }
 

@@ -8,7 +8,8 @@
         <span>{{userService.user.name}}</span>
         <div class="avatar-container">
             <img src="{{userService.user.avatar}}" alt="avatar">
-            <div class="active-icon"></div>
+            <div class="status-icon"
+                [ngClass]="{'active-icon': userService.user.online, 'inactive-icon': !userService.user.online}"></div>
         </div>
         <img (click)="toggleMenu()" src="./assets/img/main-page/header/arrow_down.png" alt="arrow down">
     </div>
@@ -39,8 +40,16 @@
                 <span (click)="toggleEditMenu()">Bearbeiten</span>
             </div>
             <div class="status-container">
-                <div class="active-icon"></div>
-                <span>Aktive</span>
+                <div class="status-icon"
+                    [ngClass]="{'active-icon': userService.user.online, 'inactive-icon': !userService.user.online}">
+                </div>
+                @if (userService.user.online) {
+                <span (click)="handleStatus()"
+                    [ngClass]="{'active-span': userService.user.online, 'inactive-span': !userService.user.online}">Aktive</span>
+                } @else {
+                <span (click)="handleStatus()"
+                    [ngClass]="{'active-span': userService.user.online, 'inactive-span': !userService.user.online}">Abwesend</span>
+                }
             </div>
             <div class="bottom-container">
                 <div>
@@ -58,7 +67,7 @@
                     <span>Vollständiger Name</span>
                 </div>
                 <div class="valid-container">
-                    <input type="text" formControlName="name" id="name" placeholder="{{userService.user.name}}">
+                    <input type="text" formControlName="name" id="name" placeholder="Bitte Namen eingeben...">
                     @if (userForm.get('name')?.touched && userForm.get('name')?.invalid) {
                     @if (userForm.get('name')?.errors?.['required']) {
                     <span>Bitte schreiben Sie einen Namen.</span>
@@ -75,7 +84,7 @@
                     <span>E-Mail-Adresse</span>
                 </div>
                 <div class="valid-container">
-                    <input type="email" formControlName="email" id="email" placeholder="{{userService.user.email}}">
+                    <input type="email" formControlName="email" id="email" placeholder="Bitte E-Mail eingeben...">
                     @if (userForm.get('email')?.touched && userForm.get('email')?.invalid) {
                     @if (userForm.get('email')?.errors?.['required']) {
                     <span>Bitte schreiben Sie eine E-Mail</span>
@@ -83,9 +92,6 @@
                     @if (userForm.get('email')?.errors?.['pattern']) {
                     <span>Diese E-Mail-Adresse ist leider ungültig.</span>
                     }
-                    }
-                    @if(emailIsExisting) {
-                    <span>Diese E-Mail-Adresse ist bereits registriert.</span>
                     }
                 </div>
             </div>

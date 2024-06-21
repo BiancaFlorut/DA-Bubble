@@ -3,7 +3,6 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
-import { User as FirebaseAuthUser } from '@firebase/auth';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { UserService } from '../../services/user/user.service';
 
@@ -28,16 +27,12 @@ export class HeaderComponent {
   public isUserMenuActive: boolean = false;
   public showProfile: boolean = false;
   public editUser: boolean = false;
-  public emailIsExisting: boolean = false;
   public userForm!: FormGroup;
   public showProfileButton: boolean = false;
 
   ngOnInit(): void {
-    this.userForm = this.fb.group({
-      name: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+\s[A-Z][a-zA-Z]+$/)]],
-      email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
-    });
     this.userIsLogged();
+    this.initializeForm();
     this.isLoggedAsGuestOrGoogleUser();
     this.redirectLogin();
   }
@@ -51,6 +46,13 @@ export class HeaderComponent {
         this.userService.user.avatar = user?.photoURL! || './assets/img/profile.png';
         this.firebase.connectUser(this.userService.user);
       });
+  }
+
+  private initializeForm(): void {
+    this.userForm = this.fb.group({
+      name: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+\s[A-Z][a-zA-Z]+$/)]],
+      email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
+    });
   }
 
   private isLoggedAsGuestOrGoogleUser(): void {
@@ -80,51 +82,37 @@ export class HeaderComponent {
     event.stopPropagation()
     this.showProfile = !this.showProfile;
     this.editUser = false;
-    this.userForm.reset();
+    this.setNameAndEmailValue();
   }
 
   public toggleEditMenu(): void {
     this.editUser = !this.editUser;
-    this.userForm.reset();
+    this.setNameAndEmailValue();
+  }
+
+  private setNameAndEmailValue(): void {
+    this.userForm.get('name')?.setValue(this.userService.user.name);
+    this.userForm.get('email')?.setValue(this.userService.user.email);
   }
 
   public editUserData(): void {
-    const inputName = this.userForm.get('name')?.value;
-    const inputEmail = this.userForm.get('email')?.value;
-    const emailExists = this.userService.user.email === inputEmail;
-    if (emailExists) {
-      this.emailExisting();
-    } else {
-      this.updateAndSubscribeUserDetails(inputName, inputEmail);
-    }
-  }
-
-  private updateAndSubscribeUserDetails(inputName: string, inputEmail: string): void {
-    this.userService.user.name = inputName;
-    this.userService.user.email = inputEmail;
+    this.userService.user.name = this.userForm.get('name')?.value;
+    const emailExists = this.userService.user.email === this.userForm.get('email')?.value;
     this.authService.user$
       .subscribe(user => {
         if (user) {
-          this.subcribeUpdateUserName(user);
-          this.subcribeUpdateUserEmail(user);
+          this.authService.updateUserName(user, this.userService.user.name);
+          if (!emailExists) {
+            this.userService.user.email = this.userForm.get('email')?.value;
+            this.authService.updateUserEmail(user, this.userService.user.email);
+          }
           this.toggleEditMenu();
         }
       });
   }
 
-  private emailExisting(): void {
-    this.emailIsExisting = true;
-    setTimeout(() => {
-      this.emailIsExisting = false;
-    }, 2000);
-  }
-
-  private subcribeUpdateUserName(user: FirebaseAuthUser): void {
-    this.authService.updateUserName(user, this.userService.user.name);
-  }
-
-  private subcribeUpdateUserEmail(user: FirebaseAuthUser): void {
-    this.authService.updateUserEmail(user, this.userService.user.email);
+  public handleStatus(): void {
+    this.userService.user.online = !this.userService.user.online;
   }
 
   public logOutUser(): void {

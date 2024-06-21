@@ -64,7 +64,7 @@
         border-radius: 50%;
     }
 
-    .active-icon {
+    .status-icon {
         position: absolute;
         right: 0;
         bottom: 0;
@@ -114,12 +114,19 @@
     }
 }
 
-.active-icon {
+.status-icon {
     width: 16.67px;
     height: 16.67px;
-    background-color: #92C83E;
     border-radius: 50%;
     border: 2px solid #ECEEFE;
+}
+
+.active-icon {
+    background-color: #92C83E;
+}
+
+.inactive-icon {
+    background-color: #686868;
 }
 
 .profile-container {

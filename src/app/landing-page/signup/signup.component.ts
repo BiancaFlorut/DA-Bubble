@@ -30,7 +30,7 @@ export class SignupComponent {
     this.userForm = this.fb.group({
       name: [this.userService.user.name, [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+\s[A-Z][a-zA-Z]+$/)]],
       email: [this.userService.user.email, [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
-      password: [this.userService.user.password, [Validators.required, Validators.pattern(/^.{8,}$/)]]
+      password: [this.userService.userPassword, [Validators.required, Validators.pattern(/^.{8,}$/)]]
     });
     this.setTimeoutErrorMessage();
   }
@@ -64,6 +64,7 @@ export class SignupComponent {
   private updateAndNavigate() {
     if (this.userForm.valid && this.isChecked) {
       this.userService.setUser(this.userForm.value);
+      this.userService.userPassword = this.userForm.get('password')?.value;
       this.router.navigate(['/landing-page/signup/choose-avatar']);
     }
   }

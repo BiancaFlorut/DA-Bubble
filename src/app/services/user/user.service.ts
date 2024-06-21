@@ -9,10 +9,11 @@ export class UserService {
     uid: '',
     name: '',
     email: '',
-    password: '',
     avatar: '',
-    online: false
+    online: true
   };
+
+  public userPassword: string = '';
 
   public setUser(user: User) {
     this.user = user;
@@ -27,7 +28,6 @@ export class UserService {
       uid: '',
       name: '',
       email: '',
-      password: '',
       avatar: '',
       online: false
     };
