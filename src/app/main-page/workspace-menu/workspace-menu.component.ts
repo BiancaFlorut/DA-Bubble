@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { FirebaseService } from '../../services/firebase/firebase.service';
 
 @Component({
   selector: 'app-workspace-menu',
@@ -10,6 +11,7 @@ import { Component } from '@angular/core';
 export class WorkspaceMenuComponent {
   areChannelsMenuOpen: boolean = false;
   areDirectChatsMenuOpen: boolean = false;
+  firebase: FirebaseService = inject(FirebaseService);
 
   openChannelsMenu() {
     if (this.areChannelsMenuOpen) {
