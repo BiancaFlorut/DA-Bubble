@@ -1,3 +1,5 @@
+@import './../../assets/styles/mixIns.scss';
+
 .main-page-background-container {
     background-color: #ECEEFE;
     height: 100vh;
@@ -6,5 +8,17 @@
         max-width: 1920px;
         height: 100%;
         margin: 0 auto;
+        @include displayFlex(column, unset, unset, 0);
     }
+}
+
+.chat-container {
+    display: flex;
+    width: 100%;
+    flex: 1;
+    padding: 0 20px 25px 20px;
+}
+
+.active-chat-container {
+    flex: 1;
 }
