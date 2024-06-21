@@ -10,7 +10,7 @@ export class UserService {
     name: '',
     email: '',
     avatar: '',
-    online: true
+    online: false
   };
 
   public userPassword: string = '';
