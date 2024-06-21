@@ -40,13 +40,17 @@ export class HeaderComponent {
   private userIsLogged(): void {
     this.authService.user$
       .subscribe(user => {
-        this.userService.user.uid = user?.uid;
-        this.userService.user.name = user?.displayName!;
-        this.userService.user.email = user?.email!;
-        this.userService.user.avatar = user?.photoURL!;
-        this.userService.user.online = true;
-        console.log(this.userService.user)
-        this.firebase.connectUser(this.userService.user);
+        if (user && user.email && user.photoURL) {
+          this.userService.user.uid = user.uid;
+          this.userService.user.name = user.displayName!;
+          this.userService.user.email = user.email!;
+          this.userService.user.avatar = user.photoURL!;
+          this.userService.user.online = true;
+          console.log(this.userService.user)
+          this.firebase.connectUser(this.userService.user);
+        } else {
+          this.router.navigate(['landing-page/login']);
+        }
       });
   }
 
