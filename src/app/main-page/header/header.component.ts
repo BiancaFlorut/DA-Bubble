@@ -40,10 +40,12 @@ export class HeaderComponent {
   private userIsLogged(): void {
     this.authService.user$
       .subscribe(user => {
-        this.userService.user.uid = user?.uid || 'guestId';
-        this.userService.user.name = user?.displayName! || 'Guest';
-        this.userService.user.email = user?.email! || 'guest@gmail.com';
-        this.userService.user.avatar = user?.photoURL! || './assets/img/profile.png';
+        this.userService.user.uid = user?.uid;
+        this.userService.user.name = user?.displayName!;
+        this.userService.user.email = user?.email!;
+        this.userService.user.avatar = user?.photoURL!;
+        this.userService.user.online = true;
+        console.log(this.userService.user)
         this.firebase.connectUser(this.userService.user);
       });
   }
@@ -106,6 +108,7 @@ export class HeaderComponent {
             this.userService.user.email = this.userForm.get('email')?.value;
             this.authService.updateUserEmail(user, this.userService.user.email);
           }
+          this.firebase.updateUser(this.userService.user);
           this.toggleEditMenu();
         }
       });
