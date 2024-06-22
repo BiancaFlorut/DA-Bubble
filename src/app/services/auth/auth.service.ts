@@ -56,6 +56,11 @@ export class AuthService {
     return from(promise);
   }
 
+  updateUserPhotoURL(user: FirebaseAuthUser, photoURL: string): Observable<void> {
+    const promise = updateProfile(user, { photoURL: photoURL })
+    return from(promise);
+  }
+
   sendPasswordReset(email: string): Observable<void> {
     const promise = sendPasswordResetEmail(this.firebaseAuth, email)
     return from(promise);

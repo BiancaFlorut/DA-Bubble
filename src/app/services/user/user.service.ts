@@ -14,6 +14,7 @@ export class UserService {
   };
 
   public userPassword: string = '';
+  public currentAvatar: string = '';
 
   public setUser(user: User) {
     this.user = user;

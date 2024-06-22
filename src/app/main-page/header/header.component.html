@@ -32,7 +32,8 @@
             }
             <div (click)="toggleProfile($event)" class="close-icon"></div>
         </div>
-        <img class="avatar-icon" src="{{userService.user.avatar}}" alt="avatar">
+        <img [ngClass]="{'c-pointer': editUser}" (click)="onUploadButtonClick()" class="avatar-icon" src="{{userService.user.avatar}}" alt="avatar">
+        <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" />
         @if(!editUser) {
         <div class="user-data-container">
             <div class="middle-container">

@@ -176,3 +176,11 @@
         object-fit: cover;
     }
 }
+
+.c-pointer {
+    cursor: pointer;
+
+    &:hover {
+        border: 8px solid #E6E6E6;
+    }
+}
