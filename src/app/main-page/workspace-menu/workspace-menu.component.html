@@ -184,6 +184,9 @@
               </div>
               <div>
                 {{user.name}}
+                @if (user.uid === firebase.currentUser.uid) {
+                  (Du)
+                }
               </div>
             </div>
           }
