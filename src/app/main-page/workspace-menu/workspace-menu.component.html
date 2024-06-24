@@ -180,9 +180,13 @@
             <div class="user">
               <div class="avatar">
                 <img src="{{user.avatar}}" alt="avatar">
+                <div class="status-container"><div class="status-dot" [ngClass]="user.online ? 'online' : 'offline'"></div></div>
               </div>
               <div>
                 {{user.name}}
+                @if (user.uid === firebase.currentUser.uid) {
+                  (Du)
+                }
               </div>
             </div>
           }

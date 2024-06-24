@@ -1,0 +1,29 @@
+@import "./../../../../assets/styles/mixIns.scss";
+@import "./../../../../assets/styles/colors.scss";
+
+.new-message-container {
+  @include displayFlex(column, unset, unset, 20px);
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32.74px;
+  }
+  .search-input {
+    padding: 15px 20px 15px 20px;
+    border: 1px solid $light_purple;
+    border-radius: 30px;
+    font-size: 18px;
+      font-weight: 400;
+      line-height: 24.55px;
+    &::placeholder {
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 24.55px;
+    }
+    &:focus {
+      outline: none;
+      border: 1px solid $purple_2;
+    }
+  }
+}
+

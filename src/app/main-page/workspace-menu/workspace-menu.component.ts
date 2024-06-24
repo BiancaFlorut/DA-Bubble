@@ -1,16 +1,17 @@
 import { Component, inject } from '@angular/core';
 import { FirebaseService } from '../../services/firebase/firebase.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-workspace-menu',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './workspace-menu.component.html',
   styleUrl: './workspace-menu.component.scss'
 })
 export class WorkspaceMenuComponent {
   areChannelsMenuOpen: boolean = false;
-  areDirectChatsMenuOpen: boolean = false;
+  areDirectChatsMenuOpen: boolean = true;
   firebase: FirebaseService = inject(FirebaseService);
 
   openChannelsMenu() {
