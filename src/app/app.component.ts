@@ -7,7 +7,9 @@ import { AuthService } from './services/auth/auth.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [
+    RouterOutlet
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -19,11 +21,13 @@ export class AppComponent {
 
   ngOnInit() {
     AOS.init();
-    if(localStorage.getItem('loggedAsGuestOrGoogleUser')) {
+    if (localStorage.getItem('loggedAsGuestOrGoogleUser')) {
       this.authService.user$
-      .subscribe((user) => {
-        this.router.navigate([`main-page/${user?.uid}`]);
-      });
+        .subscribe((user) => {
+          if (user) {
+            this.router.navigate([`main-page/${user.uid}`]);
+          }
+        });
     }
   }
 }

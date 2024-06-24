@@ -32,20 +32,18 @@ export class ForgotPasswordComponent {
     });
   }
 
-  public sendPasswordResetEmail() {
+  public async sendPasswordResetEmail() {
     const email = this.userForm.get('email')?.value;
     if (email) {
-      this.authService.sendPasswordReset(email)
-        .subscribe({
-          next: () => {
-            this.showEmailSentMessage();
-          },
-          error: (err) => {
-            if (err.code === 'auth/user-not-found') {
-              this.errorMessage = 'user-not-found';
-            }
-            this.setTimeOutErrorMessage();
+      await this.authService.sendPasswordReset(email)
+        .then(() => {
+          this.showEmailSentMessage();
+        })
+        .catch(error => {
+          if (error.code === 'auth/user-not-found') {
+            this.errorMessage = 'user-not-found';
           }
+          this.setTimeOutErrorMessage();
         });
     }
   }

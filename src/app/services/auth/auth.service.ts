@@ -3,6 +3,8 @@ import {
   Auth,
   confirmPasswordReset,
   createUserWithEmailAndPassword,
+  getRedirectResult,
+  onAuthStateChanged,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithRedirect,
@@ -10,11 +12,9 @@ import {
   updateProfile,
   user
 } from '@angular/fire/auth';
-import { Observable, from } from 'rxjs';
 import { User } from '../../interfaces/user';
-import { getStorage, ref, uploadBytes, UploadResult } from '@angular/fire/storage';
-import { GoogleAuthProvider, UserCredential, signOut } from 'firebase/auth';
-import { User as FirebaseAuthUser } from '@firebase/auth';
+import { getDownloadURL, getStorage, ref, uploadBytes } from '@angular/fire/storage';
+import { GoogleAuthProvider, signOut } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -25,55 +25,70 @@ export class AuthService {
   user$ = user(this.firebaseAuth);
   currentUserSig = signal<User | null | undefined>(undefined);
 
-  uploadProfileImageTemp(file: File): Observable<UploadResult> {
+  async uploadProfileImageTemp(file: File) {
     const storageRef = ref(this.storage, `temp/avatars/${Date.now()}_${file.name}`);
-    const uploadTask = uploadBytes(storageRef, file)
-    return from(uploadTask);
+    const uploadResult = await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(uploadResult.ref);
+    return downloadURL;
   }
 
-  register(email: string, password: string): Observable<UserCredential> {
-    const promise = createUserWithEmailAndPassword(this.firebaseAuth, email, password)
-    return from(promise);
+  async register(name: string, email: string, password: string, avatar: string) {
+    await createUserWithEmailAndPassword(this.firebaseAuth, email, password);
+    const user = this.firebaseAuth.currentUser;
+    if (user) {
+      updateProfile(user, {
+        displayName: name,
+        photoURL: avatar,
+      });
+    }
   }
 
-  login(email: string, password: string): Observable<UserCredential> {
-    const promise = signInWithEmailAndPassword(this.firebaseAuth, email, password);
-    return from(promise);
+  async login(email: string, password: string) {
+    return await signInWithEmailAndPassword(this.firebaseAuth, email, password);
   }
 
-  logOut(): Observable<void> {
-    const promise = signOut(this.firebaseAuth);
-    return from(promise);
+  async logOut() {
+    await signOut(this.firebaseAuth);
   }
 
-  updateUserName(user: FirebaseAuthUser, name: string): Observable<void> {
-    const promise = updateProfile(user, { displayName: name })
-    return from(promise);
+  async updateUserName(name: string) {
+    const user = this.firebaseAuth.currentUser;
+    if (user) {
+      await updateProfile(user, { displayName: name });
+    }
   }
 
-  updateUserEmail(user: FirebaseAuthUser, email: string): Observable<void> {
-    const promise = updateEmail(user, email);
-    return from(promise);
+  async updateUserEmail(email: string) {
+    const user = this.firebaseAuth.currentUser;
+    if (user) {
+      await updateEmail(user, email);
+    }
   }
 
-  updateUserPhotoURL(user: FirebaseAuthUser, photoURL: string): Observable<void> {
-    const promise = updateProfile(user, { photoURL: photoURL })
-    return from(promise);
+  async updateUserPhotoURL(photoURL: string) {
+    const user = this.firebaseAuth.currentUser;
+    if (user) {
+      await updateProfile(user, { photoURL: photoURL });
+    }
   }
 
-  sendPasswordReset(email: string): Observable<void> {
-    const promise = sendPasswordResetEmail(this.firebaseAuth, email)
-    return from(promise);
+  async sendPasswordReset(email: string) {
+    await sendPasswordResetEmail(this.firebaseAuth, email);
   }
 
-  resetPassword(code: string, newPassword: string): Observable<void> {
-    const promise = confirmPasswordReset(this.firebaseAuth, code, newPassword)
-    return from(promise);
+  async resetPassword(code: string, newPassword: string) {
+    await confirmPasswordReset(this.firebaseAuth, code, newPassword);
   }
 
-  googleSignIn() {
+  async googleSignIn() {
     const provider = new GoogleAuthProvider();
-    const promise = signInWithRedirect(this.firebaseAuth, provider)
-    return from(promise);
+    provider.addScope('profile');
+    provider.addScope('email');
+    await signInWithRedirect(this.firebaseAuth, provider);
+  }
+
+  async getRedirectResult() {
+    const result = await getRedirectResult(this.firebaseAuth);
+    return result;
   }
 }

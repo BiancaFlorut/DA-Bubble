@@ -32,5 +32,6 @@ export class UserService {
       avatar: '',
       online: false
     };
+    this.userPassword = '';
   }
 }

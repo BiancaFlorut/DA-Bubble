@@ -5,8 +5,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../services/auth/auth.service';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { UserService } from '../../services/user/user.service';
-import { UploadResult } from 'firebase/storage';
-import { getDownloadURL } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-header',
@@ -45,14 +43,13 @@ export class HeaderComponent {
   private userIsLogged(): void {
     this.authService.user$
       .subscribe(user => {
-        if (user && user.email && user.photoURL) {
+        if (user) {
           this.userService.user.uid = user.uid!;
           this.userService.user.name = user.displayName!;
           this.userService.user.email = user.email!;
           this.userService.user.avatar = user.photoURL!;
           this.userService.currentAvatar = user.photoURL!;
           this.userService.user.online = true;
-          console.log(this.userService.user)
           this.firebase.connectUser(this.userService.user);
         } else {
           this.router.navigate(['landing-page/login']);
@@ -110,81 +107,58 @@ export class HeaderComponent {
     this.userForm.get('email')?.setValue(this.userService.user.email);
   }
 
-  public onUploadButtonClick() {
-    if (this.editUser) {
-      this.fileInput.nativeElement.click();
-    }
-  }
-
   private userAvatarIsNotSave() {
     if (this.userService.user.avatar !== this.userService.currentAvatar) {
       this.userService.user.avatar = this.userService.currentAvatar;
     }
   }
 
-  public onFileSelected(event: Event) {
-    const fileInput = event.target as HTMLInputElement;
-    if (fileInput.files && fileInput.files[0]) {
-      this.file = fileInput.files[0];
-      this.authService.uploadProfileImageTemp(this.file)
-        .subscribe({
-          next: (uploadResult: UploadResult) => {
-            this.handleDownloadURL(uploadResult);
-          },
-          error: (error) => {
-            console.error('Error uploading image: ', error);
-          }
-        });
+  public onUploadButtonClick() {
+    if (this.editUser) {
+      this.fileInput.nativeElement.click();
     }
   }
 
-  private handleDownloadURL(uploadResult: UploadResult) {
-    getDownloadURL(uploadResult.ref)
-      .then((downloadURL: string) => {
-        this.userService.user.avatar = downloadURL;
-      }).catch((error) => {
-        console.error('Error getting download URL: ', error);
-      });
+  public async onFileSelected(event: Event) {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files[0]) {
+      this.file = fileInput.files[0];
+      let uploadedPhoto = await this.authService.uploadProfileImageTemp(this.file);
+      if (uploadedPhoto) {
+        this.userService.user.avatar = uploadedPhoto;
+      }
+    }
   }
 
-  public editUserData(): void {
+  public async editUserData() {
     this.userService.user.name = this.userForm.get('name')?.value;
     const emailExists = this.userService.user.email === this.userForm.get('email')?.value;
-    this.authService.user$
-      .subscribe(user => {
-        if (user) {
-          this.authService.updateUserName(user, this.userService.user.name);
-          if (!emailExists) {
-            this.userService.user.email = this.userForm.get('email')?.value;
-            this.authService.updateUserEmail(user, this.userService.user.email);
-          }
-          this.firebase.updateUser(this.userService.user);
-          if (this.userService.user.avatar) {
-            this.userService.currentAvatar = this.userService.user.avatar;
-            this.authService.updateUserPhotoURL(user, this.userService.user.avatar);
-          }
-          this.toggleEditMenu();
-        }
-      });
+    await this.authService.updateUserName(this.userService.user.name);
+    if (!emailExists) {
+      this.userService.user.email = this.userForm.get('email')?.value;
+      await this.authService.updateUserEmail(this.userService.user.email);
+    }
+    if (this.userService.user.avatar) {
+      this.userService.currentAvatar = this.userService.user.avatar;
+      await this.authService.updateUserPhotoURL(this.userService.user.avatar);
+    }
+    this.firebase.updateUser(this.userService.user);
+    this.toggleEditMenu();
   }
 
   public handleStatus(): void {
     this.userService.user.online = !this.userService.user.online;
+    this.firebase.updateUser(this.userService.user);
   }
 
-  public logOutUser(): void {
+  public async logOutUser() {
     if (this.router.url.includes('guest')) {
       this.router.navigate(['/landing-page/login']);
     } else {
-      this.authService.logOut()
-        .subscribe({
-          next: () => {
-            this.router.navigate(['/landing-page/login']);
-          },
-          error: (error) => {
-            console.error('Logout failed', error);
-          }
-        });
+      await this.authService.logOut()
+        .then(() => {
+          this.router.navigate(['/landing-page/login']);
+        })
     }
   }
 }

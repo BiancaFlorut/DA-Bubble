@@ -9,7 +9,6 @@ import { ChooseAvatarComponent } from './landing-page/choose-avatar/choose-avata
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { MainPageComponent } from './main-page/main-page.component';
 
-
 export const routes: Routes = [
     { path: '', redirectTo: 'landing-page/login', pathMatch: 'full' },
     {
@@ -27,5 +26,5 @@ export const routes: Routes = [
         ]
     },
     { path: 'main-page', redirectTo: 'main-page/:id', pathMatch: 'full' },
-    { path: 'main-page/:id', component: MainPageComponent },
+    { path: 'main-page/:id', component: MainPageComponent }
 ];
