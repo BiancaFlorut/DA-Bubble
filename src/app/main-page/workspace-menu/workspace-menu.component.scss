@@ -10,6 +10,10 @@ section {
   font-family: "Nunito";
 }
 
+.chat-list-container {
+  @include displayFlex(column, unset, unset, 25px);
+}
+
 .logo-container {
   @include displayFlex(row, flex-start, center, 16px);
   margin-bottom: 25px;
@@ -67,11 +71,12 @@ section {
 }
 
 .channels-container {
-  @include displayFlex(column, space-between, unset, 0);
+  @include displayFlex(column, space-between, unset, 25px);
 }
 
 .channels-header {
   @include displayFlex(row, space-between, center, 0);
+  padding: 0 3px;
 }
 
 .channels-title {
@@ -111,7 +116,7 @@ section {
 }
 
 .users-container {
-  @include displayFlex(column, unset, unset, 15px);
+  @include displayFlex(column, unset, unset, 13px);
 }
 
 .user {
@@ -124,13 +129,13 @@ section {
   &:hover {
     background-color: $bg_color;
   }
-  &:active .avatar{
+  &:active .avatar {
     font-weight: 700;
   }
 }
 
 .avatar {
-  @include displayFlex(row, center, center, 0);
+  @include displayFlex(column, center, center, 0);
   font-size: 18px;
   font-weight: 400;
   line-height: 24.55px;
@@ -140,5 +145,26 @@ section {
     border-radius: 30px;
     object-fit: contain;
   }
-  
+  .status-container {
+    @include displayFlex(row, flex-end, center, 0);
+    position: relative;
+    width: 100%;
+  }
+}
+
+.status-dot {
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  border: 2px solid white;
+  border-radius: 20px;
+  transform: translateY(-50%);
+}
+
+.online  {
+  background: $online_green;
+}
+
+.offline {
+  background: $bg_color;
 }

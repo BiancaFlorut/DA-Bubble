@@ -24,6 +24,7 @@ export class FirebaseService {
   }
 
   public getUsers() {
+    this.users = [];
     this.unsubUsers = onSnapshot(this.getUsersRef(), (querySnapshot) => {
       querySnapshot.forEach((doc) => {
         this.users.push(doc.data() as User);
