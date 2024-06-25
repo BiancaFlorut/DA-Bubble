@@ -10,7 +10,7 @@ section {
   @include displayFlex(column, unset, unset, 25px);
 }
 
-.messages-container {
+app-chat-body {
   flex: 1;
 }
 

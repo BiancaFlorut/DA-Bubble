@@ -1,0 +1,3 @@
+@if (chat) { @for (message of chat.messages; track $index) {
+<div>{{message.uid}}: {{message.text }}</div>
+} }

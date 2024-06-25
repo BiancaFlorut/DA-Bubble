@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Firestore, addDoc, collection, doc, getDoc, updateDoc } from '@angular/fire/firestore';
 import { DocumentData, DocumentReference, onSnapshot, setDoc } from 'firebase/firestore';
 import { User } from '../../interfaces/user';
+import { Message } from '../../models/message.class';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class FirebaseService {
     avatar: '',
     online: true
   };
+  msgs: Message[] = [];
 
   constructor() { 
     this.getUsers();
@@ -114,12 +116,25 @@ export class FirebaseService {
         if (docSnap.exists()) {
           return docSnap.data()['cid'];
         }
-      } return this.setNewChat(docRef);
+      } 
+      console.log('Chat does not exist');
+      return this.setNewChat(docRef, user, partner);
     }
+    console.log('Something went wrong in connectChatWithUser');
+    return '';
   }
 
-  async setNewChat(docRef: DocumentReference<DocumentData>) {
-    await setDoc(docRef, { cid: docRef.id });
+  async setNewChat(docRef: DocumentReference<DocumentData>, user: User, partner: User) {
+    await setDoc(docRef, { cid: docRef.id, uid: user.uid, pid: partner.uid, uName: user.name, pName: partner.name});
     return docRef.id;
+  }
+
+  sendMessage(chatId: string, uid: string, timestamp: number, message: string) {
+    let messageObj = { uid: uid, timestamp: timestamp, message: message };
+    addDoc(collection(this.getSingleChat(chatId), 'messages'), {uid: uid, timestamp: timestamp, text: message});
+  }
+
+  getDirectMessagesRef(chatId: string) {
+    return collection(this.getSingleChat(chatId), 'messages');
   }
 }
