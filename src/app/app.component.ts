@@ -21,7 +21,7 @@ export class AppComponent {
 
   ngOnInit() {
     AOS.init();
-    if (localStorage.getItem('loggedAsGuestOrGoogleUser')) {
+    if (localStorage.getItem('loggedAsGoogleUser')) {
       this.authService.user$
         .subscribe((user) => {
           if (user) {

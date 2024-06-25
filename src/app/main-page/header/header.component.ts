@@ -36,7 +36,7 @@ export class HeaderComponent {
   ngOnInit(): void {
     this.userIsLogged();
     this.initializeForm();
-    this.isLoggedAsGuestOrGoogleUser();
+    this.isLoggedAsGoogleUser();
     this.redirectLogin();
   }
 
@@ -49,6 +49,14 @@ export class HeaderComponent {
           this.userService.user.email = user.email!;
           this.userService.user.avatar = user.photoURL!;
           this.userService.currentAvatar = user.photoURL!;
+          this.userService.user.online = true;
+          this.firebase.connectUser(this.userService.user);
+        } else if (this.router.url.includes('guest')) {
+          this.userService.user.uid = 'guest';
+          this.userService.user.name = 'Guest';
+          this.userService.user.email = 'mail@guest.com';
+          this.userService.user.avatar = './assets/img/profile.png';
+          this.userService.currentAvatar = './assets/img/profile.png';
           this.userService.user.online = true;
           this.firebase.connectUser(this.userService.user);
         } else {
@@ -64,9 +72,9 @@ export class HeaderComponent {
     });
   }
 
-  private isLoggedAsGuestOrGoogleUser(): void {
-    if (localStorage.getItem('loggedAsGuestOrGoogleUser') !== null) {
-      localStorage.removeItem('loggedAsGuestOrGoogleUser');
+  private isLoggedAsGoogleUser(): void {
+    if (localStorage.getItem('loggedAsGoogleUser') !== null) {
+      localStorage.removeItem('loggedAsGoogleUser');
       this.showProfileButton = true;
     } else {
       this.showProfileButton = false;
@@ -133,14 +141,20 @@ export class HeaderComponent {
   public async editUserData() {
     this.userService.user.name = this.userForm.get('name')?.value;
     const emailExists = this.userService.user.email === this.userForm.get('email')?.value;
-    await this.authService.updateUserName(this.userService.user.name);
+    if (!this.router.url.includes('guest')) {
+      await this.authService.updateUserName(this.userService.user.name);
+    }
     if (!emailExists) {
       this.userService.user.email = this.userForm.get('email')?.value;
-      await this.authService.updateUserEmail(this.userService.user.email);
+      if (!this.router.url.includes('guest')) {
+        await this.authService.updateUserEmail(this.userService.user.email);
+      }
     }
     if (this.userService.user.avatar) {
       this.userService.currentAvatar = this.userService.user.avatar;
-      await this.authService.updateUserPhotoURL(this.userService.user.avatar);
+      if (!this.router.url.includes('guest')) {
+        await this.authService.updateUserPhotoURL(this.userService.user.avatar);
+      }
     }
     this.firebase.updateUser(this.userService.user);
     this.toggleEditMenu();
