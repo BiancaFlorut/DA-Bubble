@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { CommonModule } from '@angular/common';
+import { User } from '../../interfaces/user';
+import { ChatService } from '../../services/chat/chat.service';
 
 @Component({
   selector: 'app-workspace-menu',
@@ -13,6 +15,7 @@ export class WorkspaceMenuComponent {
   areChannelsMenuOpen: boolean = false;
   areDirectChatsMenuOpen: boolean = true;
   firebase: FirebaseService = inject(FirebaseService);
+  chatService: ChatService = inject(ChatService);
 
   openChannelsMenu() {
     if (this.areChannelsMenuOpen) {
@@ -28,5 +31,9 @@ export class WorkspaceMenuComponent {
     } else {
       this.areDirectChatsMenuOpen = true;
     }
+  }
+
+  openDirectChat(partner: User) {
+    this.chatService.setChatWith(partner);
   }
 }

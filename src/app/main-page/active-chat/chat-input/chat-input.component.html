@@ -5,7 +5,6 @@
     #messageInput
     placeholder="Einen Nachricht schreiben..."
     [(ngModel)]="message"
-    (keyup.enter)="sendMessage()"
   ></textarea>
   <div class="send-container">
     <div class="send-options-container">
@@ -99,6 +98,7 @@
     </div>
     <svg
       class="send-btn"
+      (click)="sendMessage()"
       width="30"
       height="30"
       viewBox="0 0 30 30"

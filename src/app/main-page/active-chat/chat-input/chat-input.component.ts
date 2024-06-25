@@ -13,10 +13,10 @@ export class ChatInputComponent {
   message: string = '';
 
   sendMessage() {
+    
     console.log(this.message);
+
+    this.message = '';
   }
 
-  focusInput() {
-    
-  }
 }

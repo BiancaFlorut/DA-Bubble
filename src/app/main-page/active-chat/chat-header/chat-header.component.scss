@@ -27,3 +27,45 @@
   }
 }
 
+.user-container {
+  @include displayFlex(row, flex-start, center, 15px);
+  width: fit-content;
+}
+
+.avatar {
+  @include displayFlex(column, center, center, 0);
+  img {
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
+    object-fit: contain;
+  }
+  .status-container {
+    @include displayFlex(row, flex-end, center, 0);
+    position: relative;
+    width: 100%;
+  }
+}
+
+.status-dot {
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  border: 2px solid white;
+  border-radius: 20px;
+  transform: translateY(-50%);
+}
+
+.name {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32.74px;
+}
+
+.online  {
+  background: $online_green;
+}
+
+.offline {
+  background: $gray;
+}

@@ -9,4 +9,18 @@
     />
   </div>
   }
+  @if (directChat && partner) {
+    <div class="user-container">
+      <div class="avatar">
+        <img src="{{partner.avatar}}" alt="avatar">
+        <div class="status-container"><div class="status-dot" [ngClass]="partner.online ? 'online' : 'offline'"></div></div>
+      </div>
+      <div class="name">
+        {{partner.name}}
+        @if (firebase.currentUser.uid === partner.uid) {
+          (Du)
+        }
+      </div>
+    </div>
+  }
 </section>

@@ -173,6 +173,9 @@ export class HeaderComponent {
   }
 
   public logOutUser(): void {
+    //set user offline
+    this.userService.user.online = false;
+    this.firebase.updateUser(this.userService.user);
     if (this.router.url.includes('guest')) {
       this.router.navigate(['/landing-page/login']);
     } else {
