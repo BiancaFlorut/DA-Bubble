@@ -38,6 +38,16 @@
     justify-content: space-between;
     align-items: center;
     gap: 20px;
+    cursor: pointer;
+
+    &:hover span{
+        color: #797EF3;
+
+    }
+
+    &:hover .arrow_down {
+        background-image: url(./../../../assets/img/main-page/header/arrow_down_hover.png);
+    }
 
     span {
         font-size: 32px;
@@ -45,11 +55,10 @@
         line-height: 43.65px;
     }
 
-    img {
-
-        &:last-child {
-            cursor: pointer;
-        }
+    .arrow_down {
+        width: 30px;
+        height: 30px;
+        background-image: url(./../../../assets/img/main-page/header/arrow_down.png);
     }
 }
 

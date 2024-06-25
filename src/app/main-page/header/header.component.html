@@ -4,14 +4,14 @@
         <img src="./assets/img/main-page/header/search.png" alt="search">
         <input type="text" name="search" id="search" placeholder="Code learning durchsuchen">
     </div>
-    <div class="user-header-container">
+    <div (click)="toggleMenu()" class="user-header-container">
         <span>{{userService.user.name}}</span>
         <div class="avatar-container">
             <img src="{{userService.user.avatar}}" alt="avatar">
             <div class="status-icon"
                 [ngClass]="{'active-icon': userService.user.online, 'inactive-icon': !userService.user.online}"></div>
         </div>
-        <img (click)="toggleMenu()" src="./assets/img/main-page/header/arrow_down.png" alt="arrow down">
+        <div class="arrow_down" alt="arrow down"></div>
     </div>
 </div>
 <div (click)="toggleMenu()" class="user-menu-container" [ngStyle]="{ 'display': isUserMenuActive ? 'unset' : 'none' }">
@@ -32,7 +32,8 @@
             }
             <div (click)="toggleProfile($event)" class="close-icon"></div>
         </div>
-        <img [ngClass]="{'c-pointer': editUser}" (click)="onUploadButtonClick()" class="avatar-icon" src="{{userService.user.avatar}}" alt="avatar">
+        <img [ngClass]="{'c-pointer': editUser}" (click)="onUploadButtonClick()" class="avatar-icon"
+            src="{{userService.user.avatar}}" alt="avatar">
         <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" />
         @if(!editUser) {
         <div class="user-data-container">

@@ -35,7 +35,7 @@ export class LoginComponent {
   }
 
   public async loginWithGoogle() {
-    localStorage.setItem('loggedAsGuestOrGoogleUser', 'logged');
+    localStorage.setItem('loggedAsGoogleUser', 'logged');
     await this.authService.googleSignIn();
     await this.authService.getRedirectResult()
       .then(result => {
@@ -70,7 +70,6 @@ export class LoginComponent {
   }
 
   public loginAsGuest() {
-    localStorage.setItem('loggedAsGuestOrGoogleUser', 'logged');
     this.router.navigate(['main-page/guest']);
   }
 }
