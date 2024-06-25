@@ -117,7 +117,6 @@ export class FirebaseService {
           return docSnap.data()['cid'];
         }
       } 
-      console.log('Chat does not exist');
       return this.setNewChat(docRef, user, partner);
     }
     console.log('Something went wrong in connectChatWithUser');
