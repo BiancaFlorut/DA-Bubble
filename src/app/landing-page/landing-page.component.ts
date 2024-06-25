@@ -1,8 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { HandleCreateAccountService } from '../services/handle-create-account/handle-create-account.service';
-import { getRedirectResult } from 'firebase/auth';
-import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-landing-page',
@@ -18,9 +16,8 @@ export class LandingPageComponent {
 
   private handleCreateAccount = inject(HandleCreateAccountService);
   private router = inject(Router);
-  private authService = inject(AuthService);
 
-  ngOnInit() {
+  async ngOnInit() {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         if (event.url === '/landing-page/login' || event.url === '/landing-page') {
@@ -30,15 +27,6 @@ export class LandingPageComponent {
         }
         this.isLoginUrl = this.handleCreateAccount.getLogin();
       }
-    });
-    getRedirectResult(this.authService.firebaseAuth)
-    .then((result) => {
-      if (result?.user) {
-        this.router.navigate([`main-page/${result.user.uid}`]);
-      }
-    })
-    .catch((error) => {
-      console.error(error);
     });
   }
 }

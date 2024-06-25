@@ -44,20 +44,18 @@ export class ChangePasswordComponent {
     });
   }
 
-  public updatePassword() {
+  public async updatePassword() {
     if (this.userForm.get('password')?.value !== this.userForm.get('newPassword')?.value) {
       this.handleIsPasswordMatchMessage();
     } else if (this.userForm.valid) {
       let userPassword = this.userForm.get('password')?.value;
       if (this.oobCode && userPassword) {
-        this.authService.resetPassword(this.oobCode, userPassword)
-          .subscribe({
-            next: () => {
-              this.showMessage();
-            },
-            error: error => {
-              console.log(error);
-            }
+        await this.authService.resetPassword(this.oobCode, userPassword)
+          .then(() => {
+            this.showMessage();
+          })
+          .catch(error => {
+            console.log(error);
           });
       }
     }

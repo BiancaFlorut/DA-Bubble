@@ -32,32 +32,34 @@ export class LoginComponent {
       password: ['', [Validators.required, Validators.pattern(/^.{8,}$/)]]
     });
     this.userService.resetUser();
-    this.userService.userPassword = '';
   }
 
-  public loginWithGoogle() {
+  public async loginWithGoogle() {
     localStorage.setItem('loggedAsGuestOrGoogleUser', 'logged');
-    this.authService.googleSignIn();
+    await this.authService.googleSignIn();
+    await this.authService.getRedirectResult()
+      .then(result => {
+        if (result) {
+          console.log(result)
+        }
+      });
   }
 
-  public login() {
-    this.authService.login(this.userForm.get('email')?.value, this.userForm.get('password')?.value)
-      .subscribe({
-        next: (result) => {
-          localStorage.setItem('startAnimation', 'false');
-          const user = result.user.uid;
-          this.router.navigate([`main-page/${user}`]);
-        },
-        error: error => {
-          if (error.code === 'auth/user-not-found') {
-            this.errorMessage = 'user-not-found';
-          } else if (error.code === 'auth/wrong-password') {
-            this.errorMessage = 'wrong-password';
-          } else if (error.code === 'auth/too-many-requests') {
-            this.errorMessage = 'too-many-requests';
-          }
-          this.setTimeOutErrorMessage();
+  public async login() {
+    await this.authService.login(this.userForm.get('email')?.value, this.userForm.get('password')?.value)
+      .then((result) => {
+        const user = result.user.uid;
+        this.router.navigate([`main-page/${user}`]);
+      })
+      .catch((error) => {
+        if (error.code === 'auth/user-not-found') {
+          this.errorMessage = 'user-not-found';
+        } else if (error.code === 'auth/wrong-password') {
+          this.errorMessage = 'wrong-password';
+        } else if (error.code === 'auth/too-many-requests') {
+          this.errorMessage = 'too-many-requests';
         }
+        this.setTimeOutErrorMessage();
       });
   }
 
