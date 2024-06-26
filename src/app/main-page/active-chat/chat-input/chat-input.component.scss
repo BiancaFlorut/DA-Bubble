@@ -3,7 +3,7 @@
 
 .input-container {
   @include displayFlex(column, center, unset, 20px);
-  margin: 0 72px 40px 72px;
+  margin: 0 45px 40px 45px;
   border: 1px solid $light_purple;
   padding: 15px 20px 15px 20px;
   border-radius: 30px;

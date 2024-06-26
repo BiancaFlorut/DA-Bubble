@@ -18,11 +18,13 @@ export class ChatInputComponent {
   currentChat!: DirectChat;
   firebase: FirebaseService = inject(FirebaseService);
   @ViewChild('messageInput') messageInput!: ElementRef;
+  placeholderText: string = 'Einen Nachricht schreiben...';
 
-  constructor() { 
-    this.chatService.currentChat.subscribe(chat  => {
+  constructor() {
+    this.chatService.currentChat.subscribe(chat => {
       if (chat) {
         this.currentChat = chat;
+        this.replacePlaceholder();
         setTimeout(() => {
           this.messageInput.nativeElement.focus();
         }, 10)
@@ -32,12 +34,20 @@ export class ChatInputComponent {
 
   sendMessage() {
     if (this.firebase.currentUser.uid) {
-      console.log(this.currentChat);
-      
       this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);
-      console.log(this.message);
     } else console.log('no user is logged in');
     this.message = '';
+  }
+
+  replacePlaceholder() {
+    if (this.currentChat.user.uid === this.firebase.currentUser.uid) {
+      if (this.currentChat.partner.uid === this.firebase.currentUser.uid) {
+        this.placeholderText = `Nachricht an dir`;
+      } else
+        this.placeholderText = `Nachricht an ${this.currentChat.partner.name}`
+    } else {
+      this.placeholderText = `Nachricht von ${this.currentChat.user.name}`
+    }
   }
 
 }
