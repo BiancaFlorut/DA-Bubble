@@ -177,12 +177,13 @@
       @if (areDirectChatsMenuOpen) {
         <div class="users-container">
           @for (user of firebase.users; track $index) {
-            <div class="user" (click)="openDirectChat(user)">
+            <div class="user" (click)="openDirectChat(user)" [class.active]="chatService.currentPartner.uid === user.uid">
               <div class="avatar">
                 <img src="{{user.avatar}}" alt="avatar">
                 <div class="status-container"><div class="status-dot" [ngClass]="user.online ? 'online' : 'offline'"></div></div>
               </div>
-              <div class="name">
+              <div class="name" 
+              >
                 {{user.name}}
                 @if (user.uid === firebase.currentUser.uid) {
                   (Du)

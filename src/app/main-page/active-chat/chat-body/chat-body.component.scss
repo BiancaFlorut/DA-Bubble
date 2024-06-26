@@ -1,6 +1,11 @@
 @import './../../../../assets/styles/mixIns.scss';
 @import './../../../../assets/styles/colors.scss';
 
+section {
+  flex: 1 1 0;
+  overflow-y: auto;
+}
+
 .message-container {
   @include displayFlex(row, flex-start, center, 10px);
   margin: 10px 40px;

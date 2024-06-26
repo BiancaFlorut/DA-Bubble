@@ -6,7 +6,7 @@ section {
   height: 100%;
   padding: 32px 30px;
   border-radius: 30px;
-  min-width: 366px;
+  width: 366px;
   font-family: "Nunito";
 }
 
@@ -132,6 +132,14 @@ section {
   &:active .avatar {
     font-weight: 700;
   }
+}
+
+.active {
+  .name {
+  font-weight: 700;
+  color: $purple_3;
+  }
+  background-color: $bg_color;
 }
 
 .avatar {

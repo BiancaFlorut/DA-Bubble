@@ -13,6 +13,13 @@ export class ChatService {
   private chat: DirectChat | undefined;
   chatSub: BehaviorSubject<DirectChat | undefined>
   currentChat;
+  currentPartner: User= {
+    uid: '',
+    name: '',
+    email: '',
+    avatar: '',
+    online: false
+  };
   firebase = inject(FirebaseService);
   constructor() {
     this.chatSub = new BehaviorSubject<DirectChat | undefined>(this.chat);
@@ -22,6 +29,7 @@ export class ChatService {
   async setChatWith(partner: User) {
     const cid = await this.firebase.connectChatWithUser(this.firebase.currentUser, partner);
     if (cid) {
+      this.currentPartner = partner;
       let msgs = [] as Message[];
       onSnapshot(this.firebase.getDirectMessagesRef(cid), (collection) => {
         msgs = [];
