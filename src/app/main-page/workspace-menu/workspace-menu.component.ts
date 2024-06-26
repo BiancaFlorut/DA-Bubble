@@ -33,7 +33,7 @@ export class WorkspaceMenuComponent {
     }
   }
 
-  openDirectChat(partner: User) {
-    this.chatService.setChatWith(partner);
+  async openDirectChat(partner: User) {
+    await this.chatService.setChatWith(partner);
   }
 }

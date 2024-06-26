@@ -20,6 +20,7 @@ export class ChatService {
     avatar: '',
     online: false
   };
+  loading: boolean = false;
   firebase = inject(FirebaseService);
   constructor() {
     this.chatSub = new BehaviorSubject<DirectChat | undefined>(this.chat);
@@ -27,6 +28,7 @@ export class ChatService {
   }
 
   async setChatWith(partner: User) {
+    this.loading = true;
     const cid = await this.firebase.connectChatWithUser(this.firebase.currentUser, partner);
     if (cid) {
       this.currentPartner = partner;
@@ -39,6 +41,7 @@ export class ChatService {
         });
         let chat: DirectChat = new DirectChat(cid, this.firebase.currentUser, partner, msgs);
         this.chatSub.next(chat);
+        this.loading = false;
       });
     }
     else

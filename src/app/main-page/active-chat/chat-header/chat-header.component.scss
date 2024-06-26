@@ -1,6 +1,11 @@
 @import "./../../../../assets/styles/mixIns.scss";
 @import "./../../../../assets/styles/colors.scss";
 
+section {
+  padding: 0 45px;
+  padding-bottom: 20px;
+}
+
 .new-message-container {
   @include displayFlex(column, unset, unset, 20px);
   h1 {
@@ -68,4 +73,35 @@
 
 .offline {
   background: $gray;
+}
+
+.progress-container {
+  @include displayFlex(row, flex-start, center, 0);
+  width: 100%;
+  overflow: hidden;
+  .progress-bar {
+    position: relative;
+    left: 0;
+    height: 4px;
+    width: 70%;
+    background: $gray;
+    border-radius: 30px;
+  }
+}
+
+.progress {
+  animation: progress-bar 2s infinite;
+}
+
+.progressing-container { animation: progress-bar 1s infinite; }
+
+@keyframes progress-bar {
+  0% {
+    width: 0%;
+    left: 0%;
+  }
+  100% {
+    width: 100%;
+    left: 100%;
+  }
 }
