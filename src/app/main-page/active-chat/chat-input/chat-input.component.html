@@ -3,7 +3,7 @@
     class="message-input"
     type="text"
     #messageInput
-    placeholder="Einen Nachricht schreiben..."
+    [placeholder]="placeholderText"
     [(ngModel)]="message"
   ></textarea>
   <div class="send-container">

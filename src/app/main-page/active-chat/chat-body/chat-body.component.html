@@ -1,24 +1,63 @@
 <section #scrollSection>
-  @if (chat) { @for (message of chat.messages; track $index) {
-    <div class="message-container" #messageItem>
-      <div class="avatar">
-        @if (message.uid === chatService.firebase.currentUser.uid) {
-        <img src="{{ chat.user.avatar }}" alt="avatar" />
-        } @else {
-        <img src="{{ chat.partner.avatar }}" alt="avatar" />
-        }
+  @if (chat) { @if (chat.messages.length > 0) { @for (message of chat.messages;
+  track $index) {
+  <div
+    class="message-container"
+    #messageItem
+    [class.fd-rr]="message.uid === chatService.firebase.currentUser.uid"
+  >
+    <div
+      class="avatar"
+      [class.shadow]="message.uid === chatService.firebase.currentUser.uid"
+    >
+      @if (message.uid === chatService.firebase.currentUser.uid) {
+      <img src="{{ chat.user.avatar }}" alt="avatar" />
+      } @else {
+      <img src="{{ chat.partner.avatar }}" alt="avatar" />
+      }
+    </div>
+    <div
+      class="message-content"
+      [class.ms-c-right]="message.uid === chatService.firebase.currentUser.uid"
+    >
+      <div
+        class="message-header"
+        [class.fd-rr]="message.uid === chatService.firebase.currentUser.uid"
+      >
+        @if (message.uid === chatService.firebase.currentUser.uid) {<span>{{
+          chat.user.name
+        }}</span>
+        } @else {<span>{{ chat.partner.name }}</span
+        >}
+        <span class="timestamp">{{ message.timestamp | date : "HH:mm" }}</span>
       </div>
-      <div class="message-content">
-        <div class="message-header">
-          @if (message.uid === chatService.firebase.currentUser.uid) {<span>{{
-            chat.user.name
-          }}</span>
-          } @else {<span>{{ chat.partner.name }}</span
-          >}
-          <span class="timestamp">{{ message.timestamp | date : "HH:mm" }}</span>
-        </div>
-        <div class="message-text">{{ message.text }}</div>
+      <div
+        class="message-text"
+        [class.mt-right]="message.uid === chatService.firebase.currentUser.uid"
+      >
+        {{ message.text }}
       </div>
     </div>
-    } }
+  </div>
+  }} @else {
+  <div class="placeholder-container">
+    <div class="placeholder-header">
+      @if (chat.user.uid === chatService.firebase.currentUser.uid && chat.partner.avatar) {
+      <img [src]="sanitize(chat.partner.avatar)" alt="" />
+      <span>{{ chat.partner.name }}</span>
+      } @else if ( chat.user.avatar) {
+      <img [src]="sanitize(chat.user.avatar)" alt="" />
+      <span>{{ chat.user.name }}</span>
+      }
+    </div>
+    <div class="placeholder-text">
+      Diese Unterhaltung findet nur zwischen @if (chat.user.uid ===
+      chatService.firebase.currentUser.uid) {
+      <span>&#64;{{ chat.partner.name }}</span>
+      } @else {
+      <span>&#64;{{ chat.user.name }}</span>
+      } und dir statt.
+    </div>
+  </div>
+  } }
 </section>
