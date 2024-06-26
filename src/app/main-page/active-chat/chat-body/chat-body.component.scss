@@ -25,7 +25,13 @@ section {
 
 .message-container {
   @include displayFlex(row, flex-start, flex-start, 10px);
-  margin: 10px 40px;
+  padding: 10px 40px;
+  &:hover {
+    background-color: $bg_color;
+  }
+  &:hover .message-text{
+    background-color: white;
+  }
 }
 
 .avatar {
@@ -117,4 +123,9 @@ section {
 
 .fd-rr {
   flex-direction: row-reverse!important;
+}
+
+.own-message {
+  background-color: $purple_2!important;
+  color: white;
 }

@@ -34,6 +34,7 @@
       <div
         class="message-text"
         [class.mt-right]="message.uid === chatService.firebase.currentUser.uid"
+        [class.own-message]="message.uid === chatService.firebase.currentUser.uid"
       >
         {{ message.text }}
       </div>
