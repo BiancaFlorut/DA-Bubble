@@ -19,93 +19,99 @@
         </div>
     </div>
 </div>
-<div (click)="toggleMenu()" class="user-menu-container" [ngStyle]="{ 'display': isUserMenuActive ? 'unset' : 'none' }">
-    @if (!showProfile) {
-    <div class="choose-container" (click)="$event.stopPropagation()">
-        <span (click)="toggleProfile($event)">Profil</span>
-        <span (click)="logOutUser()">Log out</span>
-    </div>
-    } @else {
-    <div (click)="$event.stopPropagation()" class="profile-container">
-        <div class="top-container">
-            @if(!editUser){
-            <span>Profil</span>
-            } @else {
-            <span>Dein Profil bearbeiten</span>
-            }
-            <div (click)="toggleProfile($event)" class="close-icon"></div>
+<div (click)="toggleMenu()" class="background-user-menu-container" [ngStyle]="{ 'display': isUserMenuActive ? 'unset' : 'none' }">
+    <div class="user-menu-container">
+        @if (!showProfile) {
+        <div class="choose-container" (click)="$event.stopPropagation()">
+            <span (click)="toggleProfile($event)">Profil</span>
+            <span (click)="logOutUser()">Log out</span>
         </div>
-        <img [ngClass]="{'c-pointer': editUser}" (click)="onUploadButtonClick()" class="avatar-icon"
-            src="{{userService.user.avatar}}" alt="avatar">
-        <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" />
-        @if(!editUser) {
-        <div class="user-data-container">
-            <div class="middle-container">
-                <span>{{userService.user.name}}</span>
-                <span (click)="toggleEditMenu()">Bearbeiten</span>
-            </div>
-            <div class="status-container">
-                <div class="status-icon"
-                    [ngClass]="{'active-icon': userService.user.online, 'inactive-icon': !userService.user.online}">
-                </div>
-                @if (userService.user.online) {
-                <span (click)="handleStatus()"
-                    [ngClass]="{'active-span': userService.user.online, 'inactive-span': !userService.user.online}">Aktive</span>
+        } @else {
+        <div (click)="$event.stopPropagation()" class="profile-container">
+            <div class="top-container">
+                @if(!editUser){
+                <span>Profil</span>
                 } @else {
-                <span (click)="handleStatus()"
-                    [ngClass]="{'active-span': userService.user.online, 'inactive-span': !userService.user.online}">Abwesend</span>
+                <span>Dein Profil bearbeiten</span>
                 }
+                <div (click)="toggleProfile($event)" class="close-icon"></div>
             </div>
-            <div class="bottom-container">
-                <div>
-                    <img src="./assets/img/main-page/header/email.png" alt="email">
-                    <span>E-Mail-Adresse</span>
+            <img [ngClass]="{'c-pointer': editUser}" (click)="onUploadButtonClick()" class="avatar-icon"
+                src="{{userService.user.avatar}}" alt="avatar">
+            <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" />
+            @if(!editUser) {
+            <div class="user-data-container">
+                <div class="middle-container">
+                    <span>{{userService.user.name}}</span>
+                    <span (click)="toggleEditMenu()">Bearbeiten</span>
                 </div>
-                <a>{{userService.user.email}}</a>
+                <div class="status-container">
+                    <div class="status-icon"
+                        [ngClass]="{'active-icon': userService.user.online, 'inactive-icon': !userService.user.online}">
+                    </div>
+                    @if (userService.user.online) {
+                    <span (click)="handleStatus()"
+                        [ngClass]="{'active-span': userService.user.online, 'inactive-span': !userService.user.online}">Aktive</span>
+                    } @else {
+                    <span (click)="handleStatus()"
+                        [ngClass]="{'active-span': userService.user.online, 'inactive-span': !userService.user.online}">Abwesend</span>
+                    }
+                </div>
+                <div class="bottom-container">
+                    <div>
+                        <img src="./assets/img/main-page/header/email.png" alt="email">
+                        <span>E-Mail-Adresse</span>
+                    </div>
+                    <a>{{userService.user.email}}</a>
+                </div>
             </div>
+            } @else{
+            <form [formGroup]="userForm" (ngSubmit)="editUserData()" class="edit-user-data-container">
+                <div class="edit-user-container">
+                    <div class="header-edit-container">
+                        <img src="./assets/img/main-page/header/account.png" alt="account">
+                        <span>Vollständiger Name</span>
+                    </div>
+                    <div class="valid-container">
+                        <input type="text"
+                            [title]="googleUser ? 'Als Google-Benutzer können Sie dieses Feld nicht bearbeiten.' : ''"
+                            formControlName="name" id="name" placeholder="Bitte Namen eingeben...">
+                        @if (userForm.get('name')?.touched && userForm.get('name')?.invalid) {
+                        @if (userForm.get('name')?.errors?.['required']) {
+                        <span>Bitte schreiben Sie einen Namen.</span>
+                        }
+                        @if (userForm.get('name')?.errors?.['pattern']) {
+                        <span>Vor- und Nachname müssen mit Großbuchstaben beginnen.</span>
+                        }
+                        }
+                    </div>
+                </div>
+                <div class="edit-user-container">
+                    <div class="header-edit-container">
+                        <img src="./assets/img/main-page/header/email.png" alt="email">
+                        <span>E-Mail-Adresse</span>
+                    </div>
+                    <div class="valid-container">
+                        <input type="email"
+                            [title]="googleUser ? 'Als Google-Benutzer können Sie dieses Feld nicht bearbeiten.' : ''"
+                            formControlName="email" id="email" placeholder="Bitte E-Mail eingeben...">
+                        @if (userForm.get('email')?.touched && userForm.get('email')?.invalid) {
+                        @if (userForm.get('email')?.errors?.['required']) {
+                        <span>Bitte schreiben Sie eine E-Mail</span>
+                        }
+                        @if (userForm.get('email')?.errors?.['pattern']) {
+                        <span>Diese E-Mail-Adresse ist leider ungültig.</span>
+                        }
+                        }
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button (click)="toggleEditMenu()" type="button">Abbrechen</button>
+                    <button [disabled]="userForm.invalid" type="submit">Speichern</button>
+                </div>
+            </form>
+            }
         </div>
-        } @else{
-        <form [formGroup]="userForm" (ngSubmit)="editUserData()" class="edit-user-data-container">
-            <div class="edit-user-container">
-                <div class="header-edit-container">
-                    <img src="./assets/img/main-page/header/account.png" alt="account">
-                    <span>Vollständiger Name</span>
-                </div>
-                <div class="valid-container">
-                    <input type="text" [title]="googleUser ? 'Als Google-Benutzer können Sie dieses Feld nicht bearbeiten.' : ''" formControlName="name" id="name" placeholder="Bitte Namen eingeben...">
-                    @if (userForm.get('name')?.touched && userForm.get('name')?.invalid) {
-                    @if (userForm.get('name')?.errors?.['required']) {
-                    <span>Bitte schreiben Sie einen Namen.</span>
-                    }
-                    @if (userForm.get('name')?.errors?.['pattern']) {
-                    <span>Vor- und Nachname müssen mit Großbuchstaben beginnen.</span>
-                    }
-                    }
-                </div>
-            </div>
-            <div class="edit-user-container">
-                <div class="header-edit-container">
-                    <img src="./assets/img/main-page/header/email.png" alt="email">
-                    <span>E-Mail-Adresse</span>
-                </div>
-                <div class="valid-container">
-                    <input type="email" [title]="googleUser ? 'Als Google-Benutzer können Sie dieses Feld nicht bearbeiten.' : ''" formControlName="email" id="email" placeholder="Bitte E-Mail eingeben...">
-                    @if (userForm.get('email')?.touched && userForm.get('email')?.invalid) {
-                    @if (userForm.get('email')?.errors?.['required']) {
-                    <span>Bitte schreiben Sie eine E-Mail</span>
-                    }
-                    @if (userForm.get('email')?.errors?.['pattern']) {
-                    <span>Diese E-Mail-Adresse ist leider ungültig.</span>
-                    }
-                    }
-                </div>
-            </div>
-            <div class="button-container">
-                <button (click)="toggleEditMenu()" type="button">Abbrechen</button>
-                <button [disabled]="userForm.invalid" type="submit">Speichern</button>
-            </div>
-        </form>
         }
     </div>
-    }
 </div>

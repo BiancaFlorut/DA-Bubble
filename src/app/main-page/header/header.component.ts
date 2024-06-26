@@ -47,8 +47,12 @@ export class HeaderComponent {
           this.userService.user.uid = user.uid!;
           this.userService.user.name = user.displayName!;
           this.userService.user.email = user.email!;
-          this.userService.user.avatar = user.photoURL! || './assets/img/profile.png';
-          this.userService.currentAvatar = user.photoURL! || './assets/img/profile.png';
+          this.userService.user.avatar = user.photoURL!;
+          this.userService.currentAvatar = user.photoURL!;
+          if (user.photoURL?.includes('https://lh3.googleusercontent.com')) {
+            this.userService.user.avatar = './assets/img/profile.png';
+            this.userService.currentAvatar = './assets/img/profile.png';
+          }
           this.userService.user.online = true;
           if (this.googleUser) {
             const nameControl = this.userForm.get('name');
