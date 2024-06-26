@@ -35,12 +35,10 @@ export class LoginComponent {
   }
 
   public async loginWithGoogle() {
-    localStorage.setItem('loggedAsGoogleUser', 'logged');
-    await this.authService.googleSignIn();
-    await this.authService.getRedirectResult()
-      .then(result => {
-        if (result) {
-          console.log(result)
+    await this.authService.googleSignIn()
+      .then(data => {
+        if (data) {
+          this.router.navigate([`main-page/${data.user.uid}`]);
         }
       });
   }

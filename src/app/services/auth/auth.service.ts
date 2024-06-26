@@ -3,18 +3,15 @@ import {
   Auth,
   confirmPasswordReset,
   createUserWithEmailAndPassword,
-  getRedirectResult,
-  onAuthStateChanged,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
-  signInWithRedirect,
   updateEmail,
   updateProfile,
   user
 } from '@angular/fire/auth';
 import { User } from '../../interfaces/user';
 import { getDownloadURL, getStorage, ref, uploadBytes } from '@angular/fire/storage';
-import { GoogleAuthProvider, signOut } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -28,8 +25,7 @@ export class AuthService {
   async uploadProfileImageTemp(file: File) {
     const storageRef = ref(this.storage, `temp/avatars/${Date.now()}_${file.name}`);
     const uploadResult = await uploadBytes(storageRef, file);
-    const downloadURL = await getDownloadURL(uploadResult.ref);
-    return downloadURL;
+    return await getDownloadURL(uploadResult.ref);
   }
 
   async register(name: string, email: string, password: string, avatar: string) {
@@ -84,11 +80,6 @@ export class AuthService {
     const provider = new GoogleAuthProvider();
     provider.addScope('profile');
     provider.addScope('email');
-    await signInWithRedirect(this.firebaseAuth, provider);
-  }
-
-  async getRedirectResult() {
-    const result = await getRedirectResult(this.firebaseAuth);
-    return result;
+    return await signInWithPopup(this.firebaseAuth, provider);
   }
 }

@@ -1,25 +1,28 @@
 <div class="header-container">
-    <img src="./assets/img/logo.png" alt="logo">
-    <div class="input-container">
-        <img src="./assets/img/main-page/header/search.png" alt="search">
-        <input type="text" name="search" id="search" placeholder="Code learning durchsuchen">
+    <div class="left-container">
+        <img src="./assets/img/logo.png" alt="logo">
     </div>
-    <div (click)="toggleMenu()" class="user-header-container">
-        <span>{{userService.user.name}}</span>
-        <div class="avatar-container">
-            <img src="{{userService.user.avatar}}" alt="avatar">
-            <div class="status-icon"
-                [ngClass]="{'active-icon': userService.user.online, 'inactive-icon': !userService.user.online}"></div>
+    <div class="right-container">
+        <div class="input-container">
+            <img src="./assets/img/main-page/header/search.png" alt="search">
+            <input type="text" name="search" id="search" placeholder="Code learning durchsuchen">
         </div>
-        <div class="arrow_down" alt="arrow down"></div>
+        <div (click)="toggleMenu()" class="user-header-container">
+            <span>{{userService.user.name}}</span>
+            <div class="avatar-container">
+                <img src="{{userService.user.avatar}}" alt="avatar">
+                <div class="status-icon"
+                    [ngClass]="{'active-icon': userService.user.online, 'inactive-icon': !userService.user.online}">
+                </div>
+            </div>
+            <div class="arrow_down" alt="arrow down"></div>
+        </div>
     </div>
 </div>
 <div (click)="toggleMenu()" class="user-menu-container" [ngStyle]="{ 'display': isUserMenuActive ? 'unset' : 'none' }">
     @if (!showProfile) {
     <div class="choose-container" (click)="$event.stopPropagation()">
-        @if (!showProfileButton) {
         <span (click)="toggleProfile($event)">Profil</span>
-        }
         <span (click)="logOutUser()">Log out</span>
     </div>
     } @else {
@@ -58,7 +61,7 @@
                     <img src="./assets/img/main-page/header/email.png" alt="email">
                     <span>E-Mail-Adresse</span>
                 </div>
-                <a href="mailto:{{userService.user.email}}">{{userService.user.email}}</a>
+                <a>{{userService.user.email}}</a>
             </div>
         </div>
         } @else{
@@ -69,7 +72,7 @@
                     <span>Vollständiger Name</span>
                 </div>
                 <div class="valid-container">
-                    <input type="text" formControlName="name" id="name" placeholder="Bitte Namen eingeben...">
+                    <input type="text" [title]="googleUser ? 'Als Google-Benutzer können Sie dieses Feld nicht bearbeiten.' : ''" formControlName="name" id="name" placeholder="Bitte Namen eingeben...">
                     @if (userForm.get('name')?.touched && userForm.get('name')?.invalid) {
                     @if (userForm.get('name')?.errors?.['required']) {
                     <span>Bitte schreiben Sie einen Namen.</span>
@@ -86,7 +89,7 @@
                     <span>E-Mail-Adresse</span>
                 </div>
                 <div class="valid-container">
-                    <input type="email" formControlName="email" id="email" placeholder="Bitte E-Mail eingeben...">
+                    <input type="email" [title]="googleUser ? 'Als Google-Benutzer können Sie dieses Feld nicht bearbeiten.' : ''" formControlName="email" id="email" placeholder="Bitte E-Mail eingeben...">
                     @if (userForm.get('email')?.touched && userForm.get('email')?.invalid) {
                     @if (userForm.get('email')?.errors?.['required']) {
                     <span>Bitte schreiben Sie eine E-Mail</span>
