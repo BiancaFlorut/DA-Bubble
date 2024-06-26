@@ -27,16 +27,15 @@ export class HeaderComponent {
   public isUserMenuActive: boolean = false;
   public showProfile: boolean = false;
   public editUser: boolean = false;
+  public googleUser: boolean = false;
   public userForm!: FormGroup;
-  public showProfileButton: boolean = false;
   private file!: File;
 
   @ViewChild('fileInput') public fileInput: any;
 
   ngOnInit(): void {
-    this.userIsLogged();
     this.initializeForm();
-    this.isLoggedAsGoogleUser();
+    this.userIsLogged();
     this.redirectLogin();
   }
 
@@ -44,20 +43,33 @@ export class HeaderComponent {
     this.authService.user$
       .subscribe(user => {
         if (user) {
+          this.googleUser = user.providerData[0].providerId === 'google.com' ? true : false;
           this.userService.user.uid = user.uid!;
           this.userService.user.name = user.displayName!;
           this.userService.user.email = user.email!;
-          this.userService.user.avatar = user.photoURL!;
-          this.userService.currentAvatar = user.photoURL!;
+          this.userService.user.avatar = user.photoURL! || './assets/img/profile.png';
+          this.userService.currentAvatar = user.photoURL! || './assets/img/profile.png';
           this.userService.user.online = true;
+          if (this.googleUser) {
+            const nameControl = this.userForm.get('name');
+            const emailControl = this.userForm.get('email');
+            if (nameControl) {
+              nameControl.disable();
+            }
+            if (emailControl) {
+              emailControl.disable();
+            }
+          }
           this.firebase.connectUser(this.userService.user);
         } else if (this.router.url.includes('guest')) {
+          this.googleUser = false;
           this.userService.user.uid = 'guest';
-          this.userService.user.name = 'Guest';
+          this.userService.user.name = 'New Guest';
           this.userService.user.email = 'mail@guest.com';
           this.userService.user.avatar = './assets/img/profile.png';
           this.userService.currentAvatar = './assets/img/profile.png';
           this.userService.user.online = true;
+          this.firebase.updateUser(this.userService.user);
           this.firebase.connectUser(this.userService.user);
         } else {
           this.router.navigate(['landing-page/login']);
@@ -67,18 +79,9 @@ export class HeaderComponent {
 
   private initializeForm(): void {
     this.userForm = this.fb.group({
-      name: ['', [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+\s[A-Z][a-zA-Z]+$/)]],
-      email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
+      name: [{ value: '', disabled: this.googleUser }, [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+\s[A-Z][a-zA-Z]+$/)]],
+      email: [{ value: '', disabled: this.googleUser }, [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
     });
-  }
-
-  private isLoggedAsGoogleUser(): void {
-    if (localStorage.getItem('loggedAsGoogleUser') !== null) {
-      localStorage.removeItem('loggedAsGoogleUser');
-      this.showProfileButton = true;
-    } else {
-      this.showProfileButton = false;
-    }
   }
 
   private redirectLogin(): void {
