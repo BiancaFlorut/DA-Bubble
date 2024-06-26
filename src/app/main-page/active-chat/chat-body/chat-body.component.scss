@@ -92,10 +92,15 @@ section {
   font-weight: 400;
   line-height: 27.28px;
   color: $gray;
-  >span {
+  .link-name {
     color: $purple_3;
     cursor: pointer;
   }
+}
+
+.gray-text-placeholder {
+  color: $gray;
+  font-weight: 700;
 }
 
 .shadow {

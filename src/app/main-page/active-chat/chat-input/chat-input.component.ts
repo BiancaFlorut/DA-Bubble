@@ -20,8 +20,8 @@ export class ChatInputComponent {
   @ViewChild('messageInput') messageInput!: ElementRef;
   placeholderText: string = 'Einen Nachricht schreiben...';
 
-  constructor() { 
-    this.chatService.currentChat.subscribe(chat  => {
+  constructor() {
+    this.chatService.currentChat.subscribe(chat => {
       if (chat) {
         this.currentChat = chat;
         this.replacePlaceholder();
@@ -41,7 +41,10 @@ export class ChatInputComponent {
 
   replacePlaceholder() {
     if (this.currentChat.user.uid === this.firebase.currentUser.uid) {
-      this.placeholderText = `Nachricht an ${this.currentChat.partner.name}`
+      if (this.currentChat.partner.uid === this.firebase.currentUser.uid) {
+        this.placeholderText = `Nachricht an dir`;
+      } else
+        this.placeholderText = `Nachricht an ${this.currentChat.partner.name}`
     } else {
       this.placeholderText = `Nachricht von ${this.currentChat.user.name}`
     }
