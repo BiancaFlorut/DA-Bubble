@@ -17,5 +17,9 @@ import { ActiveChatComponent } from './active-chat/active-chat.component';
     ]
 })
 export class MainPageComponent {
+    public showWorkSpace: boolean = true;
 
+    public handleWorkSpace() {
+        this.showWorkSpace = !this.showWorkSpace;
+    }
 }
