@@ -1,14 +1,7 @@
 <section #scrollSection>
   @if (chat && chat.messages.length > 0) { @for (message of chat.messages; track $index) {
-  <div
-    class="message-container"
-    #messageItem
-    [class.fd-rr]="message.uid === chatService.firebase.currentUser.uid"
-  >
-    <div
-      class="avatar"
-      [class.shadow]="message.uid === chatService.firebase.currentUser.uid"
-    >
+  <div class="message-container" #messageItem [class.fd-rr]="message.uid === chatService.firebase.currentUser.uid">
+    <div class="avatar" [class.shadow]="message.uid === chatService.firebase.currentUser.uid">
       @if (message.uid === chatService.firebase.currentUser.uid) {
       <img src="{{ chat.user.avatar }}" alt="avatar" />
       } @else {
@@ -48,29 +41,26 @@
   }} @else {
   <div class="placeholder-container">
     @if (chat && chat.partner && chat.partner.avatar) {
-    <div class="placeholder-header">
-      
+    <div (click)="showProfileService.toggleShowProfile()" class="placeholder-header">
+
       <img [src]="sanitize(chat.partner.avatar)" alt="" />
-      
-      <span
-        >{{ chat.partner.name }} @if(chat.partner.uid ==
+
+      <span>{{ chat.partner.name }} @if(chat.partner.uid ==
         chatService.firebase.currentUser.uid) { <span>(Du)</span> }
       </span>
-    
+
     </div>
     <div class="placeholder-text">
       @if (chat.partner.uid == chatService.firebase.currentUser.uid) {
-      <span class="gray-text-placeholder"
-        >Dieser Raum ist nur für dich da.</span
-      >
+      <span class="gray-text-placeholder">Dieser Raum ist nur für dich da.</span>
       Mache dir Notizen, liste deine To-dos auf oder bewahre Links und Dateien
       griffbereit auf. Du kannst hier auch gerne Dinge mit dir selbst
       besprechen. }@else { Diese Unterhaltung findet nur zwischen
-      <span class="link-name">&#64;{{ chat.partner.name }}</span>
+      <span (click)="showProfileService.toggleShowProfile()" class="link-name">&#64;{{ chat.partner.name }}</span>
       und dir statt. }
     </div>
     }
   </div>
   }
-  
+
 </section>
