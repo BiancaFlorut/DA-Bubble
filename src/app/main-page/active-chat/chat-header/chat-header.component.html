@@ -10,7 +10,7 @@
   </div>
   }
   @if (directChat && partner) {
-    <div class="user-container">
+    <div (click)="showProfileService.toggleShowProfile()" class="user-container">
       <div class="avatar">
         <img src="{{partner.avatar}}" alt="avatar">
         <div class="status-container"><div class="status-dot" [ngClass]="partner.online ? 'online' : 'offline'"></div></div>

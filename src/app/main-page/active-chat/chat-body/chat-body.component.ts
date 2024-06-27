@@ -3,6 +3,7 @@ import { ChatService } from '../../../services/chat/chat.service';
 import { DirectChat } from '../../../models/direct-chat.class';
 import { DatePipe } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ShowProfileService } from '../../../services/show-profile/show-profile.service';
 
 @Component({
   selector: 'app-chat-body',
@@ -17,6 +18,7 @@ export class ChatBodyComponent implements AfterViewInit{
   chatService = inject(ChatService);
   chat!: DirectChat;
   domSanitizer = inject(DomSanitizer);
+  public showProfileService: ShowProfileService = inject(ShowProfileService);
 
   constructor() {
     this.chatService.currentChat.subscribe(chat => {

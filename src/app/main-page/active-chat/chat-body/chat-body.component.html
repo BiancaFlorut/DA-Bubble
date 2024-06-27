@@ -42,7 +42,7 @@
   </div>
   }} @else {
   <div class="placeholder-container">
-    <div class="placeholder-header">
+    <div (click)="showProfileService.toggleShowProfile()" class="placeholder-header">
       @if (chat.partner.avatar) {
       <img [src]="sanitize(chat.partner.avatar)" alt="" />
       }
@@ -57,7 +57,7 @@
       Mache dir Notizen, liste deine To-dos auf oder bewahre Links und Dateien
       griffbereit auf. Du kannst hier auch gerne Dinge mit dir selbst
       besprechen. }@else { Diese Unterhaltung findet nur zwischen
-      <span class="link-name">&#64;{{ chat.partner.name }}</span>
+      <span (click)="showProfileService.toggleShowProfile()" class="link-name">&#64;{{ chat.partner.name }}</span>
       und dir statt. }
     </div>
   </div>
