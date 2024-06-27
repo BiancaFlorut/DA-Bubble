@@ -1,5 +1,15 @@
-<section #scrollSection>
-  @if (chat && chat.messages.length > 0) { @for (message of chat.messages; track $index) {
+@if(chat) {
+<section [ngStyle]="{'justify-content': chat.messages.length === 0 ? 'flex-end': ''}" #scrollSection>
+  @if (chat.messages.length > 0) {
+  @for (message of chat.messages; track $index) {
+  @if (formatDate($index)) {
+  <div class="timestamp-container">
+    <div class="timestamp-line">{{ formattedDate }}</div>
+    <svg class="line" width="919" height="1" viewBox="0 0 919 1" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M919 0.5H0" stroke="#ADB0D9" />
+    </svg>
+  </div>
+  }
   <div class="message-container" #messageItem [class.fd-rr]="message.uid === chatService.firebase.currentUser.uid">
     <div class="avatar" [class.shadow]="message.uid === chatService.firebase.currentUser.uid">
       @if (message.uid === chatService.firebase.currentUser.uid) {
@@ -30,23 +40,16 @@
     </div>
     }
   </div>
-  <!-- @if (message.timestamp && formatDate($index) ) {
-    <div class="timestamp-container">
-      <div class="timestamp-line">{{ formattedDate }}</div>
-      <svg class="line" width="919" height="1" viewBox="0 0 919 1" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M919 0.5H0" stroke="#ADB0D9"/>
-        </svg>
-    </div>
-  } -->
-  }} @else {
+  }
+  } @else {
   <div class="placeholder-container">
     @if (chat && chat.partner && chat.partner.avatar) {
     <div (click)="showProfileService.toggleShowProfile()" class="placeholder-header">
 
       <img [src]="sanitize(chat.partner.avatar)" alt="" />
 
-      <span>{{ chat.partner.name }} @if(chat.partner.uid ==
-        chatService.firebase.currentUser.uid) { <span>(Du)</span> }
+      <span>{{ chat.partner.name }}
+        @if(chat.partner.uid == chatService.firebase.currentUser.uid) { <span>(Du)</span> }
       </span>
 
     </div>
@@ -55,12 +58,14 @@
       <span class="gray-text-placeholder">Dieser Raum ist nur für dich da.</span>
       Mache dir Notizen, liste deine To-dos auf oder bewahre Links und Dateien
       griffbereit auf. Du kannst hier auch gerne Dinge mit dir selbst
-      besprechen. }@else { Diese Unterhaltung findet nur zwischen
+      besprechen.
+      } @else { Diese Unterhaltung findet nur zwischen
       <span (click)="showProfileService.toggleShowProfile()" class="link-name">&#64;{{ chat.partner.name }}</span>
-      und dir statt. }
+      und dir statt.
+      }
     </div>
     }
   </div>
   }
-
 </section>
+}

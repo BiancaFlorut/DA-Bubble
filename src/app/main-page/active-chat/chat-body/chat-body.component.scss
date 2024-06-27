@@ -3,9 +3,9 @@
 
 section {
   flex: 1 1 0;
-  overflow-y: auto;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
+  overflow-y: auto;
   gap: 20px;
   padding: 25px 0;
 }
