@@ -1,6 +1,5 @@
 <section #scrollSection>
-  @if (chat) { @if (chat.messages.length > 0) { @for (message of chat.messages;
-  track $index) {
+  @if (chat && chat.messages.length > 0) { @for (message of chat.messages; track $index) {
   <div
     class="message-container"
     #messageItem
@@ -16,50 +15,62 @@
       <img src="{{ chat.partner.avatar }}" alt="avatar" />
       }
     </div>
-    <div
-      class="message-content"
-      [class.ms-c-right]="message.uid === chatService.firebase.currentUser.uid"
-    >
-      <div
-        class="message-header"
-        [class.fd-rr]="message.uid === chatService.firebase.currentUser.uid"
-      >
-        @if (message.uid === chatService.firebase.currentUser.uid) {<span>{{
-          chat.user.name
-        }}</span>
-        } @else {<span>{{ chat.partner.name }}</span
-        >}
-        <span class="timestamp">{{ message.timestamp | date : "HH:mm" }}</span>
+    @if(message.uid === chatService.firebase.currentUser.uid) {
+    <div class="message-content ms-c-right">
+      <div class="message-header fd-rr">
+        <span>{{ chat.user.name }}</span>
+        <span class="timestamp">{{ message.timestamp | date : "HH:mm" }} Uhr</span>
       </div>
-      <div
-        class="message-text"
-        [class.mt-right]="message.uid === chatService.firebase.currentUser.uid"
-        [class.own-message]="message.uid === chatService.firebase.currentUser.uid"
-      >
+      <div class="message-text mt-right own-message">
         {{ message.text }}
       </div>
     </div>
+    } @else {
+    <div class="message-content">
+      <div class="message-header">
+        <span>{{ chat.partner.name }}</span>
+        <span class="timestamp">{{ message.timestamp | date : "HH:mm" }} Uhr</span>
+      </div>
+      <div class="message-text">
+        {{ message.text }}
+      </div>
+    </div>
+    }
   </div>
+  <!-- @if (message.timestamp && formatDate($index) ) {
+    <div class="timestamp-container">
+      <div class="timestamp-line">{{ formattedDate }}</div>
+      <svg class="line" width="919" height="1" viewBox="0 0 919 1" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M919 0.5H0" stroke="#ADB0D9"/>
+        </svg>
+    </div>
+  } -->
   }} @else {
   <div class="placeholder-container">
+    @if (chat && chat.partner && chat.partner.avatar) {
     <div class="placeholder-header">
-      @if (chat.partner.avatar) {
+      
       <img [src]="sanitize(chat.partner.avatar)" alt="" />
-      }
+      
       <span
         >{{ chat.partner.name }} @if(chat.partner.uid ==
         chatService.firebase.currentUser.uid) { <span>(Du)</span> }
       </span>
+    
     </div>
     <div class="placeholder-text">
       @if (chat.partner.uid == chatService.firebase.currentUser.uid) {
-      <span class="gray-text-placeholder">Dieser Raum ist nur für dich da.</span>
+      <span class="gray-text-placeholder"
+        >Dieser Raum ist nur für dich da.</span
+      >
       Mache dir Notizen, liste deine To-dos auf oder bewahre Links und Dateien
       griffbereit auf. Du kannst hier auch gerne Dinge mit dir selbst
       besprechen. }@else { Diese Unterhaltung findet nur zwischen
       <span class="link-name">&#64;{{ chat.partner.name }}</span>
       und dir statt. }
     </div>
+    }
   </div>
-  } }
+  }
+  
 </section>

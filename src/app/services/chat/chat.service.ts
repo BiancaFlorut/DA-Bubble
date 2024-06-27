@@ -13,7 +13,7 @@ export class ChatService {
   private chat: DirectChat | undefined;
   chatSub: BehaviorSubject<DirectChat | undefined>
   currentChat;
-  currentPartner: User= {
+  currentPartner: User = {
     uid: '',
     name: '',
     email: '',
@@ -32,20 +32,23 @@ export class ChatService {
     const cid = await this.firebase.connectChatWithUser(this.firebase.currentUser, partner);
     if (cid) {
       this.currentPartner = partner;
-      let msgs = [] as Message[];
       onSnapshot(this.firebase.getDirectMessagesRef(cid), (collection) => {
-        msgs = [];
+        let msgs = [] as Message[];
         collection.forEach((doc) => {
           let msg = new Message(doc.data()['uid'], doc.data()['text'], doc.data()['timestamp']);
           msgs.push(msg);
         });
-        let chat: DirectChat = new DirectChat(cid, this.firebase.currentUser, partner, msgs);
-        this.chatSub.next(chat);
-        this.loading = false;
+        this.setSubscriber(cid, partner, msgs);
       });
     }
     else
       console.log('something went wrong in chat service setChatWith');
+  }
+
+  setSubscriber( cid: string, partner: User, msgs: Message[] ) {
+    let chat: DirectChat = new DirectChat(cid, this.firebase.currentUser, partner, msgs);
+    this.chatSub.next(chat);
+    this.loading = false;
   }
 }
 

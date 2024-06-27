@@ -8,7 +8,7 @@ section {
   border-radius: 30px;
   min-width: 366px;
   font-family: "Nunito";
-  @include displayFlex(column, unset, unset, 25px);
+  @include displayFlex(column, unset, unset, 0px);
 }
 
 app-chat-body {

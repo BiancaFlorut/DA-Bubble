@@ -1,4 +1,4 @@
-import { ApplicationConfig} from '@angular/core';
+import { ApplicationConfig, LOCALE_ID} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
@@ -6,6 +6,9 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { routes } from './app.routes';
+import { DatePipe, registerLocaleData } from '@angular/common';
+import localeDe from '@angular/common/locales/de';
+import localeDeExtra from '@angular/common/locales/extra/de';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB4VNMwgPi02CgsIe-gBiO6xRgBluHYfBE",
@@ -23,6 +26,10 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
+    { provide: LOCALE_ID, useValue: "de-DE" },
+    DatePipe
   ]
 };
+
+registerLocaleData(localeDe, 'de-DE', localeDeExtra);

@@ -6,6 +6,8 @@ section {
   overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
+  gap: 20px;
+  padding: 25px 0;
 }
 
 ::-webkit-scrollbar {
@@ -111,6 +113,31 @@ section {
 
 .shadow {
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.10);
+}
+
+.timestamp-container {
+  @include displayFlex(column, center, center, 0px);
+  width: 100%;
+  position: relative;
+
+}
+
+.timestamp-line {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24.55px;
+  border: 1px solid $light_purple;
+  border-radius: 30px;
+  padding: 5px 15px;
+  z-index: 1;
+  background-color: white;
+}
+
+.line {
+  width: 100%;
+  position: absolute;
+  padding: 0 35px;
+  z-index: 0;
 }
 
 .mt-right {

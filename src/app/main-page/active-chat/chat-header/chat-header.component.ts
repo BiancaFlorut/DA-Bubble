@@ -20,7 +20,6 @@ export class ChatHeaderComponent {
   chatService: ChatService = inject(ChatService);
   currentChat!: DirectChat;
   partner: User | null = null;
-  loading: boolean = false;
   constructor() { 
     this.chatService.currentChat.subscribe(chat  => {
       if (chat) {
