@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { WorkspaceMenuComponent } from './workspace-menu/workspace-menu.component';
 import { ThreadChatComponent } from "./thread-chat/thread-chat.component";
 import { ActiveChatComponent } from './active-chat/active-chat.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { ShowProfileService } from '../services/show-profile/show-profile.service';
 
 @Component({
     selector: 'app-main-page',
@@ -13,10 +15,13 @@ import { ActiveChatComponent } from './active-chat/active-chat.component';
         HeaderComponent,
         WorkspaceMenuComponent,
         ActiveChatComponent,
-        ThreadChatComponent
+        ThreadChatComponent,
+        UserProfileComponent
     ]
 })
 export class MainPageComponent {
+    public showProfileService: ShowProfileService = inject(ShowProfileService);
+
     public showWorkSpace: boolean = true;
 
     public handleWorkSpace() {

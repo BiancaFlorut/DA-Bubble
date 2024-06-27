@@ -35,6 +35,13 @@ section {
 .user-container {
   @include displayFlex(row, flex-start, center, 15px);
   width: fit-content;
+  padding: 10px 20px;
+  cursor: pointer;
+
+  &:hover {
+    border-radius: 30px;
+    background-color: #ECEEFE;
+  }
 }
 
 .avatar {

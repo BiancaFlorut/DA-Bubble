@@ -4,6 +4,7 @@ import { ChatService } from '../../../services/chat/chat.service';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
 import { CommonModule } from '@angular/common';
 import { DirectChat } from '../../../models/direct-chat.class';
+import { ShowProfileService } from '../../../services/show-profile/show-profile.service';
 
 @Component({
   selector: 'app-chat-header',
@@ -18,6 +19,7 @@ export class ChatHeaderComponent {
   channelChat: boolean = false;
   firebase: FirebaseService = inject(FirebaseService);
   chatService: ChatService = inject(ChatService);
+  public showProfileService = inject(ShowProfileService);
   currentChat!: DirectChat;
   partner: User | null = null;
   constructor() { 

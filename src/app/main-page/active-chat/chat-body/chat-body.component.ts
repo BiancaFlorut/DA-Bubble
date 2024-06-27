@@ -6,6 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Message } from '../../../models/message.class';
 
 
+import { ShowProfileService } from '../../../services/show-profile/show-profile.service';
 
 @Component({
   selector: 'app-chat-body',
@@ -24,6 +25,7 @@ export class ChatBodyComponent implements AfterViewInit {
   pipe = inject(DatePipe);
   formattedDate: string | null = null;
   lastFormattedDate: string | null = null;
+  public showProfileService: ShowProfileService = inject(ShowProfileService);
 
   constructor() {
     this.chatService.currentChat.subscribe(chat => {

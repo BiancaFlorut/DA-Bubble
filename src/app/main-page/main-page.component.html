@@ -3,7 +3,7 @@
     <app-header></app-header>
     <main class="chat-container">
       @if (showWorkSpace) {
-        <app-workspace-menu></app-workspace-menu>
+      <app-workspace-menu></app-workspace-menu>
       }
       <app-active-chat></app-active-chat>
       <app-thread-chat></app-thread-chat>
@@ -16,10 +16,13 @@
           stroke="black" stroke-width="2" stroke-linecap="round" />
       </svg>
       @if (showWorkSpace) {
-        <span>Workspace-Menü schließen</span>
+      <span>Workspace-Menü schließen</span>
       } @else {
-        <span>Workspace-Menü öffnen</span>
+      <span>Workspace-Menü öffnen</span>
       }
     </div>
   </div>
 </div>
+@if(showProfileService.showProfile) {
+<app-user-profile></app-user-profile>
+}
