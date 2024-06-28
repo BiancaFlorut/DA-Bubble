@@ -33,14 +33,15 @@ export class ChatBodyComponent implements AfterViewInit {
       this.lastFormattedDate = null;
       if (chat) {
         this.chat = chat;
-        this.chat.messages = chat.messages.sort((a, b) => a.timestamp - b.timestamp);
-        this.chat.messages = this.chat.messages.reverse();
+        this.chat.messages = chat.messages.sort((a, b) => b.timestamp - a.timestamp);
       }
     });
   }
   ngAfterViewInit(): void {
     this.messageItems.changes.subscribe((messageObj) => {
       this.scrollToBottom(messageObj.first);
+      this.formattedDate = null;
+      this.lastFormattedDate = null;
     })
   }
 
@@ -53,47 +54,55 @@ export class ChatBodyComponent implements AfterViewInit {
     return this.domSanitizer.bypassSecurityTrustUrl(url);
   }
 
-  public formatDate(index: number): boolean {
-      this.lastFormattedDate = this.formattedDate;
+  isNewDate(index: number): boolean {
+    if (index === 0) {
+      this.formattedDate = null;
+      this.lastFormattedDate = null;
+    }
+    this.lastFormattedDate = this.formattedDate;
     const date = new Date(this.chat.messages[index].timestamp);
+    let nextDate = null;
     const now = new Date();
-    console.log('last date: ', this.formattedDate);
-    console.log('message ', this.chat.messages[index].text, ' date: ', this.pipe.transform(date, 'EEEE, d MMMM, y'));
-    if (now.getDate() === date.getDate() && !this.formattedDate) {
-      this.formattedDate = 'Heute';
-      console.log('new date: ', this.formattedDate);
-      if (this.lastFormattedDate && this.lastFormattedDate !== this.formattedDate) {
-        console.log('Returning: ', 'Heute');
-        return true;
-      }
-        
-    } else if (now.getDate() === date.getDate() && this.formattedDate === 'Heute') {
-      console.log('no return date: last', this.lastFormattedDate, ' this: ', this.formattedDate );
-      return false;
-    } else if (date.getFullYear() === now.getFullYear()) {
-      const sameYear = this.pipe.transform(date, 'EEEE, d MMMM');
-      if (this.formattedDate !== sameYear) {
-        this.formattedDate = sameYear;
-        console.log('new date: ', this.formattedDate);
-        if (this.lastFormattedDate && this.lastFormattedDate !== this.formattedDate) {
-          console.log('Returning: ', this.lastFormattedDate);
-          return true;
-        }
-          
-      }
+    if (index <= this.chat.messages.length - 2) {
+      nextDate = new Date(this.chat.messages[index + 1].timestamp);
     } else {
-      const differentYear = this.pipe.transform(date, 'EEEE, d MMMM, y');
-      if (this.formattedDate !== differentYear) {
-        this.formattedDate = differentYear;
-        console.log('new date: ', this.formattedDate);
-        if (this.lastFormattedDate && this.lastFormattedDate !== this.formattedDate) {
-          console.log('Returning: ', this.lastFormattedDate);
+      if (now.toDateString() === date.toDateString()) {
+        this.formattedDate = 'Heute';
+      } else
+        if (date.getFullYear() === now.getFullYear())
+          this.formattedDate = this.pipe.transform(date, 'EEEE, d MMMM')
+        else
+          this.formattedDate = this.pipe.transform(date, 'EEEE, d MMMM, y');
+      return true;
+    }
+
+    if (0 <= index && index < this.chat.messages.length - 1 && nextDate) {
+      // heute
+      if (now.toDateString() === date.toDateString()) {
+        this.formattedDate = 'Heute';
+        if (now.toDateString() === nextDate.toDateString()) {
+          return false;
+        } else {
           return true;
         }
-          
+      } else if (date.getFullYear() === now.getFullYear()) {
+        const sameYearDate = this.pipe.transform(date, 'EEEE, d MMMM');
+        this.formattedDate = sameYearDate;
+        if (date.toDateString() === nextDate.toDateString()) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        const differentYearDate = this.pipe.transform(date, 'EEEE, d MMMM, y');
+        this.formattedDate = differentYearDate;
+        if (date.toDateString() === nextDate.toDateString()) {
+          return false;
+        } else {
+          return true;
+        }
       }
     }
-    console.log('no return date: last', this.lastFormattedDate, ' this: ', this.formattedDate );
     return false;
-    }
+  }
 }
