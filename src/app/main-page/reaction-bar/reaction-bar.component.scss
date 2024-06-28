@@ -1,0 +1,38 @@
+@import "./../../../assets/styles/mixIns.scss";
+@import "./../../../assets/styles/colors.scss";
+
+
+section {
+  @include displayFlex(row, center, center, 5px);
+  padding: 3px 15px 3px 20px;
+  background-color: white;
+  border-radius: 25px 25px 0px 25px;
+  border: 1px solid $light_purple;
+}
+
+.reaction-button {
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  &:hover {
+    background-color: $bg_color;
+  }
+}
+
+.reaction-option-container {
+  @include displayFlex(row, center, center, 5px);
+}
+
+.reaction-option {
+  width: 24px;	
+  height: 24px;
+  padding: 8px;
+  border-radius: 20px;
+  object-fit: contain;
+  overflow: visible;
+  cursor: pointer;
+  box-sizing: content-box;
+  &:hover {
+    background-color: $bg_color;
+  }
+}

@@ -6,13 +6,15 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 
 import { ShowProfileService } from '../../../services/show-profile/show-profile.service';
+import { ReactionBarComponent } from '../../reaction-bar/reaction-bar.component';
 
 @Component({
   selector: 'app-chat-body',
   standalone: true,
   imports: [
     DatePipe,
-    CommonModule
+    CommonModule,
+    ReactionBarComponent
   ],
   templateUrl: './chat-body.component.html',
   styleUrl: './chat-body.component.scss'

@@ -11,13 +11,13 @@ section {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: $gray;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 /* Handle on hover */
@@ -28,6 +28,7 @@ section {
 .message-container {
   @include displayFlex(row, flex-start, flex-start, 10px);
   padding: 10px 40px;
+  position: relative;
 
   &:hover {
     background-color: $bg_color;
@@ -36,6 +37,24 @@ section {
   &:hover .message-text {
     background-color: white;
   }
+  &:hover .reaction-bar {
+    display: block;
+  }
+}
+
+.reaction-bar {
+  display: none;
+  position: absolute;
+}
+
+.reaction-bar-left {
+  left: 45px;
+  top: -18px;
+}
+
+.reaction-bar-right {
+  right: 43px;
+  top: -18px;
 }
 
 .avatar {
