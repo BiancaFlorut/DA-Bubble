@@ -15,6 +15,8 @@ export class ReactionBarComponent {
     './assets/img/main-page/reactions/emoji _white heavy check mark_.svg'
     ];
     @Input() editable: boolean = false;
+    isMessageMenuOpen: boolean = false;
+    @ViewChild('messageMenu') messageMenu!: ElementRef;
 
     enterSource(elem : any) {
       let img = elem.target as HTMLImageElement;
@@ -23,5 +25,14 @@ export class ReactionBarComponent {
     leaveSource(elem : any) {
       let img = elem.target as HTMLImageElement;
       img.src = img.src.split("_hover.svg")[0] + ".svg";
+    }
+
+    toggleMessageMenu() {
+      this.isMessageMenuOpen = !this.isMessageMenuOpen;
+      if (this.isMessageMenuOpen) {
+        setTimeout(() => {
+          this.isMessageMenuOpen = false;
+        }, 2000);
+      }
     }
 }

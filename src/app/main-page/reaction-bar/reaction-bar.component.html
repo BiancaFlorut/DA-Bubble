@@ -20,14 +20,20 @@
     />
   </div>
   @if (editable) {
-  <div class="reaction-option-container">
+  <div class="reaction-option-container menu-container">
     <img
       class="reaction-option"
       src="./assets/img/main-page/reactions/more_vert.svg"
       alt=""
       (mouseenter)="enterSource($event)"
       (mouseleave)="leaveSource($event)"
+      (click)="toggleMessageMenu()"
     />
+    @if (isMessageMenuOpen) {
+      <div class="message-menu"><span>Nachricht bearbeiten</span></div>
+    }
   </div>
+  
   }
+  
 </section>

@@ -32,7 +32,36 @@ section {
   overflow: visible;
   cursor: pointer;
   box-sizing: content-box;
+  transition: 0.1s ease-in;
   &:hover {
     background-color: $bg_color;
+  }
+}
+
+.menu-container {
+  position: relative;
+}
+
+.message-menu {
+  position: absolute;
+  left: 35px;
+  top: 10px;
+  background-color: white;
+  border-radius: 0px 30px 30px 30px;
+  padding: 20px 20px;
+  font-size: 20px;
+  line-height: 27.28px;
+  font-weight: 500;
+  width: 280px;
+  box-shadow: 0 6px 14px 0 rgba(0, 0, 0, 0.2);
+  > span {
+    cursor: pointer;
+    border-radius: 100px;
+    padding: 10px 20px;
+    &:hover {
+      background-color: $bg_color;
+      color: $purple_3;
+      font-weight: 700;
+    }
   }
 }

@@ -25,7 +25,9 @@
     <img class="avatar shadow" src="{{ chat.user.avatar }}" alt="avatar" />
     <div class="message-content ms-c-right">
       <div class="message-header fd-rr">
-        <span>{{ chat.user.name }}</span>
+        <span class="name" (click)="showProfileService.toggleShowProfile()">{{
+          chat.user.name
+        }}</span>
         <span class="timestamp"
           >{{ message.timestamp | date : "HH:mm" }} Uhr</span
         >
@@ -33,7 +35,10 @@
       <div class="message-text mt-right own-message">
         {{ message.text }}
       </div>
-      <app-reaction-bar class="reaction-bar reaction-bar-left" [editable]="true"></app-reaction-bar>
+      <app-reaction-bar
+        class="reaction-bar reaction-bar-left"
+        [editable]="true"
+      ></app-reaction-bar>
     </div>
   </div>
   } @else {
@@ -41,7 +46,9 @@
     <img class="avatar" src="{{ chat.partner.avatar }}" alt="avatar" />
     <div class="message-content">
       <div class="message-header">
-        <span>{{ chat.partner.name }}</span>
+        <span class="name" (click)="showProfileService.toggleShowProfile()">{{
+          chat.partner.name
+        }}</span>
         <span class="timestamp"
           >{{ message.timestamp | date : "HH:mm" }} Uhr</span
         >
@@ -49,7 +56,10 @@
       <div class="message-text">
         {{ message.text }}
       </div>
-      <app-reaction-bar class="reaction-bar reaction-bar-right" [editable]="false"></app-reaction-bar>
+      <app-reaction-bar
+        class="reaction-bar reaction-bar-right"
+        [editable]="false"
+      ></app-reaction-bar>
     </div>
   </div>
   } } } @else {
