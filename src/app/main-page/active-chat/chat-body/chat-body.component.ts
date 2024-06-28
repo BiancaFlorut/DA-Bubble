@@ -6,7 +6,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 
 import { ShowProfileService } from '../../../services/show-profile/show-profile.service';
-import { ReactionBarComponent } from '../../reaction-bar/reaction-bar.component';
+import { ReactionBarComponent } from './message/reaction-bar/reaction-bar.component';
 
 @Component({
   selector: 'app-chat-body',
