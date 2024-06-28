@@ -20,49 +20,8 @@
       <path d="M919 0.5H0" stroke="#ADB0D9" />
     </svg>
   </div>
-  } @if (message.uid === chatService.firebase.currentUser.uid) {
-  <div class="message-container fd-rr">
-    <img class="avatar shadow" src="{{ chat.user.avatar }}" alt="avatar" />
-    <div class="message-content ms-c-right">
-      <div class="message-header fd-rr">
-        <span class="name" (click)="showProfileService.toggleShowProfile()">{{
-          chat.user.name
-        }}</span>
-        <span class="timestamp"
-          >{{ message.timestamp | date : "HH:mm" }} Uhr</span
-        >
-      </div>
-      <div class="message-text mt-right own-message">
-        {{ message.text }}
-      </div>
-      <app-reaction-bar
-        class="reaction-bar reaction-bar-left"
-        [editable]="true"
-      ></app-reaction-bar>
-    </div>
-  </div>
-  } @else {
-  <div class="message-container">
-    <img class="avatar" src="{{ chat.partner.avatar }}" alt="avatar" />
-    <div class="message-content">
-      <div class="message-header">
-        <span class="name" (click)="showProfileService.toggleShowProfile()">{{
-          chat.partner.name
-        }}</span>
-        <span class="timestamp"
-          >{{ message.timestamp | date : "HH:mm" }} Uhr</span
-        >
-      </div>
-      <div class="message-text">
-        {{ message.text }}
-      </div>
-      <app-reaction-bar
-        class="reaction-bar reaction-bar-right"
-        [editable]="false"
-      ></app-reaction-bar>
-    </div>
-  </div>
-  } } } @else {
+  } <app-message [message]="message" [user]="chat.user" [partner]="chat.partner"></app-message>
+  } } @else {
   <div class="placeholder-container">
     @if (chat && chat.partner && chat.partner.avatar) {
     <div

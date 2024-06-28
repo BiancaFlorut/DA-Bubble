@@ -7,6 +7,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { ShowProfileService } from '../../../services/show-profile/show-profile.service';
 import { ReactionBarComponent } from './message/reaction-bar/reaction-bar.component';
+import { MessageComponent } from './message/message.component';
 
 @Component({
   selector: 'app-chat-body',
@@ -14,7 +15,7 @@ import { ReactionBarComponent } from './message/reaction-bar/reaction-bar.compon
   imports: [
     DatePipe,
     CommonModule,
-    ReactionBarComponent
+    MessageComponent
   ],
   templateUrl: './chat-body.component.html',
   styleUrl: './chat-body.component.scss'
