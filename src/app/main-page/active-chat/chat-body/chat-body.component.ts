@@ -54,6 +54,7 @@ export class ChatBodyComponent implements AfterViewInit {
 
   public formatDate(index: number): boolean {
     const date = new Date(this.chat.messages[index].timestamp);
+    let nextDate = null;
     const now = new Date();
     const moreDateData = this.pipe.transform(date, 'EEEE, d MMMM yyyy');
     const moreNowData = this.pipe.transform(now, 'EEEE, d MMMM yyyy');

@@ -22,7 +22,9 @@
     <div class="message-content ms-c-right">
       <div class="message-header fd-rr">
         <span>{{ chat.user.name }}</span>
-        <span class="timestamp">{{ message.timestamp | date : "HH:mm" }} Uhr</span>
+        <span class="timestamp"
+          >{{ message.timestamp | date : "EEEE, d MMMM, HH:mm" }} Uhr</span
+        >
       </div>
       <div class="message-text mt-right own-message">
         {{ message.text }}
@@ -32,7 +34,9 @@
     <div class="message-content">
       <div class="message-header">
         <span>{{ chat.partner.name }}</span>
-        <span class="timestamp">{{ message.timestamp | date : "HH:mm" }} Uhr</span>
+        <span class="timestamp"
+          >{{ message.timestamp | date : "EEEE, d MMMM, HH:mm" }} Uhr</span
+        >
       </div>
       <div class="message-text">
         {{ message.text }}
@@ -44,8 +48,10 @@
   } @else {
   <div class="placeholder-container">
     @if (chat && chat.partner && chat.partner.avatar) {
-    <div (click)="showProfileService.toggleShowProfile()" class="placeholder-header">
-
+    <div
+      (click)="showProfileService.toggleShowProfile()"
+      class="placeholder-header"
+    >
       <img [src]="sanitize(chat.partner.avatar)" alt="" />
 
       <span>{{ chat.partner.name }}
@@ -54,7 +60,9 @@
     </div>
     <div class="placeholder-text">
       @if (chat.partner.uid == chatService.firebase.currentUser.uid) {
-      <span class="gray-text-placeholder">Dieser Raum ist nur für dich da.</span>
+      <span class="gray-text-placeholder"
+        >Dieser Raum ist nur für dich da.</span
+      >
       Mache dir Notizen, liste deine To-dos auf oder bewahre Links und Dateien
       griffbereit auf. Du kannst hier auch gerne Dinge mit dir selbst
       besprechen.
