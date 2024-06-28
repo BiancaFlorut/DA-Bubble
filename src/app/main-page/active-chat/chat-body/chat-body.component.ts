@@ -57,37 +57,17 @@ export class ChatBodyComponent implements AfterViewInit {
     const now = new Date();
     const moreDateData = this.pipe.transform(date, 'EEEE, d MMMM yyyy');
     const moreNowData = this.pipe.transform(now, 'EEEE, d MMMM yyyy');
-    if (index === 0) {
-      return this.checkDateForFirstMessage(date, now, moreDateData, moreNowData);
-    } else {
-      return this.checkTimestampeOrNow(date, now, moreDateData, moreNowData);
-    }
-  }
-
-
-  private checkDateForFirstMessage(date: Date, now: Date, moreDateData: String | null, moreNowData: String | null) {
-    if (moreDateData === moreNowData) {
-      this.formattedDate = 'Heute';
-      this.latestFormattedDate = now.getDate();
-    } else {
-      this.formattedDate = this.pipe.transform(date, 'EEEE, d MMMM');
-      this.latestFormattedDate = date.getDate();
-    }
-    return true;
-  }
-
-  private checkTimestampeOrNow(date: Date, now: Date, moreDateData: String | null, moreNowData: String | null) {
     if (moreDateData !== moreNowData) {
       this.formattedDate = this.pipe.transform(date, 'EEEE, d MMMM');
-      return this.checkLatestDate(date.getDate());
+      return this.checkLatestDate(date.getDate(), index);
     } else {
       this.formattedDate = 'Heute';
-      return this.checkLatestDate(now.getDate());
+      return this.checkLatestDate(now.getDate(), index);
     }
   }
 
-  private checkLatestDate(date: number): boolean {
-    if (this.latestFormattedDate !== date) {
+  private checkLatestDate(date: number, index: number): boolean {
+    if (this.latestFormattedDate !== date || index === 0) {
       this.latestFormattedDate = date;
       return true;
     } else {
