@@ -25,6 +25,9 @@
         <span class="timestamp"
           >{{ message.timestamp | date : "EEEE, d MMMM, HH:mm" }} Uhr</span
         >
+        <span class="timestamp"
+          >{{ message.timestamp | date : "EEEE, d MMMM, HH:mm" }} Uhr</span
+        >
       </div>
       <div class="message-text mt-right own-message">
         {{ message.text }}
@@ -34,6 +37,9 @@
     <div class="message-content">
       <div class="message-header">
         <span>{{ chat.partner.name }}</span>
+        <span class="timestamp"
+          >{{ message.timestamp | date : "EEEE, d MMMM, HH:mm" }} Uhr</span
+        >
         <span class="timestamp"
           >{{ message.timestamp | date : "EEEE, d MMMM, HH:mm" }} Uhr</span
         >
@@ -52,6 +58,10 @@
       (click)="showProfileService.toggleShowProfile()"
       class="placeholder-header"
     >
+    <div
+      (click)="showProfileService.toggleShowProfile()"
+      class="placeholder-header"
+    >
       <img [src]="sanitize(chat.partner.avatar)" alt="" />
 
       <span>{{ chat.partner.name }}
@@ -60,6 +70,9 @@
     </div>
     <div class="placeholder-text">
       @if (chat.partner.uid == chatService.firebase.currentUser.uid) {
+      <span class="gray-text-placeholder"
+        >Dieser Raum ist nur für dich da.</span
+      >
       <span class="gray-text-placeholder"
         >Dieser Raum ist nur für dich da.</span
       >
