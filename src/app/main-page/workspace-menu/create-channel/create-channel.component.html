@@ -1,0 +1,23 @@
+<div (click)="toggleShowCreateChannel($event)" class="background-create-channel-container">
+    <div class="create-channel-container">
+        <div (click)="$event.stopPropagation()" class="create-channel">
+            <div class="top-container">
+                <span>Channel erstellen</span>
+                <div (click)="toggleShowCreateChannel($event)" class="close-icon"></div>
+            </div>
+            <div class="create-channel-description">
+                Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein #marketing zum
+                Beispiel.
+            </div>
+            <div class="input-container">
+                <span>Channel-Name</span>
+                <input type="text" id="name" placeholder="# z.B. Kooperationsprojekte">
+                <span>Beschreibung <span>(optional)</span></span>
+                <input type="email" id="email" placeholder="Dein Text hier">
+                <div class="button-container">
+                    <button>Erstellen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
