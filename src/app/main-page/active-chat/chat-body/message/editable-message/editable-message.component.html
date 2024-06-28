@@ -1,0 +1,12 @@
+<div class="message-container">
+  <textarea [(ngModel)]="message.text" #messageInput>{{ message.text }}</textarea>
+  <div class="message-buttons">
+    <img src="./assets/img/main-page/workspace-menu/sentiment_satisfied.svg" alt="">
+    <button (click)="cancelEdit()">
+      Abbrechen
+    </button>
+    <button>
+      Speichern
+    </button>
+  </div>
+  </div>

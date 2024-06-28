@@ -30,7 +30,7 @@
       (click)="toggleMessageMenu()"
     />
     @if (isMessageMenuOpen) {
-      <div class="message-menu"><span>Nachricht bearbeiten</span></div>
+      <div class="message-menu"><span (click)="editMessage()">Nachricht bearbeiten</span></div>
     }
   </div>
   

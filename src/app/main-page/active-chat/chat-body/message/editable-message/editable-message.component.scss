@@ -1,0 +1,22 @@
+@import "./../../../../../../assets/styles/mixIns.scss";
+@import "./../../../../../../assets/styles/colors.scss";
+
+.message-container {
+  @include displayFlex(column, unset, unset, 16px);
+  border: 1px solid $light_purple;
+  border-radius: 20px;
+  background-color: white;
+  padding: 20px;
+  > textarea {
+    font-size: 18px;
+    line-height: 24.55px;
+    font-weight: 400;
+    color: $gray;
+    resize: none;
+    border: none;
+    &:focus {
+      outline: none;
+    }
+
+  }
+}
