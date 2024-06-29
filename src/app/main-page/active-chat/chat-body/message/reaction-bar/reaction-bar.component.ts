@@ -1,10 +1,11 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Message } from '../../../../../models/message.class';
+import { SvgButtonComponent } from '../../../../svg-button/svg-button.component';
 
 @Component({
   selector: 'app-reaction-bar',
   standalone: true,
-  imports: [],
+  imports: [SvgButtonComponent],
   templateUrl: './reaction-bar.component.html',
   styleUrl: './reaction-bar.component.scss'
 })

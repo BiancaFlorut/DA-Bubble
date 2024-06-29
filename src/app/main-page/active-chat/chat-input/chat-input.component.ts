@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../services/chat/chat.service';
 import { DirectChat } from '../../../models/direct-chat.class';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
+import { AutosizeModule } from 'ngx-autosize';
 
 @Component({
   selector: 'app-chat-input',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, AutosizeModule],
   templateUrl: './chat-input.component.html',
   styleUrl: './chat-input.component.scss'
 })

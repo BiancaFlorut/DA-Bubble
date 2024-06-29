@@ -1,39 +1,15 @@
 <section>
   <img class="reaction-button" src="{{ reactions[3] }}" alt="" />
   <img class="reaction-button" src="{{ reactions[1] }}" alt="" />
-  <div class="reaction-option-container">
-    <img
-      class="reaction-option"
-      src="./assets/img/main-page/reactions/add_reaction.svg"
-      alt="add reaction"
-      (mouseenter)="enterSource($event)"
-      (mouseleave)="leaveSource($event)"
-    />
-  </div>
-  <div class="reaction-option-container">
-    <img
-      src="./assets/img/main-page/reactions/comment.svg"
-      alt="comment"
-      class="reaction-option"
-      (mouseenter)="enterSource($event)"
-      (mouseleave)="leaveSource($event)"
-    />
-  </div>
+  <app-svg-button [source]="'./assets/img/main-page/reactions/add_reaction.svg'"></app-svg-button>
+  <app-svg-button [source]="'./assets/img/main-page/reactions/comment.svg'"></app-svg-button>
   @if (editable) {
-  <div class="reaction-option-container menu-container">
-    <img
-      class="reaction-option"
-      src="./assets/img/main-page/reactions/more_vert.svg"
-      alt=""
-      (mouseenter)="enterSource($event)"
-      (mouseleave)="leaveSource($event)"
-      (click)="toggleMessageMenu()"
-    />
+  <div class="menu-container">
+    <app-svg-button class="menu-container" [source]="'./assets/img/main-page/reactions/more_vert.svg'" (click)="toggleMessageMenu()" />
     @if (isMessageMenuOpen) {
       <div class="message-menu"><span (click)="editMessage()">Nachricht bearbeiten</span></div>
     }
   </div>
-  
   }
   
 </section>

@@ -6,8 +6,12 @@
   border: 1px solid $light_purple;
   border-radius: 20px;
   background-color: white;
+  flex: 1;
+  width: 100%;
   padding: 20px;
   > textarea {
+    width: 100%;
+    font-family: 'Nunito';
     font-size: 18px;
     line-height: 24.55px;
     font-weight: 400;
@@ -18,5 +22,45 @@
       outline: none;
     }
 
+  }
+}
+
+.message-buttons {
+  @include displayFlex(row, space-between, center, 0);
+}
+
+.decision-buttons {
+  @include displayFlex(row, space-between, center, 32px);
+}
+
+button {
+  padding: 12px 25px 12px 25px;
+  background-color: white;
+  border-radius: 50px;
+  border: 1px solid $purple_2;
+  font-size: 18px;
+  line-height: 24.55px;
+  font-weight: 700;
+  color: $purple_1;
+  &:hover {
+    background-color: $purple_3;
+    color: white;
+  }
+  &:active {
+    background-color: $purple_1;
+    color: white;
+  }
+}
+
+.reverse-button {
+  background-color: $purple_1;
+  color: white;
+
+  &:hover {
+    background-color: $purple_2;
+  }
+
+  &:active {
+    background-color: $purple_1;
   }
 }

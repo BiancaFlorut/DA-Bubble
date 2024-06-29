@@ -1,0 +1,22 @@
+
+@import "./../../../assets/styles/mixIns.scss";
+@import "./../../../assets/styles/colors.scss"; 
+
+.svg-container {
+  @include displayFlex(row, center, center, 5px);
+}
+
+.svg-img {
+  width: 24px;	
+  height: 24px;
+  padding: 8px;
+  border-radius: 20px;
+  object-fit: contain;
+  overflow: visible;
+  cursor: pointer;
+  box-sizing: content-box;
+  transition: 0.1s ease-in;
+  &:hover {
+    background-color: $bg_color;
+  }
+}

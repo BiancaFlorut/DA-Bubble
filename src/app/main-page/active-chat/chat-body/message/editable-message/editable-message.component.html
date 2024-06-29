@@ -1,12 +1,14 @@
 <div class="message-container">
-  <textarea [(ngModel)]="message.text" #messageInput>{{ message.text }}</textarea>
+  <textarea [(ngModel)]="message.text" #messageInput autosize>{{ message.text }} </textarea>
   <div class="message-buttons">
-    <img src="./assets/img/main-page/workspace-menu/sentiment_satisfied.svg" alt="">
-    <button (click)="cancelEdit()">
-      Abbrechen
-    </button>
-    <button>
-      Speichern
-    </button>
+    <app-svg-button [source]="'./assets/img/main-page/workspace-menu/sentiment_satisfied.svg'"  />
+    <div class="decision-buttons">
+      <button (click)="cancelEdit()">
+        Abbrechen
+      </button>
+      <button class="reverse-button">
+        Speichern
+      </button>
+    </div>
   </div>
   </div>

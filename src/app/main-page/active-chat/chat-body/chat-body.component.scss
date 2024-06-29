@@ -10,22 +10,6 @@ section {
   padding: 25px 0;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: $gray;
-  border-radius: 4px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: $purple_2;
-}
-
-
 .placeholder-header {
   @include displayFlex(row, unset, flex-end, 25px);
   font-size: 24px;
