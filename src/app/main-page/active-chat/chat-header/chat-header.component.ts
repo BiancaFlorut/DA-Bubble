@@ -14,7 +14,6 @@ import { ShowProfileService } from '../../../services/show-profile/show-profile.
   styleUrl: './chat-header.component.scss'
 })
 export class ChatHeaderComponent {
-  newMessage: boolean = true;
   directChat: boolean = false;
   channelChat: boolean = false;
   firebase: FirebaseService = inject(FirebaseService);
@@ -27,7 +26,7 @@ export class ChatHeaderComponent {
       if (chat) {
         this.currentChat = chat;
         this.partner = this.getPartner();
-        this.newMessage = false;
+        this.chatService.newMessage = false;
         this.directChat = true;
       }
     });

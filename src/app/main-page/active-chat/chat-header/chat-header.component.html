@@ -1,5 +1,5 @@
 <section>
-  @if (newMessage) {
+  @if (chatService.newMessage) {
   <div class="new-message-container">
     <h1>Neue Nachricht</h1>
     <input
@@ -9,7 +9,7 @@
     />
   </div>
   }
-  @if (directChat && partner) {
+  @if (directChat && partner && !chatService.newMessage) {
     <div (click)="showProfileService.toggleShowProfile()" class="user-container">
       <div class="avatar">
         <img src="{{partner.avatar}}" alt="avatar">

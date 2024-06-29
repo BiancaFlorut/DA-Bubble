@@ -42,4 +42,8 @@ export class WorkspaceMenuComponent {
   async openDirectChat(partner: User) {
     await this.chatService.setChatWith(partner);
   }
+
+  public handleNewMessage() {
+    this.chatService.newMessage = true;
+  }
 }

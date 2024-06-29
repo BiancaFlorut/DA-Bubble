@@ -151,16 +151,16 @@ export class HeaderComponent {
     if (!this.router.url.includes('guest')) {
       await this.authService.updateUserName(this.userService.user.name);
     }
+    if (this.userService.user.avatar) {
+      this.userService.currentAvatar = this.userService.user.avatar;
+      if (!this.router.url.includes('guest')) {
+        await this.authService.updateUserPhotoURL(this.userService.user.avatar)
+      }
+    }
     if (!emailExists) {
       this.userService.user.email = this.userForm.get('email')?.value;
       if (!this.router.url.includes('guest')) {
         await this.authService.updateUserEmail(this.userService.user.email);
-      }
-    }
-    if (this.userService.user.avatar) {
-      this.userService.currentAvatar = this.userService.user.avatar;
-      if (!this.router.url.includes('guest')) {
-        await this.authService.updateUserPhotoURL(this.userService.user.avatar);
       }
     }
     this.firebase.updateUser(this.userService.user);

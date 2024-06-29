@@ -21,6 +21,7 @@ export class ChatService {
     online: false
   };
   loading: boolean = false;
+  newMessage: boolean = true;
   firebase = inject(FirebaseService);
   constructor() {
     this.chatSub = new BehaviorSubject<DirectChat | undefined>(this.chat);
