@@ -1,59 +1,61 @@
-@if (message.uid === chatService.firebase.currentUser.uid) {
-<div class="message-container fd-rr">
-  <img class="avatar shadow" src="{{ user.avatar }}" alt="avatar" />
-  @if (isEditing) {
-  <app-editable-message
-    [message]="message"
-    (closeEditEvent)="closeEdit($event)"
-  ></app-editable-message>
-  } @else {
-  <div class="message-content ms-c-right">
-    <div class="message-header fd-rr">
-      <span class="name" (click)="showProfileService.toggleShowProfile()">{{
-        user.name
-      }}</span>
-      <span class="timestamp">
-        {{ message.timestamp | date : "HH:mm" }} Uhr
-      </span>
+<section #messageItem>
+  @if (message.uid === chatService.firebase.currentUser.uid) {
+    <div class="message-container fd-rr">
+      <img class="avatar shadow" src="{{ user.avatar }}" alt="avatar" />
+      @if (isEditing) {
+      <app-editable-message
+        [message]="message"
+        (closeEditEvent)="closeEdit($event)"
+      ></app-editable-message>
+      } @else {
+      <div class="message-content ms-c-right">
+        <div class="message-header fd-rr">
+          <span class="name" (click)="showProfileService.toggleShowProfile()">{{
+            user.name
+          }}</span>
+          <span class="timestamp">
+            {{ message.timestamp | date : "HH:mm" }} Uhr
+          </span>
+        </div>
+        <div class="message-text mt-right own-message">
+          {{ message.text }}
+        </div>
+        @if (message.editedTimestamp) {
+          <span class="timestamp">bearbeitet um {{ message.editedTimestamp | date : "HH:mm" }} Uhr</span>
+        }
+        <app-reaction-bar
+          class="reaction-bar reaction-bar-left"
+          [editable]="true"
+          [message]="message"
+          (editMessageEvent)="editMessage()"
+        ></app-reaction-bar>
+      </div>
+      }
     </div>
-    <div class="message-text mt-right own-message">
-      {{ message.text }}
+    } @else {
+    <div class="message-container">
+      <img class="avatar" src="{{ partner.avatar }}" alt="avatar" />
+      <div class="message-content">
+        <div class="message-header">
+          <span class="name" (click)="showProfileService.toggleShowProfile()">
+            {{ partner.name }}
+          </span>
+          <span class="timestamp"
+            >{{ message.timestamp | date : "HH:mm" }} Uhr</span
+          >
+        </div>
+        <div class="message-text">
+          {{ message.text }}
+        </div>
+        @if (message.editedTimestamp) {
+          <span class="timestamp">bearbeitet um {{ message.editedTimestamp | date : "HH:mm" }} Uhr</span>
+        }
+        <app-reaction-bar
+          class="reaction-bar reaction-bar-right"
+          [editable]="false"
+          [message]="message"
+        ></app-reaction-bar>
+      </div>
     </div>
-    @if (message.editedTimestamp) {
-      <span class="timestamp">bearbeitet um {{ message.editedTimestamp | date : "HH:mm" }} Uhr</span>
     }
-    <app-reaction-bar
-      class="reaction-bar reaction-bar-left"
-      [editable]="true"
-      [message]="message"
-      (editMessageEvent)="editMessage()"
-    ></app-reaction-bar>
-  </div>
-  }
-</div>
-} @else {
-<div class="message-container">
-  <img class="avatar" src="{{ partner.avatar }}" alt="avatar" />
-  <div class="message-content">
-    <div class="message-header">
-      <span class="name" (click)="showProfileService.toggleShowProfile()">
-        {{ partner.name }}
-      </span>
-      <span class="timestamp"
-        >{{ message.timestamp | date : "HH:mm" }} Uhr</span
-      >
-    </div>
-    <div class="message-text">
-      {{ message.text }}
-    </div>
-    @if (message.editedTimestamp) {
-      <span class="timestamp">bearbeitet um {{ message.editedTimestamp | date : "HH:mm" }} Uhr</span>
-    }
-    <app-reaction-bar
-      class="reaction-bar reaction-bar-right"
-      [editable]="false"
-      [message]="message"
-    ></app-reaction-bar>
-  </div>
-</div>
-}
+</section>

@@ -23,6 +23,7 @@ export class MessageComponent {
   public showProfileService: ShowProfileService = inject(ShowProfileService);
   chatService = inject(ChatService);
   chat!: DirectChat;
+  @ViewChild('messageItem') messageItem!: ElementRef;
 
   constructor() { 
     this.chatService.currentChat.subscribe(chat => {
@@ -33,16 +34,16 @@ export class MessageComponent {
   }
 
   editMessage() {
-    console.log(this.message);
     this.isEditing = true;
-    // this.chatService.editMessage(message);
   }
 
   closeEdit(message: Message) {
     this.isEditing = false;
-    if (message) {    
+    if (message)   
       this.chatService.editMessage(this.chat.cid, message);
-    } else
-      console.log('message is null');
+  }
+
+  scrollIntoView() {
+    this.messageItem.nativeElement.scrollIntoView();
   }
 }

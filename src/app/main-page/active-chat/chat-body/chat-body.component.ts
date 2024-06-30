@@ -46,9 +46,9 @@ export class ChatBodyComponent implements AfterViewInit {
     })
   }
 
-  public scrollToBottom(elem: ElementRef) {
+  public scrollToBottom(elem: any) {
     if (elem)
-      elem.nativeElement.scrollIntoView();
+      elem.scrollIntoView();
   }
 
   public sanitize(url: string) {
