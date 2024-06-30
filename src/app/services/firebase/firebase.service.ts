@@ -128,9 +128,16 @@ export class FirebaseService {
     return docRef.id;
   }
 
-  sendMessage(chatId: string, uid: string, timestamp: number, message: string) {
+  async sendMessage(chatId: string, uid: string, timestamp: number, message: string) {
     let messageObj = { uid: uid, timestamp: timestamp, message: message };
-    addDoc(collection(this.getSingleChat(chatId), 'messages'), {uid: uid, timestamp: timestamp, text: message});
+    return await addDoc(collection(this.getSingleChat(chatId), 'messages'), {uid: uid, timestamp: timestamp, text: message});
+  }
+
+  updateMessage(cid: string, mid: string, data: any) {
+    if (data.editedTimestamp)
+    updateDoc(doc(this.getDirectMessagesRef(cid), mid), {  text: data.text, editedTimestamp: data.editedTimestamp });
+  else
+    updateDoc(doc(this.getDirectMessagesRef(cid), mid), { timestamp: data.timestamp, text: data.text, mid: mid });
   }
 
   getDirectMessagesRef(chatId: string) {

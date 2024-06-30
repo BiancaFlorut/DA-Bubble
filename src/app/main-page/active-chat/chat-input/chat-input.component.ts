@@ -5,6 +5,7 @@ import { ChatService } from '../../../services/chat/chat.service';
 import { DirectChat } from '../../../models/direct-chat.class';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
 import { AutosizeModule } from 'ngx-autosize';
+import { Message } from '../../../models/message.class';
 
 @Component({
   selector: 'app-chat-input',
@@ -33,9 +34,12 @@ export class ChatInputComponent {
     });
   }
 
-  sendMessage() {
+  async sendMessage() {
     if (this.firebase.currentUser.uid) {
-      this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);
+      const mid = await this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);
+      console.log('message id:', mid.id);
+      const message = new Message(mid.id, this.firebase.currentUser.uid, this.message, Date.now());
+      this.firebase.updateMessage(this.currentChat.cid, mid.id, message);
     } else console.log('no user is logged in');
     this.message = '';
   }
