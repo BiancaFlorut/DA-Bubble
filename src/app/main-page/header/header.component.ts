@@ -42,7 +42,17 @@ export class HeaderComponent {
   private userIsLogged(): void {
     this.authService.user$
       .subscribe(user => {
-        if (user) {
+        if (this.router.url.includes('guest')) {
+          this.googleUser = false;
+          this.userService.user.uid = 'guest';
+          this.userService.user.name = 'New Guest';
+          this.userService.user.email = 'mail@guest.com';
+          this.userService.user.avatar = './assets/img/profile.png';
+          this.userService.currentAvatar = './assets/img/profile.png';
+          this.userService.user.online = true;
+          this.firebase.updateUser(this.userService.user);
+          this.firebase.connectUser(this.userService.user);
+        } else if (user) {
           this.googleUser = user.providerData[0].providerId === 'google.com' ? true : false;
           this.userService.user.uid = user.uid!;
           this.userService.user.name = user.displayName!;
@@ -64,16 +74,6 @@ export class HeaderComponent {
               emailControl.disable();
             }
           }
-          this.firebase.connectUser(this.userService.user);
-        } else if (this.router.url.includes('guest')) {
-          this.googleUser = false;
-          this.userService.user.uid = 'guest';
-          this.userService.user.name = 'New Guest';
-          this.userService.user.email = 'mail@guest.com';
-          this.userService.user.avatar = './assets/img/profile.png';
-          this.userService.currentAvatar = './assets/img/profile.png';
-          this.userService.user.online = true;
-          this.firebase.updateUser(this.userService.user);
           this.firebase.connectUser(this.userService.user);
         } else {
           this.router.navigate(['landing-page/login']);
