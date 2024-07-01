@@ -28,10 +28,18 @@ export class ChatService {
     this.currentChat = this.chatSub.asObservable();
   }
 
+  resetChat() {
+    this.chat = undefined;
+    this.chatSub = new BehaviorSubject<DirectChat | undefined>(this.chat);
+    this.currentChat = this.chatSub.asObservable();
+    this.newMessage = true;
+  } 
+
   async setChatWith(partner: User) {
     this.loading = true;
     const cid = await this.firebase.connectChatWithUser(this.firebase.currentUser, partner);
     if (cid) {
+      this.newMessage = false;
       this.currentPartner = partner;
       onSnapshot(this.firebase.getDirectMessagesRef(cid), (collection) => {
         let msgs = [] as Message[];
