@@ -20,7 +20,7 @@
       <path d="M919 0.5H0" stroke="#ADB0D9" />
     </svg>
   </div>
-  } <app-message [message]="message" [user]="chat.user" [partner]="chat.partner"></app-message>
+  } <app-message [message]="message" [user]="chat.user" [partner]="chat.partner" #messageItem></app-message>
   } } @else {
   <div class="placeholder-container">
     @if (chat && chat.partner && chat.partner.avatar) {

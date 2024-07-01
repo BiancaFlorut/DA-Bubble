@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ChatService } from '../../../../services/chat/chat.service';
 import { User } from '../../../../interfaces/user';
 import { EditableMessageComponent } from './editable-message/editable-message.component';
+import { DirectChat } from '../../../../models/direct-chat.class';
 
 @Component({
   selector: 'app-message',
@@ -21,14 +22,28 @@ export class MessageComponent {
   isEditing: boolean = false;
   public showProfileService: ShowProfileService = inject(ShowProfileService);
   chatService = inject(ChatService);
+  chat!: DirectChat;
+  @ViewChild('messageItem') messageItem!: ElementRef;
 
-  editMessage() {
-    console.log(this.message);
-    this.isEditing = true;
-    // this.chatService.editMessage(message);
+  constructor() { 
+    this.chatService.currentChat.subscribe(chat => {
+      if (chat) {
+        this.chat = chat;
+      }
+    })
   }
 
-  cancelEdit() {
+  editMessage() {
+    this.isEditing = true;
+  }
+
+  closeEdit(message: Message) {
     this.isEditing = false;
+    if (message)   
+      this.chatService.editMessage(this.chat.cid, message);
+  }
+
+  scrollIntoView() {
+    this.messageItem.nativeElement.scrollIntoView();
   }
 }

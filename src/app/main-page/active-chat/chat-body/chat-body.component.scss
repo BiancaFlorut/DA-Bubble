@@ -5,6 +5,7 @@ section {
   flex: 1 1 0;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   overflow-y: auto;
   gap: 20px;
   padding: 25px 0;

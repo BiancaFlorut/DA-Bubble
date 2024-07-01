@@ -36,7 +36,8 @@ export class ChatService {
       onSnapshot(this.firebase.getDirectMessagesRef(cid), (collection) => {
         let msgs = [] as Message[];
         collection.forEach((doc) => {
-          let msg = new Message(doc.data()['uid'], doc.data()['text'], doc.data()['timestamp']);
+          let msg = new Message(doc.data()['mid'], doc.data()['uid'], doc.data()['text'], doc.data()['timestamp']);
+          if (doc.data()['editedTimestamp']) msg.editedTimestamp = doc.data()['editedTimestamp'];
           msgs.push(msg);
         });
         this.setSubscriber(cid, partner, msgs);
@@ -50,6 +51,11 @@ export class ChatService {
     let chat: DirectChat = new DirectChat(cid, this.firebase.currentUser, partner, msgs);
     this.chatSub.next(chat);
     this.loading = false;
+  }
+
+  editMessage(cid: string, message: Message) {
+    if (message.mid && message.editedTimestamp)
+    this.firebase.updateMessage(cid, message.mid, message);
   }
 }
 
