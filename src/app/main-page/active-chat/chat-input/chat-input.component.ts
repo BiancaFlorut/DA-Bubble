@@ -37,7 +37,7 @@ export class ChatInputComponent {
   async sendMessage() {
     if (this.firebase.currentUser.uid) {
       const mid = await this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);
-      const message = new Message(mid.id, this.firebase.currentUser.uid, this.message, Date.now());
+      const message = new Message(mid.id, this.firebase.currentUser.uid, this.message, Date.now(), []);
       this.firebase.updateMessage(this.currentChat.cid, mid.id, message);
     } else console.log('no user is logged in');
     this.message = '';

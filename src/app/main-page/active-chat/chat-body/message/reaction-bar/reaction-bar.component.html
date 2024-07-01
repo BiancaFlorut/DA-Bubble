@@ -1,6 +1,6 @@
 <section>
-  <img class="reaction-button" src="{{ reactions[3] }}" alt="" (click)="addEmoji(3)" />
-  <img class="reaction-button" src="{{ reactions[1] }}" alt="" (click)="addEmoji(3)" />
+  <img class="reaction-button" src="{{ this.userService.emojis[0].path }}" alt="" (click)="addReaction(userService.emojis[0].id)" />
+  <img class="reaction-button" src="{{ this.userService.emojis[1].path }}" alt="" (click)="addReaction(userService.emojis[1].id)" />
   <app-svg-button [source]="'./assets/img/main-page/reactions/add_reaction.svg'"></app-svg-button>
   <app-svg-button [source]="'./assets/img/main-page/reactions/comment.svg'"></app-svg-button>
   @if (editable) {

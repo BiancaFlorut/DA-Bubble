@@ -6,7 +6,7 @@
   #scrollSection
 >
   @if (chat.messages.length > 0) { @for (message of chat.messages; track $index)
-    {  <app-message [message]="message" [user]="chat.user" [partner]="chat.partner" #messageItem></app-message>
+    {  <app-message [message]="message" [user]="chat.user" [partner]="chat.partner" [cid]="chat.cid"></app-message>
     @if (isNewDate($index)) {
       <div class="timestamp-container">
         <div class="line-container"><div class="line"></div></div>

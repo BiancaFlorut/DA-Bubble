@@ -23,27 +23,38 @@ export class MessageComponent {
   public showProfileService: ShowProfileService = inject(ShowProfileService);
   chatService = inject(ChatService);
   chat!: DirectChat;
+  @Input()cid: string = '';
   @ViewChild('messageItem') messageItem!: ElementRef;
 
   constructor() { 
-    this.chatService.currentChat.subscribe(chat => {
-      if (chat) {
-        this.chat = chat;
-      }
-    })
+    
   }
 
-  editMessage() {
+  editMessage(message: Message) {
+    if (message) {
+      console.log(message);
+      this.isEditing = false;
+      this.chatService.editMessage(this.cid, message);
+    }
+    else
     this.isEditing = true;
   }
+
 
   closeEdit(message: Message) {
     this.isEditing = false;
     if (message)   
-      this.chatService.editMessage(this.chat.cid, message);
+      this.chatService.editMessage(this.cid, message);
   }
 
   scrollIntoView() {
-    this.messageItem.nativeElement.scrollIntoView();
+    this.messageItem.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  incrementEmoji(id: string) {
+    const index = this.message.emojis.findIndex(e => e.id === id);
+    if (index != -1 && this.message.emojis[index].uid != this.user.uid) {
+      this.message.emojis[index].incrementCount();
+    }
   }
 }

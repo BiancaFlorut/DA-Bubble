@@ -1,6 +1,8 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
 import { Message } from '../../../../../models/message.class';
 import { SvgButtonComponent } from '../../../../svg-button/svg-button.component';
+import { UserService } from '../../../../../services/user/user.service';
+import { Emoji } from '../../../../../models/emoji.class';
 
 @Component({
   selector: 'app-reaction-bar',
@@ -10,25 +12,16 @@ import { SvgButtonComponent } from '../../../../svg-button/svg-button.component'
   styleUrl: './reaction-bar.component.scss'
 })
 export class ReactionBarComponent {
-  reactions = [
-    './assets/img/main-page/reactions/emoji _nerd face_.svg',
-    './assets/img/main-page/reactions/emoji _person raising both hands in celebration_.svg',
-    './assets/img/main-page/reactions/emoji _rocket_.svg',
-    './assets/img/main-page/reactions/emoji _white heavy check mark_.svg'
-  ];
+
   @Input() editable: boolean = false;
   @Input() message!: Message;
-  @Output() editMessageEvent = new EventEmitter();
+  @Output() editMessageEvent = new EventEmitter<Message>();
   isMessageMenuOpen: boolean = false;
   @ViewChild('messageMenu') messageMenu!: ElementRef;
+  userService = inject(UserService);
 
-  enterSource(elem: any) {
-    let img = elem.target as HTMLImageElement;
-    img.src = img.src.split(".svg")[0] + "_hover.svg";
-  }
-  leaveSource(elem: any) {
-    let img = elem.target as HTMLImageElement;
-    img.src = img.src.split("_hover.svg")[0] + ".svg";
+  constructor() {
+    this.userService.sortEmojis();
   }
 
   toggleMessageMenu() {
@@ -45,7 +38,24 @@ export class ReactionBarComponent {
     this.isMessageMenuOpen = false;
   }
 
-  addEmoji(index: number) {
-    // this.message.emojis[index].increment();
+  addReaction(id: string) {
+    const indexUser = this.userService.emojis.findIndex(e => e.id === id);
+    if (indexUser != -1) {
+      this.userService.emojis[indexUser].incrementCount();
+      this.userService.sortEmojis();
+      const index = this.message.emojis.findIndex(e => e.id === id);
+      if (index != -1) {
+        if (this.message.emojis[index].uid != this.userService.firebase.currentUser.uid)
+        this.message.emojis[index].incrementCount();
+      } else {
+        const emoji = new Emoji(id,this.userService.emojis[indexUser].path, this.userService.firebase.currentUser.uid!);
+        emoji.count = 1;
+        this.message.emojis.push(emoji);
+      }
+      this.editMessageEvent.emit(this.message);
+    } else {
+      console.log('no emoji found in user service');
+    }
   }
+
 }
