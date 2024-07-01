@@ -1,0 +1,27 @@
+@import './../../../../../../assets/styles/mixIns.scss';
+@import './../../../../../../assets/styles/colors.scss';
+
+.emoji-container {
+  @include displayFlex(row, center, center, 10px);
+  border: 1px solid $light_purple;
+  border-radius: 20px;
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: white;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 21.82px;
+  &:hover {
+    border-color: $purple_1;
+  }
+}
+
+.emoji {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.given-emoji {
+  border-color: $purple_2;
+}

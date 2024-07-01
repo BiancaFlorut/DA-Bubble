@@ -1,0 +1,8 @@
+<div class="emoji-container" [class.given-emoji]="emoji.uids.includes(user.uid!)" (click)="incrementEmoji(emoji.id)">
+  <img
+    class="emoji"
+    src="{{ emoji.path }}"
+    alt="emoji"
+  />
+  <div class="emoji-count">{{ emoji.count }}</div>
+</div>

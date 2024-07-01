@@ -41,17 +41,18 @@ export class ReactionBarComponent {
   addReaction(id: string) {
     const indexUser = this.userService.emojis.findIndex(e => e.id === id);
     if (indexUser != -1) {
-      this.userService.emojis[indexUser].incrementCount();
-      this.userService.sortEmojis();
+      this.userService.emojis[indexUser].count++;
       const index = this.message.emojis.findIndex(e => e.id === id);
       if (index != -1) {
-        if (this.message.emojis[index].uid != this.userService.firebase.currentUser.uid)
-        this.message.emojis[index].incrementCount();
+        if (!this.message.emojis[index].uids.includes(this.userService.firebase.currentUser.uid!))
+        this.message.emojis[index].count++;
+        this.message.emojis[index].uids.push(this.userService.firebase.currentUser.uid!);
       } else {
         const emoji = new Emoji(id,this.userService.emojis[indexUser].path, this.userService.firebase.currentUser.uid!);
         emoji.count = 1;
         this.message.emojis.push(emoji);
       }
+      this.userService.sortEmojis();
       this.editMessageEvent.emit(this.message);
     } else {
       console.log('no emoji found in user service');
