@@ -1,5 +1,6 @@
 <div (click)="toggleShowCreateChannel($event)" class="background-create-channel-container">
     <div class="create-channel-container">
+        @if(firebaseChannelService.channel.name === '') {
         <div (click)="$event.stopPropagation()" class="create-channel">
             <div class="top-container">
                 <span>Channel erstellen</span>
@@ -28,9 +29,32 @@
                 <span>Beschreibung <span>(optional)</span></span>
                 <input [(ngModel)]="description" type="text" id="description" placeholder="Dein Text hier">
                 <div class="button-container">
-                    <button (click)="createChannel()">Erstellen</button>
+                    <button class="inactive-button" [ngClass]="{'active-button': name !== '' && description !== ''}"
+                        [disabled]="name === '' || description === ''"
+                        (click)="createChannel($event)">Erstellen</button>
                 </div>
             </div>
         </div>
+        } @else{
+        <div (click)="$event.stopPropagation()" class="add-users-container">
+            <div class="top-container">
+                <span>Leute hinzufügen</span>
+                <div (click)="toggleShowCreateChannel($event)" class="close-icon"></div>
+            </div>
+            <div class="all-user-radio-container">
+                <input (click)="handleRadioButton('allUsers')" [(ngModel)]="allUsers" type="radio" name="allUsers" id="allUsers">
+                <span>Alle Mitglieder von <span>{{firebaseChannelService.channel.name}}</span> hinzufügen</span>
+            </div>
+            <div class="specific-user-container">
+                <input (click)="handleRadioButton('specificUsers')" [(ngModel)]="specificUsers" type="radio" name="specificUsers"
+                    id="specificUsers">
+                <span>Bestimmte Leute hinzufügen</span>
+            </div>
+            <div class="button-container">
+                <button class="inactive-button" [ngClass]="{'active-button': name !== '' && description !== ''}"
+                    [disabled]="name === '' || description === ''" (click)="createChannel($event)">Erstellen</button>
+            </div>
+        </div>
+        }
     </div>
 </div>

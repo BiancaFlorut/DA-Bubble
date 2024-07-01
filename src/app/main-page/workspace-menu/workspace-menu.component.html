@@ -4,7 +4,8 @@
       <img src="./assets/img/main-page/workspace-menu/Workspace logo.svg" alt="Workspace logo" />
       <span>Devspace</span>
     </div>
-    <svg (click)="handleNewMessage()" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="edit-square">
+    <svg (click)="handleNewMessage()" width="40" height="40" viewBox="0 0 40 40" fill="none"
+      xmlns="http://www.w3.org/2000/svg" class="edit-square">
       <mask id="mask0_237_472" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="8" y="8" width="24" height="24">
         <rect x="8" y="8" width="24" height="24" fill="#D9D9D9" />
       </mask>
@@ -46,7 +47,8 @@
             <span>Channels</span>
           </div>
         </div>
-        <svg (click)="createChannelService.toggleShowCreateChannel()" class="plus-btn" width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg (click)="createChannelService.toggleShowCreateChannel()" class="plus-btn" width="30" height="30"
+          viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#clip0_237_569)">
             <mask id="mask0_237_569" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="3" y="3" width="24"
               height="24">
@@ -67,7 +69,7 @@
       </div>
       @if (areChannelsMenuOpen) {
       <div class="all-channels-container">
-        @for (channel of [0]; track $index) {
+        @for (channel of channels; track $index) {
         <div class="channel">
           <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
             <mask id="mask0_58555_8757" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
@@ -80,7 +82,7 @@
                 fill="black" />
             </g>
           </svg>
-          <span>Muster Channel</span>
+          <span>{{channel.name}}</span>
         </div>
         }
         <div (click)="createChannelService.toggleShowCreateChannel()" class="add-channel-container">
@@ -134,6 +136,7 @@
       @if (areDirectChatsMenuOpen) {
       <div class="users-container">
         @for (user of firebase.users; track $index) {
+        @if(firebase.users.length >= 0) {
         <div class="user" (click)="openDirectChat(user)" [class.active]="chatService.currentPartner.uid === user.uid">
           <div class="avatar">
             <img src="{{user.avatar}}" alt="avatar">
@@ -148,6 +151,7 @@
             }
           </div>
         </div>
+        }
         }
       </div>
       }

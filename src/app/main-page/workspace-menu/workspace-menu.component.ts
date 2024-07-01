@@ -5,6 +5,8 @@ import { User } from '../../interfaces/user';
 import { ChatService } from '../../services/chat/chat.service';
 import { CreateChannelComponent } from './create-channel/create-channel.component';
 import { CreateChannelService } from '../../services/create-channel/create-channel.service';
+import { Channel } from '../../interfaces/channel';
+import { FirebaseChannelService } from '../../services/firebase-channel/firebase-channel.service';
 
 @Component({
   selector: 'app-workspace-menu',
@@ -17,11 +19,23 @@ import { CreateChannelService } from '../../services/create-channel/create-chann
   styleUrl: './workspace-menu.component.scss'
 })
 export class WorkspaceMenuComponent {
-  areChannelsMenuOpen: boolean = false;
-  areDirectChatsMenuOpen: boolean = true;
   firebase: FirebaseService = inject(FirebaseService);
+  firebaseChannel: FirebaseChannelService = inject(FirebaseChannelService);
   chatService: ChatService = inject(ChatService);
   createChannelService: CreateChannelService = inject(CreateChannelService);
+
+  channels!: Channel[];
+
+  areChannelsMenuOpen: boolean = false;
+  areDirectChatsMenuOpen: boolean = true;
+
+  async ngOnInit() {
+    await this.firebaseChannel.getAllChannels().then(channel => {
+      if (channel.length >= 0) {
+        this.channels = channel;
+      }
+    });
+  }
 
   openChannelsMenu() {
     if (this.areChannelsMenuOpen) {
