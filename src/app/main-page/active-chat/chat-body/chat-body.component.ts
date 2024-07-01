@@ -30,19 +30,20 @@ export class ChatBodyComponent implements AfterViewInit {
   pipe = inject(DatePipe);
   formattedDate: string | null = null;
   latestFormattedDate: number | null = null;
+  lastFormattedDate: string | null = null;
   public showProfileService: ShowProfileService = inject(ShowProfileService);
 
   constructor() {
     this.chatService.currentChat.subscribe(chat => {
       if (chat) {
         this.chat = chat;
-        this.chat.messages = chat.messages.sort((a, b) => a.timestamp - b.timestamp);
+        this.chat.messages = chat.messages.sort((a, b) => b.timestamp - a.timestamp);
       }
     });
   }
   ngAfterViewInit(): void {
     this.messageItems.changes.subscribe((messageObj) => {
-      this.scrollToBottom(messageObj.last);
+      this.scrollToBottom(messageObj.first);
     })
   }
 
@@ -76,5 +77,40 @@ export class ChatBodyComponent implements AfterViewInit {
     } else {
       return false;
     }
+  }
+
+  isNewDate(index: number): boolean {
+    if (index === 0) {
+      this.formattedDate = null;
+      this.lastFormattedDate = null;
+    }
+  
+    const date = new Date(this.chat.messages[index].timestamp);
+    const nextDate = index < this.chat.messages.length - 1 ? new Date(this.chat.messages[index + 1].timestamp) : null;
+    const now = new Date();
+  
+    this.formattedDate = this.getFormattedDate(date, now);
+    
+    const isSameDate = nextDate ? this.isSameDay(date, nextDate) : false || this.isToday(date);
+    this.lastFormattedDate = this.formattedDate;
+    return index === this.chat.messages.length - 1 || !isSameDate;
+  }
+  
+  getFormattedDate(date: Date, now: Date) {
+    if (this.isToday(date)) {
+      return 'Heute';
+    } else if (date.getFullYear() === now.getFullYear()) {
+      return this.pipe.transform(date, 'EEEE, d MMMM');
+    } else {
+      return this.pipe.transform(date, 'EEEE, d MMMM, y');
+    }
+  }
+  
+  isSameDay(date1: Date, date2: Date) {
+    return date1 && date2 && date1.toDateString() === date2.toDateString();
+  }
+  
+  isToday(date: Date) {
+    return new Date().toDateString() === date.toDateString();
   }
 }

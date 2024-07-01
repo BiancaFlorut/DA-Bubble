@@ -4,7 +4,7 @@ import { User } from '../../interfaces/user';
 import { FirebaseService } from '../firebase/firebase.service';
 import { DirectChat } from '../../models/direct-chat.class';
 import { Message } from '../../models/message.class';
-import { DocumentData, DocumentReference, collection, onSnapshot } from 'firebase/firestore';
+import { onSnapshot } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'

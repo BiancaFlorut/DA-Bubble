@@ -21,7 +21,7 @@
           {{ message.text }}
         </div>
         @if (message.editedTimestamp) {
-          <span class="timestamp">bearbeitet um {{ message.editedTimestamp | date : "HH:mm" }} Uhr</span>
+          <span class="timestamp">bearbeitet am {{ message.editedTimestamp | date : "dd. MMM, HH:mm" }}</span>
         }
         <app-reaction-bar
           class="reaction-bar reaction-bar-left"
@@ -48,7 +48,7 @@
           {{ message.text }}
         </div>
         @if (message.editedTimestamp) {
-          <span class="timestamp">bearbeitet um {{ message.editedTimestamp | date : "HH:mm" }} Uhr</span>
+          <span class="timestamp">bearbeitet am {{ message.editedTimestamp | date : "dd. MMM, HH:mm" }}</span>
         }
         <app-reaction-bar
           class="reaction-bar reaction-bar-right"

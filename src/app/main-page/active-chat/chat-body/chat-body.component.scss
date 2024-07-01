@@ -4,11 +4,10 @@
 section {
   flex: 1 1 0;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  overflow-y: auto;
+  flex-direction: column-reverse;
   gap: 20px;
   padding: 25px 0;
+  overflow-y: auto;
 }
 
 .placeholder-header {
@@ -31,7 +30,8 @@ section {
 }
 
 .placeholder-container {
-  @include displayFlex(column, unset, flex-start, 25px);
+  @include displayFlex(column, flex-end, flex-start, 25px);
+  flex: 1;
   margin: 0 45px;
 }
 
@@ -73,9 +73,15 @@ section {
   background-color: white;
 }
 
-.line {
+.line-container {
   width: 100%;
   position: absolute;
   padding: 0 35px;
+  @include displayFlex(column, center, center, 0px);
+}
+
+.line {
+  width: 100%;
+  border-top: 1px solid $light_purple;
   z-index: 0;
 }

@@ -1,4 +1,5 @@
-import { User } from "../interfaces/user";
+import { Emoji } from "./emoji.class";
+
 
 export class Message {
   text: string = '';
@@ -6,6 +7,8 @@ export class Message {
   editedTimestamp?: number;
   uid: string;
   mid: string;
+  
+
   constructor(mid: string, uid: string, text: string, timestamp: number) {
     this.uid = uid;
     this.text = text;

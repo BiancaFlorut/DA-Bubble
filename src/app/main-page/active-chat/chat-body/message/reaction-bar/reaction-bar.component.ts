@@ -44,4 +44,8 @@ export class ReactionBarComponent {
     this.editMessageEvent.emit();
     this.isMessageMenuOpen = false;
   }
+
+  addEmoji(index: number) {
+    // this.message.emojis[index].increment();
+  }
 }
