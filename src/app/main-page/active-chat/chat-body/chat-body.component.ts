@@ -21,7 +21,6 @@ import { MessageComponent } from './message/message.component';
   styleUrl: './chat-body.component.scss'
 })
 export class ChatBodyComponent implements AfterViewInit {
-  [x: string]: any;
   @ViewChild('scrollSection') scrollSection!: ElementRef;
   @ViewChildren('messageItem') messageItems!: QueryList<any>;
   chatService = inject(ChatService);

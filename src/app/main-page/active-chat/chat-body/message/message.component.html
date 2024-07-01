@@ -23,11 +23,22 @@
         @if (message.editedTimestamp) {
           <span class="timestamp">bearbeitet am {{ message.editedTimestamp | date : "dd. MMM, HH:mm" }}</span>
         }
+          <div class="emojis">
+            @for (emoji of message.emojis; track $index) {
+            <img
+              class="emoji"
+              src="{{ emoji.path }}"
+              alt="emoji"
+              (click)="incrementEmoji(emoji.id)"
+            />
+            <div class="emoji-count">{{ emoji.count }}</div>
+            }
+          </div>
         <app-reaction-bar
           class="reaction-bar reaction-bar-left"
           [editable]="true"
           [message]="message"
-          (editMessageEvent)="editMessage()"
+          (editMessageEvent)="editMessage($event)"
         ></app-reaction-bar>
       </div>
       }
@@ -50,9 +61,21 @@
         @if (message.editedTimestamp) {
           <span class="timestamp">bearbeitet am {{ message.editedTimestamp | date : "dd. MMM, HH:mm" }}</span>
         }
+          <div class="emojis">
+            @for (emoji of message.emojis; track $index) {
+            <img
+              class="emoji"
+              src="{{ emoji.path }}"
+              alt="emoji"
+              (click)="incrementEmoji(emoji.id)"
+            />
+            <div class="emoji-count">{{ emoji.count }}</div>
+            }
+          </div>
         <app-reaction-bar
           class="reaction-bar reaction-bar-right"
           [editable]="false"
+          (editMessageEvent)="editMessage($event)"
           [message]="message"
         ></app-reaction-bar>
       </div>

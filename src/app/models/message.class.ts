@@ -7,9 +7,10 @@ export class Message {
   editedTimestamp?: number;
   uid: string;
   mid: string;
-  
+  emojis: Emoji[] = [];
 
-  constructor(mid: string, uid: string, text: string, timestamp: number) {
+  constructor(mid: string, uid: string, text: string, timestamp: number, emojis: Emoji[]) {
+    this.emojis = emojis;
     this.uid = uid;
     this.text = text;
     this.timestamp = timestamp;
