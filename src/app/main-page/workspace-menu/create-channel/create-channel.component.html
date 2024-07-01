@@ -29,8 +29,8 @@
                 <span>Beschreibung <span>(optional)</span></span>
                 <input [(ngModel)]="description" type="text" id="description" placeholder="Dein Text hier">
                 <div class="button-container">
-                    <button class="inactive-button" [ngClass]="{'active-button': name !== '' && description !== ''}"
-                        [disabled]="name === '' || description === ''"
+                    <button class="inactive-button" [ngClass]="{'active-button': name !== ''}"
+                        [disabled]="name === ''"
                         (click)="createChannel($event)">Erstellen</button>
                 </div>
             </div>
@@ -42,17 +42,43 @@
                 <div (click)="toggleShowCreateChannel($event)" class="close-icon"></div>
             </div>
             <div class="all-user-radio-container">
-                <input (click)="handleRadioButton('allUsers')" [(ngModel)]="allUsers" type="radio" name="allUsers" id="allUsers">
+                <input (click)="handleAllUsersRadioInput()" #allUsers [checked]="allUsersChecked" type="radio"
+                    name="allUsers" id="allUsers">
                 <span>Alle Mitglieder von <span>{{firebaseChannelService.channel.name}}</span> hinzufügen</span>
             </div>
             <div class="specific-user-container">
-                <input (click)="handleRadioButton('specificUsers')" [(ngModel)]="specificUsers" type="radio" name="specificUsers"
-                    id="specificUsers">
+                <input (click)="handleSpecificUsersRadioInput()" #specificUsers [checked]="specificUsersChecked"
+                    type="radio" name="specificUsers" id="specificUsers">
                 <span>Bestimmte Leute hinzufügen</span>
             </div>
+            @if (specificUsersChecked) {
+            <div class="search-user-input-container">
+                <input [(ngModel)]="searchUser" (input)="filterSearchingUsers()" class="search-user" type="text"
+                    name="searchUser" id="searchUser" placeholder="Name eingeben">
+                @if(filteredUsers.length > 0) {
+                <div class="search-user-container">
+                    @for (user of filteredUsers; track $index) {
+                    <div class="user">
+                        <div class="avatar">
+                            <img src="{{user.avatar}}" alt="avatar">
+                            <div class="status-container">
+                                <div class="status-dot" [ngClass]="user.online ? 'online' : 'offline'"></div>
+                            </div>
+                        </div>
+                        <div class="name">
+                            {{user.name}}
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+            }
             <div class="button-container">
-                <button class="inactive-button" [ngClass]="{'active-button': name !== '' && description !== ''}"
-                    [disabled]="name === '' || description === ''" (click)="createChannel($event)">Erstellen</button>
+                <button class="inactive-button"
+                    [ngClass]="{'active-button': searchUser !== '' && specificUsersChecked || allUsersChecked}"
+                    [disabled]="searchUser === ''  && specificUsersChecked"
+                    (click)="addUsersToChannel()">Erstellen</button>
             </div>
         </div>
         }
