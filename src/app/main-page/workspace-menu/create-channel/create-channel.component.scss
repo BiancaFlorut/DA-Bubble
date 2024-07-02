@@ -203,7 +203,7 @@ div {
 
         .search-user-container {
             position: absolute;
-            top: 45px;
+            top: 50px;
             left: 21px;
             width: 335px;
             max-height: 171px;
@@ -275,6 +275,38 @@ div {
 
             .offline {
                 background: $gray;
+            }
+
+            .selected-user {
+                width: fit-content;
+                height: 40px;
+                padding: 3px 10px;
+                border-radius: 35px;
+                background-color: #ECEEFE;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+
+                img {
+                    width: 34px;
+                    height: 34px;
+                    border-radius: 30px;
+                    object-fit: cover;
+                }
+
+                .close-container {
+                    width: 34px;
+                    height: 34px;
+                    cursor: pointer;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    &:hover svg path {
+                        fill: #444DF2;
+                        transform: scale(1.1);
+                    }
+                }
             }
         }
     }

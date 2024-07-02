@@ -18,7 +18,8 @@ export class FirebaseService {
     name: '',
     email: '',
     avatar: '',
-    online: true
+    online: true,
+    channelIds: []
   };
   msgs: Message[] = [];
 
