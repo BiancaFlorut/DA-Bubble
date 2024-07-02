@@ -1,6 +1,6 @@
 <section #messageItem>
   @if (message.uid === chatService.firebase.currentUser.uid) {
-  <div class="message-container fd-rr">
+  <div class="message-container fd-rr" [class.fd-rr]="isCurrentUser(message.uid)">
     <img class="avatar shadow" src="{{ user.avatar }}" alt="avatar" />
     @if (isEditing) {
     <app-editable-message
@@ -30,13 +30,14 @@
         @for (emoji of message.emojis; track $index) { @if (emoji.count > 0) {
         <app-emoji-counter [emoji]="emoji" [message]="message" [cid]="cid" [user]="user"></app-emoji-counter>
         } }
-        <app-emoji-picker-button ></app-emoji-picker-button>
+        <app-emoji-picker-button (emojiPickerEvent)="addReaction($event)"></app-emoji-picker-button>
       </div>
       <app-reaction-bar
         class="reaction-bar reaction-bar-left"
         [editable]="true"
         [message]="message"
         (editMessageEvent)="editMessage($event)"
+        (addReactionEvent)="addReaction($event)"
       ></app-reaction-bar>
     </div>
     }
@@ -66,7 +67,7 @@
         @for (emoji of message.emojis; track $index) { @if (emoji.count > 0) {
           <app-emoji-counter [emoji]="emoji" [message]="message" [cid]="cid" [user]="user"></app-emoji-counter>
           } }
-          <app-emoji-picker-button ></app-emoji-picker-button>
+          <app-emoji-picker-button (emojiPickerEvent)="addReaction($event)"></app-emoji-picker-button>
       </div>
       <app-reaction-bar
         class="reaction-bar reaction-bar-right"
