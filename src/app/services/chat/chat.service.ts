@@ -5,6 +5,7 @@ import { FirebaseService } from '../firebase/firebase.service';
 import { DirectChat } from '../../models/direct-chat.class';
 import { Message } from '../../models/message.class';
 import { onSnapshot } from 'firebase/firestore';
+import { Emoji } from '../../models/emoji.class';
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +45,8 @@ export class ChatService {
       onSnapshot(this.firebase.getDirectMessagesRef(cid), (collection) => {
         let msgs = [] as Message[];
         collection.forEach((doc) => {
-          let msg = new Message(doc.data()['mid'], doc.data()['uid'], doc.data()['text'], doc.data()['timestamp'], doc.data()['emojis']);
+          const emojis = doc.data()['emojis'] as Emoji[];
+          let msg = new Message(doc.data()['mid'], doc.data()['uid'], doc.data()['text'], doc.data()['timestamp'], emojis);
           if (doc.data()['editedTimestamp']) msg.editedTimestamp = doc.data()['editedTimestamp'];
           msgs.push(msg);
         });

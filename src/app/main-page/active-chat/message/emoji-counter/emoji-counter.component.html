@@ -1,0 +1,18 @@
+<div class="reaction-content">
+  <div class="emoji-container" [class.given-emoji]="emoji.uids.includes(user.uid!)" (click)="incrementEmoji(emoji.id)">
+    <div class="emoji-details-container" (click)="$event.stopPropagation()">
+      <div class="emoji-details">
+        <img src="{{ emoji.path}}" alt="{{emoji.id}}">
+        <span>
+          {{ getDetailsText() }}
+      </span>
+      </div>
+    </div>
+    <img
+      class="emoji"
+      src="{{ emoji.path }}"
+      alt="{{emoji.id}}"
+    />
+    <div class="emoji-count">{{ emoji.count }}</div>
+  </div>
+</div>

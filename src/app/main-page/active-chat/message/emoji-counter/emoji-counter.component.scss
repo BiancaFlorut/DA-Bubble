@@ -1,0 +1,66 @@
+@import './../../../../../assets/styles/mixIns.scss';
+@import './../../../../../assets/styles/colors.scss';
+
+.reaction-content {
+  @include displayFlex(row, center, center, 10.42px);
+}
+
+.emoji-container {
+  @include displayFlex(row, center, center, 10px);
+  border: 1px solid $light_purple;
+  border-radius: 20px;
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: white;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 21.82px;
+  position: relative;
+  &:hover {
+    border-color: $purple_2;
+  }
+
+  &:hover .emoji-details {
+    display: flex;
+  }
+
+  &:active {
+    // background-color: $light_purple;
+    border-color: $purple_1;
+    font-weight: 700;
+  }
+}
+
+.emoji {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.given-emoji {
+  border-color: $purple_2;
+}
+
+.emoji-details-container {
+  position: absolute;
+  top: 0;
+  width: auto;
+}
+
+.emoji-details {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 21.82px;
+  color: white;
+  @include displayFlex(column, center, center, 5px);
+  padding: 15px 10px;
+  background-color: $purple_1;
+  border-radius: 30px 30px 30px 0px;
+  height: 112px;
+  width: 200px;
+  display: none;
+  position: absolute;
+  transform: translateY(-100%);
+  z-index: 2;
+  cursor: default;
+}

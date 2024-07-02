@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, addDoc, collection, doc, getDoc, updateDoc } from '@angular/fire/firestore';
-import { DocumentData, DocumentReference, onSnapshot, setDoc } from 'firebase/firestore';
+import { DocumentData, DocumentReference, arrayUnion, onSnapshot, setDoc } from 'firebase/firestore';
 import { User } from '../../interfaces/user';
 import { Message } from '../../models/message.class';
 import { Emoji } from '../../models/emoji.class';
@@ -56,10 +56,11 @@ export class FirebaseService {
   public async setNewUser(docRef: DocumentReference<DocumentData, DocumentData>, newUser: User) {
     newUser.online = true;
     await setDoc(docRef, newUser)
-      .catch((err) => { console.error(err) })
-      .then((result) => {
-      }
-      )
+      .catch((err) => { console.error(err) });
+  }
+
+  public getUser(uid: string) {
+    return this.users.find((user) => user.uid === uid);
   }
 
   async connectUser(user: User) {
@@ -139,6 +140,10 @@ export class FirebaseService {
       updateDoc(doc(this.getDirectMessagesRef(cid), mid), { text: data.text, editedTimestamp: data.editedTimestamp });
     else
       updateDoc(doc(this.getDirectMessagesRef(cid), mid), { timestamp: data.timestamp, text: data.text, mid: mid, emojis: this.getEmojisJson(data.emojis) });
+  }
+
+  incrementEmojiCount(cid: string, mid: string, emoji: Emoji) {
+    updateDoc(doc(this.getDirectMessagesRef(cid), mid), { emojis: arrayUnion(emoji) });
   }
 
   getDirectMessagesRef(chatId: string) {

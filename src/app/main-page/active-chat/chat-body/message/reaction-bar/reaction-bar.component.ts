@@ -16,6 +16,7 @@ export class ReactionBarComponent {
   @Input() editable: boolean = false;
   @Input() message!: Message;
   @Output() editMessageEvent = new EventEmitter<Message>();
+  @Output() addReactionEvent = new EventEmitter<string>();
   isMessageMenuOpen: boolean = false;
   @ViewChild('messageMenu') messageMenu!: ElementRef;
   userService = inject(UserService);
@@ -39,23 +40,7 @@ export class ReactionBarComponent {
   }
 
   addReaction(id: string) {
-    const indexUser = this.userService.emojis.findIndex(e => e.id === id);
-    if (indexUser != -1) {
-      this.userService.emojis[indexUser].incrementCount();
-      this.userService.sortEmojis();
-      const index = this.message.emojis.findIndex(e => e.id === id);
-      if (index != -1) {
-        if (this.message.emojis[index].uid != this.userService.firebase.currentUser.uid)
-        this.message.emojis[index].incrementCount();
-      } else {
-        const emoji = new Emoji(id,this.userService.emojis[indexUser].path, this.userService.firebase.currentUser.uid!);
-        emoji.count = 1;
-        this.message.emojis.push(emoji);
-      }
-      this.editMessageEvent.emit(this.message);
-    } else {
-      console.log('no emoji found in user service');
-    }
+    this.addReactionEvent.emit(id);
   }
 
 }
