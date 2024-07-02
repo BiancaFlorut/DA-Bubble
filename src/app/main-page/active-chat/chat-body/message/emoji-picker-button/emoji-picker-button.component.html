@@ -1,0 +1,8 @@
+<section>
+  <div class="emoji-picker" [class.show]="isEmojiPickerOpen">
+    @for (emoji of emojis; track $index) {
+      <img class="emoji" src="{{ emoji.path }}" alt="{{ emoji.id }}" (click)="selectEmoji(emoji.id)">
+    }
+  </div>
+  <app-svg-button [source]="'./assets/img/main-page/reactions/add_reaction.svg'" (click)="toggleEmojiPicker()"/>
+</section>

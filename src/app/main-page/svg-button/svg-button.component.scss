@@ -16,6 +16,7 @@
   cursor: pointer;
   box-sizing: content-box;
   transition: 0.1s ease-in;
+  background-color: white;
   &:hover {
     background-color: $bg_color;
   }

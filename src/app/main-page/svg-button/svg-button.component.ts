@@ -8,7 +8,7 @@ import { Component, Input } from '@angular/core';
   styleUrl: './svg-button.component.scss'
 })
 export class SvgButtonComponent {
-@Input() source: string = "";
+@Input({ required: true }) source: string = "";
 
   enterSource(elem: any) {
     let img = elem.target as HTMLImageElement;

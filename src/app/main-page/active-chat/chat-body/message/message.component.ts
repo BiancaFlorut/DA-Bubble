@@ -7,12 +7,13 @@ import { ChatService } from '../../../../services/chat/chat.service';
 import { User } from '../../../../interfaces/user';
 import { EditableMessageComponent } from './editable-message/editable-message.component';
 import { DirectChat } from '../../../../models/direct-chat.class';
-import { EmojiCounterComponent } from './emoji-counter/emoji-counter.component';
+import { EmojiCounterComponent } from '../../message/emoji-counter/emoji-counter.component';
+import { EmojiPickerButtonComponent } from './emoji-picker-button/emoji-picker-button.component';
 
 @Component({
   selector: 'app-message',
   standalone: true,
-  imports: [ReactionBarComponent, CommonModule, EditableMessageComponent, EmojiCounterComponent],
+  imports: [ReactionBarComponent, CommonModule, EditableMessageComponent, EmojiCounterComponent, EmojiPickerButtonComponent],
   templateUrl: './message.component.html',
   styleUrl: './message.component.scss'
 })

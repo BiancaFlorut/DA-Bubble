@@ -30,6 +30,7 @@
         @for (emoji of message.emojis; track $index) { @if (emoji.count > 0) {
         <app-emoji-counter [emoji]="emoji" [message]="message" [cid]="cid" [user]="user"></app-emoji-counter>
         } }
+        <app-emoji-picker-button ></app-emoji-picker-button>
       </div>
       <app-reaction-bar
         class="reaction-bar reaction-bar-left"
@@ -65,6 +66,7 @@
         @for (emoji of message.emojis; track $index) { @if (emoji.count > 0) {
           <app-emoji-counter [emoji]="emoji" [message]="message" [cid]="cid" [user]="user"></app-emoji-counter>
           } }
+          <app-emoji-picker-button ></app-emoji-picker-button>
       </div>
       <app-reaction-bar
         class="reaction-bar reaction-bar-right"

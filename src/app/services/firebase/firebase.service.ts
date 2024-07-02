@@ -55,10 +55,11 @@ export class FirebaseService {
   public async setNewUser(docRef: DocumentReference<DocumentData, DocumentData>, newUser: User) {
     newUser.online = true;
     await setDoc(docRef, newUser)
-      .catch((err) => { console.error(err) })
-      .then((result) => {
-      }
-      )
+      .catch((err) => { console.error(err) });
+  }
+
+  public getUser(uid: string) {
+    return this.users.find((user) => user.uid === uid);
   }
 
   async connectUser(user: User) {
