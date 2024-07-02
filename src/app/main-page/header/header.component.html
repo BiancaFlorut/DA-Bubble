@@ -51,10 +51,10 @@
                     </div>
                     @if (userService.user.online) {
                     <span (click)="handleStatus()"
-                        [ngClass]="{'active-span': userService.user.online, 'inactive-span': !userService.user.online}">Aktive</span>
+                        [ngClass]="{'active-span': userService.user.online, 'inactive-span': !userService.user.online}">Online</span>
                     } @else {
                     <span (click)="handleStatus()"
-                        [ngClass]="{'active-span': userService.user.online, 'inactive-span': !userService.user.online}">Abwesend</span>
+                        [ngClass]="{'active-span': userService.user.online, 'inactive-span': !userService.user.online}">Offline</span>
                     }
                 </div>
                 <div class="bottom-container">

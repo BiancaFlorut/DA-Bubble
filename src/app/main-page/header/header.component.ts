@@ -5,6 +5,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../services/auth/auth.service';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { UserService } from '../../services/user/user.service';
+import { ChatService } from '../../services/chat/chat.service';
+import { Chat } from '../../interfaces/chat.interface';
 
 @Component({
   selector: 'app-header',
@@ -23,6 +25,7 @@ export class HeaderComponent {
   private authService: AuthService = inject(AuthService);
   public userService: UserService = inject(UserService);
   private firebase: FirebaseService = inject(FirebaseService);
+  private chatService: ChatService = inject(ChatService)
 
   public isUserMenuActive: boolean = false;
   public showProfile: boolean = false;
@@ -183,5 +186,6 @@ export class HeaderComponent {
           this.router.navigate(['/landing-page/login']);
         })
     }
+    this.chatService.resetChat();
   }
 }

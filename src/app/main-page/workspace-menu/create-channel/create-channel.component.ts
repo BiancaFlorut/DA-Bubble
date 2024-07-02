@@ -1,9 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { CreateChannelService } from '../../../services/create-channel/create-channel.service';
 import { FormsModule } from '@angular/forms';
 import { FirebaseChannelService } from '../../../services/firebase-channel/firebase-channel.service';
 import { UserService } from '../../../services/user/user.service';
 import { CommonModule } from '@angular/common';
+import { FirebaseService } from '../../../services/firebase/firebase.service';
+import { User } from '../../../interfaces/user';
 
 @Component({
   selector: 'app-create-channel',
@@ -17,14 +19,20 @@ import { CommonModule } from '@angular/common';
 })
 export class CreateChannelComponent {
   public createChannelService: CreateChannelService = inject(CreateChannelService);
+  public firebaseService: FirebaseService = inject(FirebaseService);
   public firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
   private userService: UserService = inject(UserService);
 
+  @ViewChild('specificUsers') specificUsers!: ElementRef<HTMLInputElement>;
+  @ViewChild('allUsers') allUsers!: ElementRef<HTMLInputElement>;
+
+  public filteredUsers: User[] = [];
   public name: string = '';
   public description: string = '';
-  public allUsers: boolean = false;
-  public specificUsers: boolean = false;
+  public searchUser: string = '';
   public isCreatedChannel: boolean = false;
+  specificUsersChecked: boolean = false;
+  allUsersChecked: boolean = true;
 
   public toggleShowCreateChannel(event: Event): void {
     event.stopPropagation();
@@ -43,13 +51,31 @@ export class CreateChannelComponent {
     this.isCreatedChannel = true;
   }
 
-  public handleRadioButton(button: string) {
-    if (button === 'allUsers') {
-      this.allUsers = true;
-      this.specificUsers = false;
-    } else {
-      this.specificUsers = true;
-      this.allUsers = false;
+  public handleAllUsersRadioInput() {
+    if (!this.allUsersChecked) {
+      this.allUsersChecked = !this.allUsersChecked;
+      this.specificUsersChecked = !this.specificUsersChecked;
     }
+  }
+
+  public handleSpecificUsersRadioInput() {
+    if (!this.specificUsersChecked) {
+      this.allUsersChecked = !this.allUsersChecked;
+      this.specificUsersChecked = !this.specificUsersChecked;
+    }
+  }
+
+  public filterSearchingUsers() {
+    this.filteredUsers = [];
+    this.filteredUsers = this.firebaseService.users.filter(user => {
+      return user.name.toLowerCase().includes(this.searchUser.toLowerCase());
+    });
+    if (this.searchUser === '') {
+      this.filteredUsers = [];
+    }
+  }
+
+  public addUsersToChannel() {
+    console.log('user add');
   }
 }

@@ -12,7 +12,7 @@ export class UserService {
     name: '',
     email: '',
     avatar: '',
-    online: false
+    online: false,
   };
   firebase = inject(FirebaseService);
   emojis:Emoji[] = [
