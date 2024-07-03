@@ -6,11 +6,13 @@ import { DirectChat } from '../../../models/direct-chat.class';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
 import { AutosizeModule } from 'ngx-autosize';
 import { Message } from '../../../models/message.class';
+import { EmojiPickerButtonComponent } from '../chat-body/message/emoji-picker-button/emoji-picker-button.component';
+import { ThreeStatesButtonComponent } from '../../svg-button/three-states-button/three-states-button.component';
 
 @Component({
   selector: 'app-chat-input',
   standalone: true,
-  imports: [FormsModule, CommonModule, AutosizeModule],
+  imports: [FormsModule, CommonModule, AutosizeModule, EmojiPickerButtonComponent, ThreeStatesButtonComponent],
   templateUrl: './chat-input.component.html',
   styleUrl: './chat-input.component.scss'
 })
@@ -21,6 +23,7 @@ export class ChatInputComponent {
   firebase: FirebaseService = inject(FirebaseService);
   @ViewChild('messageInput') messageInput!: ElementRef;
   placeholderText: string = 'Einen Nachricht schreiben...';
+  isHoveringOptions: boolean = false;
 
   constructor() {
     this.chatService.currentChat.subscribe(chat => {
@@ -52,6 +55,11 @@ export class ChatInputComponent {
     } else {
       this.placeholderText = `Nachricht von ${this.currentChat.user.name}`
     }
+  }
+
+  addEmoji(id: string) {
+    console.log(id);
+    
   }
 
 }

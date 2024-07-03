@@ -1,10 +1,10 @@
 import { Component, Input, inject } from '@angular/core';
-import { Emoji } from '../../../../models/emoji.class';
-import { Message } from '../../../../models/message.class';
-import { User } from '../../../../interfaces/user';
-import { ChatService } from '../../../../services/chat/chat.service';
-import { SvgButtonComponent } from '../../../svg-button/svg-button.component';
-import { EmojiPickerButtonComponent } from '../../chat-body/message/emoji-picker-button/emoji-picker-button.component';
+import { Emoji } from '../../../../../models/emoji.class';
+import { Message } from '../../../../../models/message.class';
+import { User } from '../../../../../interfaces/user';
+import { ChatService } from '../../../../../services/chat/chat.service';
+import { SvgButtonComponent } from '../../../../svg-button/svg-button.component';
+import { EmojiPickerButtonComponent } from '../emoji-picker-button/emoji-picker-button.component';
 
 @Component({
   selector: 'app-emoji-counter',

@@ -30,7 +30,12 @@
         @for (emoji of message.emojis; track $index) { @if (emoji.count > 0) {
         <app-emoji-counter [emoji]="emoji" [message]="message" [cid]="cid" [user]="user"></app-emoji-counter>
         } }
-        <app-emoji-picker-button (emojiPickerEvent)="addReaction($event)"></app-emoji-picker-button>
+        @if (areAnyEmojis()) {
+          <app-emoji-picker-button (emojiPickerEvent)="addReaction($event)">
+            <app-svg-button [source]="'./assets/img/main-page/reactions/add_reaction.svg'"/>
+          </app-emoji-picker-button>
+        }
+        
       </div>
       <app-reaction-bar
         class="reaction-bar reaction-bar-left"
@@ -67,13 +72,18 @@
         @for (emoji of message.emojis; track $index) { @if (emoji.count > 0) {
           <app-emoji-counter [emoji]="emoji" [message]="message" [cid]="cid" [user]="user"></app-emoji-counter>
           } }
-          <app-emoji-picker-button (emojiPickerEvent)="addReaction($event)"></app-emoji-picker-button>
+          @if (areAnyEmojis()) {
+            <app-emoji-picker-button (emojiPickerEvent)="addReaction($event)">
+              <app-svg-button [source]="'./assets/img/main-page/reactions/add_reaction.svg'" />
+            </app-emoji-picker-button>
+          }
       </div>
       <app-reaction-bar
         class="reaction-bar reaction-bar-right"
         [editable]="false"
         (editMessageEvent)="editMessage($event)"
         [message]="message"
+        (addReactionEvent)="addReaction($event)"
       ></app-reaction-bar>
     </div>
   </div>

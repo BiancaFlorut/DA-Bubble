@@ -7,15 +7,16 @@ import { ChatService } from '../../../../services/chat/chat.service';
 import { User } from '../../../../interfaces/user';
 import { EditableMessageComponent } from './editable-message/editable-message.component';
 import { DirectChat } from '../../../../models/direct-chat.class';
-import { EmojiCounterComponent } from '../../message/emoji-counter/emoji-counter.component';
+import { EmojiCounterComponent } from './emoji-counter/emoji-counter.component';
 import { EmojiPickerButtonComponent } from './emoji-picker-button/emoji-picker-button.component';
 import { UserService } from '../../../../services/user/user.service';
 import { Emoji } from '../../../../models/emoji.class';
+import { SvgButtonComponent } from '../../../svg-button/svg-button.component';
 
 @Component({
   selector: 'app-message',
   standalone: true,
-  imports: [ReactionBarComponent, CommonModule, EditableMessageComponent, EmojiCounterComponent, EmojiPickerButtonComponent],
+  imports: [ReactionBarComponent, CommonModule, EditableMessageComponent, EmojiCounterComponent, EmojiPickerButtonComponent, SvgButtonComponent],
   templateUrl: './message.component.html',
   styleUrl: './message.component.scss'
 })
@@ -30,10 +31,7 @@ export class MessageComponent {
   chat!: DirectChat;
   @Input() cid: string = '';
   @ViewChild('messageItem') messageItem!: ElementRef;
-
-  constructor() {
-
-  }
+  isEmojiPickerOpen = false;
 
   editMessage(message: Message) {
     if (message) {
@@ -78,5 +76,20 @@ export class MessageComponent {
 
   isCurrentUser(uid: string) {
     return uid === this.userService.firebase.currentUser.uid;
+  }
+
+  areAnyEmojis() {
+    let result = false;
+    for (let emoji of this.message.emojis) {
+      if (emoji.count > 0) {
+        result = true;
+        break;
+      }
+    }
+    return result;
+  } 
+
+  toggleEmojiPicker() {
+    this.isEmojiPickerOpen = !this.isEmojiPickerOpen;
   }
 }
