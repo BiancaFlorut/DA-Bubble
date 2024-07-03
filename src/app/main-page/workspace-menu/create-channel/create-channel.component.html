@@ -1,6 +1,6 @@
 <div (click)="toggleShowCreateChannel($event)" class="background-create-channel-container">
     <div class="create-channel-container">
-        @if(firebaseChannelService.channel.name === '') {
+        @if(showCreateChannel) {
         <div (click)="$event.stopPropagation()" class="create-channel">
             <div class="top-container">
                 <span>Channel erstellen</span>
@@ -29,8 +29,7 @@
                 <span>Beschreibung <span>(optional)</span></span>
                 <input [(ngModel)]="description" type="text" id="description" placeholder="Dein Text hier">
                 <div class="button-container">
-                    <button class="inactive-button" [ngClass]="{'active-button': name !== ''}"
-                        [disabled]="name === ''"
+                    <button class="inactive-button" [ngClass]="{'active-button': name !== ''}" [disabled]="name === ''"
                         (click)="createChannel($event)">Erstellen</button>
                 </div>
             </div>
@@ -55,10 +54,11 @@
             <div class="search-user-input-container">
                 <input [(ngModel)]="searchUser" (input)="filterSearchingUsers()" class="search-user" type="text"
                     name="searchUser" id="searchUser" placeholder="Name eingeben">
-                @if(filteredUsers.length > 0) {
+                @if(filteredUsers.length > 0 && searchUser !== '' || selectedUsers.length > 0) {
                 <div class="search-user-container">
+                    @if(filteredUsers.length > 0 && searchUser !== ''){
                     @for (user of filteredUsers; track $index) {
-                    <div class="user">
+                    <div (click)="addUserToChannel($index)" class="user">
                         <div class="avatar">
                             <img src="{{user.avatar}}" alt="avatar">
                             <div class="status-container">
@@ -70,15 +70,32 @@
                         </div>
                     </div>
                     }
+                    } @else {
+                    @for (user of selectedUsers; track $index) {
+                    <div class="selected-user">
+                        <img src="{{user.avatar}}" alt="avatar">
+                        <div class="name">
+                            {{user.name}}
+                        </div>
+                        <div (click)="removeUserFromChannel($index)" class="close-container">
+                            <svg width="10" height="10" viewBox="0 0 14 14" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M6.9998 8.3998L2.0998 13.2998C1.91647 13.4831 1.68314 13.5748 1.3998 13.5748C1.11647 13.5748 0.883138 13.4831 0.699805 13.2998C0.516471 13.1165 0.424805 12.8831 0.424805 12.5998C0.424805 12.3165 0.516471 12.0831 0.699805 11.8998L5.5998 6.9998L0.699805 2.0998C0.516471 1.91647 0.424805 1.68314 0.424805 1.3998C0.424805 1.11647 0.516471 0.883138 0.699805 0.699805C0.883138 0.516471 1.11647 0.424805 1.3998 0.424805C1.68314 0.424805 1.91647 0.516471 2.0998 0.699805L6.9998 5.5998L11.8998 0.699805C12.0831 0.516471 12.3165 0.424805 12.5998 0.424805C12.8831 0.424805 13.1165 0.516471 13.2998 0.699805C13.4831 0.883138 13.5748 1.11647 13.5748 1.3998C13.5748 1.68314 13.4831 1.91647 13.2998 2.0998L8.3998 6.9998L13.2998 11.8998C13.4831 12.0831 13.5748 12.3165 13.5748 12.5998C13.5748 12.8831 13.4831 13.1165 13.2998 13.2998C13.1165 13.4831 12.8831 13.5748 12.5998 13.5748C12.3165 13.5748 12.0831 13.4831 11.8998 13.2998L6.9998 8.3998Z"
+                                    fill="black" />
+                            </svg>
+                        </div>
+                    </div>
+                    }
+                    }
                 </div>
                 }
             </div>
             }
             <div class="button-container">
-                <button class="inactive-button"
-                    [ngClass]="{'active-button': searchUser !== '' && specificUsersChecked || allUsersChecked}"
-                    [disabled]="searchUser === ''  && specificUsersChecked"
-                    (click)="addUsersToChannel()">Erstellen</button>
+                <button (click)="saveUserToChannel()" class="inactive-button"
+                    [ngClass]="{'active-button': selectedUsers.length > 0 && specificUsersChecked || allUsersChecked}"
+                    [disabled]="selectedUsers.length === 0  && specificUsersChecked">Erstellen</button>
             </div>
         </div>
         }

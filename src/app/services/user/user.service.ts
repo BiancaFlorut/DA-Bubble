@@ -13,18 +13,19 @@ export class UserService {
     email: '',
     avatar: '',
     online: false,
+    channelIds: []
   };
   firebase = inject(FirebaseService);
-  emojis:Emoji[] = [
-      new Emoji('nerd face', './assets/img/main-page/reactions/emoji _nerd face_.svg', this.firebase.currentUser.uid!),
-      new Emoji('person raising both hands in celebration', './assets/img/main-page/reactions/emoji _person raising both hands in celebration_.svg', this.firebase.currentUser.uid!),
-      new Emoji('rocket', './assets/img/main-page/reactions/emoji _rocket_.svg', this.firebase.currentUser.uid!),
-      new Emoji('white heavy check mark', './assets/img/main-page/reactions/emoji _white heavy check mark_.svg', this.firebase.currentUser.uid!)
+  emojis: Emoji[] = [
+    new Emoji('nerd face', './assets/img/main-page/reactions/emoji _nerd face_.svg', this.firebase.currentUser.uid!),
+    new Emoji('person raising both hands in celebration', './assets/img/main-page/reactions/emoji _person raising both hands in celebration_.svg', this.firebase.currentUser.uid!),
+    new Emoji('rocket', './assets/img/main-page/reactions/emoji _rocket_.svg', this.firebase.currentUser.uid!),
+    new Emoji('white heavy check mark', './assets/img/main-page/reactions/emoji _white heavy check mark_.svg', this.firebase.currentUser.uid!)
   ];
-  
 
   public userPassword: string = '';
   public currentAvatar: string = '';
+  public currentChannel: string = '';
 
   public setUser(user: User) {
     this.user = user;
@@ -40,7 +41,8 @@ export class UserService {
       name: '',
       email: '',
       avatar: '',
-      online: false
+      online: false,
+      channelIds: []
     };
     this.userPassword = '';
   }

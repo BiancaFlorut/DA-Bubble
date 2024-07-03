@@ -27,20 +27,21 @@ export class CreateChannelComponent {
   @ViewChild('allUsers') allUsers!: ElementRef<HTMLInputElement>;
 
   public filteredUsers: User[] = [];
+  public selectedUsers: User[] = [];
   public name: string = '';
   public description: string = '';
   public searchUser: string = '';
-  public isCreatedChannel: boolean = false;
-  specificUsersChecked: boolean = false;
-  allUsersChecked: boolean = true;
+  public specificUsersChecked: boolean = false;
+  public allUsersChecked: boolean = true;
+  public showCreateChannel: boolean = true;
 
   public toggleShowCreateChannel(event: Event): void {
     event.stopPropagation();
-    this.firebaseChannelService.channel.name = '';
     this.createChannelService.toggleShowCreateChannel();
+    this.showCreateChannel = true;
   }
 
-  public createChannel(event: Event): void {
+  public createChannel(event: Event) {
     event.stopPropagation();
     this.firebaseChannelService.channel.name = this.name;
     this.firebaseChannelService.channel.description = this.description;
@@ -48,7 +49,7 @@ export class CreateChannelComponent {
     this.firebaseChannelService.addNewChannel();
     this.name = '';
     this.description = '';
-    this.isCreatedChannel = true;
+    this.showCreateChannel = false;
   }
 
   public handleAllUsersRadioInput() {
@@ -75,7 +76,31 @@ export class CreateChannelComponent {
     }
   }
 
-  public addUsersToChannel() {
-    console.log('user add');
+  public addUserToChannel(index: number) {
+    let selectedUser = this.filteredUsers[index];
+    if (!this.selectedUsers.includes(selectedUser)) {
+      this.selectedUsers.push(selectedUser);
+    }
+    this.searchUser = '';
+  }
+
+  public removeUserFromChannel(index: number) {
+    this.selectedUsers.splice(index, 1);
+  }
+
+  public saveUserToChannel() {
+    let currentChannel = this.userService.currentChannel;
+    if (this.allUsersChecked) {
+      this.firebaseService.users.forEach(user => {
+        if (!user.channelIds?.includes(currentChannel)) {
+          user.channelIds?.push(currentChannel);
+          this.firebaseService.updateUser(user);
+        }
+      });
+    } else {
+      this.firebaseChannelService.updateChannel(currentChannel);
+    }
+    this.createChannelService.showCreateChannel = false;
+    this.showCreateChannel = true;
   }
 }
