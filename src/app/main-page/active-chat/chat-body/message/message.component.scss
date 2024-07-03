@@ -73,6 +73,14 @@ app-editable-message {
   background-color: $bg_color;
   padding: 15px;
   white-space: pre-wrap;
+  ::ng-deep p {
+    vertical-align: middle;
+    font-family: 'Nunito';
+    font-size: 18px;
+    line-height: 24.55px;
+    font-weight: 400;
+    margin: 0;
+  }
 }
 
 .shadow {

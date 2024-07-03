@@ -29,8 +29,7 @@ export class ChatInputComponent {
   placeholderText: string = 'Einen Nachricht schreiben...';
   isHoveringOptions: boolean = false;
   userService = inject(UserService);
-  editor: Editor | undefined;
-  html = '';
+  editor!: Editor;
 
   ngOnInit(): void {
     this.editor = new Editor();

@@ -2,12 +2,12 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, inject }
 import { Message } from '../../../../../models/message.class';
 import { SvgButtonComponent } from '../../../../svg-button/svg-button.component';
 import { UserService } from '../../../../../services/user/user.service';
-import { Emoji } from '../../../../../models/emoji.class';
+import { EmojiPickerButtonComponent } from '../emoji-picker-button/emoji-picker-button.component';
 
 @Component({
   selector: 'app-reaction-bar',
   standalone: true,
-  imports: [SvgButtonComponent],
+  imports: [SvgButtonComponent, EmojiPickerButtonComponent],
   templateUrl: './reaction-bar.component.html',
   styleUrl: './reaction-bar.component.scss'
 })

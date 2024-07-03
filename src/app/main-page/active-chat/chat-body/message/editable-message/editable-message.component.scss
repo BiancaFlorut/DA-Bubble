@@ -11,7 +11,7 @@
   padding: 20px;
   > textarea {
     width: 100%;
-    font-family: 'Nunito';
+    font-family: "Nunito";
     font-size: 18px;
     line-height: 24.55px;
     font-weight: 400;
@@ -21,7 +21,6 @@
     &:focus {
       outline: none;
     }
-
   }
 }
 
@@ -62,5 +61,15 @@ button {
 
   &:active {
     background-color: $purple_1;
+  }
+}
+
+ngx-editor::ng-deep {
+  p {
+    color: $gray;
+    margin: 0;
+  }
+  .NgxEditor {
+    border: 0px;
   }
 }

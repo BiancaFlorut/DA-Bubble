@@ -1,5 +1,5 @@
 <div class="message-container">
-  <textarea [(ngModel)]="message.text" #messageInput autosize>{{ message.text }} </textarea>
+  <ngx-editor [editor]="editor!" [(ngModel)]="message.text" [disabled]="false" minHeight="50px" [placeholder]="''"></ngx-editor>
   <div class="message-buttons">
     <app-svg-button [source]="'./assets/img/main-page/workspace-menu/sentiment_satisfied.svg'"  />
     <div class="decision-buttons">

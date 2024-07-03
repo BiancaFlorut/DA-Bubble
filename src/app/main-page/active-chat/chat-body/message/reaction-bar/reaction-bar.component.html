@@ -1,7 +1,9 @@
 <section>
   <img class="reaction-button" src="{{ this.userService.emojis[0].path }}" alt="" (click)="addReaction(userService.emojis[0].id)" />
   <img class="reaction-button" src="{{ this.userService.emojis[1].path }}" alt="" (click)="addReaction(userService.emojis[1].id)" />
-  <app-svg-button [source]="'./assets/img/main-page/reactions/add_reaction.svg'"></app-svg-button>
+  <app-emoji-picker-button (emojiPickerEvent)="addReaction($event)">
+    <app-svg-button [source]="'./assets/img/main-page/reactions/add_reaction.svg'" />
+  </app-emoji-picker-button>
   <app-svg-button [source]="'./assets/img/main-page/reactions/comment.svg'"></app-svg-button>
   @if (editable) {
   <div class="menu-container">

@@ -32,14 +32,16 @@ export class MessageComponent {
   @Input() cid: string = '';
   @ViewChild('messageItem') messageItem!: ElementRef;
   isEmojiPickerOpen = false;
+  oldMessage: string = '';
 
   editMessage(message: Message) {
     if (message) {
-      this.isEditing = false;
       this.chatService.editMessage(this.cid, message);
     }
-    else
+    else{
       this.isEditing = true;
+      this.oldMessage = this.message.text;
+    }
   }
 
 
@@ -47,6 +49,9 @@ export class MessageComponent {
     this.isEditing = false;
     if (message)
       this.chatService.editMessage(this.cid, message);
+    else {
+      this.message.text = this.oldMessage;
+    }
   }
 
   scrollIntoView() {
