@@ -8,11 +8,15 @@ import { AutosizeModule } from 'ngx-autosize';
 import { Message } from '../../../models/message.class';
 import { EmojiPickerButtonComponent } from '../chat-body/message/emoji-picker-button/emoji-picker-button.component';
 import { ThreeStatesButtonComponent } from '../../svg-button/three-states-button/three-states-button.component';
+import { UserService } from '../../../services/user/user.service';
+import { NgxEditorModule } from 'ngx-editor';
+import { Editor } from 'ngx-editor';
+
 
 @Component({
   selector: 'app-chat-input',
   standalone: true,
-  imports: [FormsModule, CommonModule, AutosizeModule, EmojiPickerButtonComponent, ThreeStatesButtonComponent],
+  imports: [FormsModule, CommonModule, AutosizeModule, EmojiPickerButtonComponent, ThreeStatesButtonComponent, NgxEditorModule],
   templateUrl: './chat-input.component.html',
   styleUrl: './chat-input.component.scss'
 })
@@ -24,6 +28,19 @@ export class ChatInputComponent {
   @ViewChild('messageInput') messageInput!: ElementRef;
   placeholderText: string = 'Einen Nachricht schreiben...';
   isHoveringOptions: boolean = false;
+  userService = inject(UserService);
+  editor: Editor | undefined;
+  html = '';
+
+  ngOnInit(): void {
+    this.editor = new Editor();
+  }
+
+  // make sure to destory the editor
+  ngOnDestroy(): void {
+    if (this.editor)
+    this.editor.destroy();
+  }
 
   constructor() {
     this.chatService.currentChat.subscribe(chat => {
@@ -31,7 +48,7 @@ export class ChatInputComponent {
         this.currentChat = chat;
         this.replacePlaceholder();
         setTimeout(() => {
-          this.messageInput.nativeElement.focus();
+          this.editor?.commands.focus().exec();
         }, 10)
       }
     });
@@ -58,8 +75,14 @@ export class ChatInputComponent {
   }
 
   addEmoji(id: string) {
-    console.log(id);
-    
+    const emoji = this.userService.emojis.find(emoji => emoji.id === id);
+    if (emoji) {
+      this.editor?.commands.insertImage(emoji?.path).exec();
+      this.editor?.commands.focus().exec();
+      let img = document.createElement('img');
+      img.src = emoji.path;
+  
+    }
   }
 
 }

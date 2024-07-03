@@ -97,4 +97,8 @@
   @include displayFlex(row, center, center, 0);
 }
 
-
+::ng-deep {
+  .NgxEditor {
+    border: 0px!important;
+  }
+}

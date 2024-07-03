@@ -1,12 +1,5 @@
 <div class="input-container">
-  <textarea
-    class="message-input"
-    type="text"
-    autosize
-    #messageInput
-    [placeholder]="placeholderText"
-    [(ngModel)]="message"
-  ></textarea>
+  <ngx-editor [editor]="editor!" [(ngModel)]="message" [disabled]="false" [placeholder]="placeholderText"></ngx-editor>
   <div class="send-container">
     <div
       class="send-options-container"
