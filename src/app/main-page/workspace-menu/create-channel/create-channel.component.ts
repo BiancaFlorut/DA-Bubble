@@ -18,8 +18,8 @@ import { User } from '../../../interfaces/user';
   styleUrl: './create-channel.component.scss'
 })
 export class CreateChannelComponent {
-  public createChannelService: CreateChannelService = inject(CreateChannelService);
-  public firebaseService: FirebaseService = inject(FirebaseService);
+  private createChannelService: CreateChannelService = inject(CreateChannelService);
+  private firebaseService: FirebaseService = inject(FirebaseService);
   public firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
   private userService: UserService = inject(UserService);
 
@@ -28,9 +28,11 @@ export class CreateChannelComponent {
 
   public filteredUsers: User[] = [];
   public selectedUsers: User[] = [];
+
   public name: string = '';
   public description: string = '';
   public searchUser: string = '';
+
   public specificUsersChecked: boolean = false;
   public allUsersChecked: boolean = true;
   public showCreateChannel: boolean = true;
@@ -41,7 +43,7 @@ export class CreateChannelComponent {
     this.showCreateChannel = true;
   }
 
-  public createChannel(event: Event) {
+  public createChannel(event: Event): void {
     event.stopPropagation();
     this.firebaseChannelService.channel.name = this.name;
     this.firebaseChannelService.channel.description = this.description;
@@ -52,21 +54,21 @@ export class CreateChannelComponent {
     this.showCreateChannel = false;
   }
 
-  public handleAllUsersRadioInput() {
+  public handleAllUsersRadioInput(): void {
     if (!this.allUsersChecked) {
       this.allUsersChecked = !this.allUsersChecked;
       this.specificUsersChecked = !this.specificUsersChecked;
     }
   }
 
-  public handleSpecificUsersRadioInput() {
+  public handleSpecificUsersRadioInput(): void {
     if (!this.specificUsersChecked) {
       this.allUsersChecked = !this.allUsersChecked;
       this.specificUsersChecked = !this.specificUsersChecked;
     }
   }
 
-  public filterSearchingUsers() {
+  public filterSearchingUsers(): void {
     this.filteredUsers = [];
     this.filteredUsers = this.firebaseService.users.filter(user => {
       return user.name.toLowerCase().includes(this.searchUser.toLowerCase());
@@ -76,7 +78,7 @@ export class CreateChannelComponent {
     }
   }
 
-  public addUserToChannel(index: number) {
+  public addUserToChannel(index: number): void {
     let selectedUser = this.filteredUsers[index];
     if (!this.selectedUsers.includes(selectedUser)) {
       this.selectedUsers.push(selectedUser);
@@ -84,23 +86,40 @@ export class CreateChannelComponent {
     this.searchUser = '';
   }
 
-  public removeUserFromChannel(index: number) {
+  public removeUserFromChannel(index: number): void {
     this.selectedUsers.splice(index, 1);
   }
 
-  public saveUserToChannel() {
+  public async saveCurrentChannelToUsers(): Promise<void> {
     let currentChannel = this.userService.currentChannel;
     if (this.allUsersChecked) {
-      this.firebaseService.users.forEach(user => {
-        if (!user.channelIds?.includes(currentChannel)) {
+      this.addCurrentChannelToUsers(currentChannel);
+    } else {
+      await this.addCurrentChannelToSelectedUsers(currentChannel);
+      await this.firebaseChannelService.updateChannel(currentChannel);
+    }
+    this.createChannelService.showCreateChannel = false;
+    this.firebaseChannelService.openCreatedChannel = true;
+    this.showCreateChannel = true;
+  }
+
+  private addCurrentChannelToUsers(currentChannel: string): void {
+    this.firebaseService.users.forEach(user => {
+      if (!user.channelIds?.includes(currentChannel)) {
+        user.channelIds?.push(currentChannel);
+        this.firebaseService.updateUser(user);
+      }
+    });
+  }
+
+  private async addCurrentChannelToSelectedUsers(currentChannel: string): Promise<void> {
+    this.firebaseService.users.forEach(user => {
+      this.selectedUsers.forEach(selectedUser => {
+        if (user === selectedUser) {
           user.channelIds?.push(currentChannel);
           this.firebaseService.updateUser(user);
         }
       });
-    } else {
-      this.firebaseChannelService.updateChannel(currentChannel);
-    }
-    this.createChannelService.showCreateChannel = false;
-    this.showCreateChannel = true;
+    });
   }
 }

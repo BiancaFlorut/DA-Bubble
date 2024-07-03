@@ -1,6 +1,5 @@
-import { User } from "./user";
-
 export interface Channel {
+    id: string;
     name: string;
     description: string;
     creator: string;

@@ -1,10 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { Channel } from '../../interfaces/channel';
-import { addDoc, collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';
 import { FirebaseService } from '../firebase/firebase.service';
 import { UserService } from '../user/user.service';
-import { from } from 'rxjs';
+import { User } from '../../interfaces/user';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +16,17 @@ export class FirebaseChannelService {
 
   channels: Channel[] = [];
   unsubChannels: any;
+  public usersFromChannel: User[] = [];
+
   channel: Channel = {
+    id: '',
     name: '',
     description: '',
     creator: '',
   };
+
+  currentChannelName: string = '';
+  openCreatedChannel: boolean = false;
 
   constructor() {
     this.getAllChannels();
@@ -40,6 +46,8 @@ export class FirebaseChannelService {
     await addDoc(this.getChannelRef(), this.channel)
       .then(async res => {
         console.log('Adding user finished: ', res);
+        this.channel.id = res.id;
+        await this.updateChannel(res.id);
         this.userService.currentChannel = res.id;
         this.firebaseService.currentUser.channelIds?.push(res.id);
         this.firebaseService.updateUser(this.firebaseService.currentUser);
@@ -64,7 +72,6 @@ export class FirebaseChannelService {
 
   async getAllChannels() {
     this.channels = [];
-
     this.unsubChannels = onSnapshot(this.getChannelRef(), querySnapshot => {
       this.channels = [];
       querySnapshot.forEach(doc => {
