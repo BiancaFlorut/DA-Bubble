@@ -1,8 +1,16 @@
+@import "./../../../assets/styles/colors.scss";
+@import "./../../../assets/styles/mixIns.scss";
+
 section {
   background-color: white;
   height: 100%;
-  padding: 32px 30px;
   border-radius: 30px;
   min-width: 485px;
   font-family: "Nunito";
+  overflow: hidden;
+  @include displayFlex(column, unset, unset, 0px);
+}
+
+app-thread-body {
+  flex: 1 1 0;
 }

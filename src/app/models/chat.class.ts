@@ -1,7 +1,7 @@
 import { User } from "../interfaces/user";
 import { Message } from "./message.class";
 
-export class DirectChat {
+export class Chat {
   cid: string = '';
   user!: User ;
   partner!: User;

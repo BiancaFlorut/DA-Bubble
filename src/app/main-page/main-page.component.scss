@@ -1,74 +1,78 @@
-@import './../../assets/styles/mixIns.scss';
+@import "./../../assets/styles/mixIns.scss";
 
 .main-page-background-container {
-    background-color: #ECEEFE;
-    height: 100vh;
-    max-height: 100%;
+  background-color: #eceefe;
+  height: 100vh;
+  max-height: 100%;
 
-    .main-page-container {
-        max-width: 1920px;
-        height: 100%;
-        margin: 0 auto;
-        @include displayFlex(column, unset, unset, 0);
-        position: relative;
-    }
+  .main-page-container {
+    max-width: 1920px;
+    height: 100%;
+    margin: 0 auto;
+    @include displayFlex(column, unset, unset, 0);
+    position: relative;
+  }
 }
 
 .chat-container {
-    display: flex;
-    width: 100%;
-    max-height: 100%;
-    flex: 1;
-    padding: 0 20px 25px 20px;
-    gap: 20px;
+  display: flex;
+  width: 100%;
+  max-height: 100%;
+  flex: 1;
+  padding: 0 20px 25px 20px;
+  gap: 20px;
 }
 
 app-active-chat {
-    flex: 1;
-    max-height: 100%;
+  flex: 1;
+  max-height: 100%;
 }
 
-app-thread-chat {
-    display: none;
+.thread-chat {
+  display: none;
 }
 
 .handle-work-space-menu-container {
-    position: absolute;
-    bottom: 15%;
-    left: 0;
-    z-index: 1;
-    width: 60px;
-    height: 347px;
-    padding: 23px 14px 23px 14px;
-    border-top-right-radius: 30px;
-    border-bottom-right-radius: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    background-color: #FFFFFF;
-    box-shadow: 4px 4px 7px 0px #00000033;
-    cursor: pointer;
+  position: absolute;
+  bottom: 15%;
+  left: 0;
+  z-index: 1;
+  width: 60px;
+  height: 347px;
+  padding: 23px 14px 23px 14px;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background-color: #ffffff;
+  box-shadow: 4px 4px 7px 0px #00000033;
+  cursor: pointer;
 
-    &:hover span {
-        transform: rotate(180deg) scale(1.05);
-        color: #535AF1;
-    }
+  &:hover span {
+    transform: rotate(180deg) scale(1.05);
+    color: #535af1;
+  }
 
-    &:hover rect {
-        stroke: #535AF1;
-    }
+  &:hover rect {
+    stroke: #535af1;
+  }
 
-    &:hover path {
-        stroke: #535AF1;
-    }
+  &:hover path {
+    stroke: #535af1;
+  }
 
-    span {
-        font-weight: 500;
-        font-size: 20px;
-        line-height: 24px;
-        writing-mode: vertical-lr;
-        transform: rotate(180deg);
-    }
+  span {
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+  }
+}
+
+.show {
+  display: block;
 }

@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { ChatService } from '../../../../services/chat/chat.service';
 import { User } from '../../../../interfaces/user';
 import { EditableMessageComponent } from './editable-message/editable-message.component';
-import { DirectChat } from '../../../../models/direct-chat.class';
+import { Chat } from '../../../../models/chat.class';
 import { EmojiCounterComponent } from './emoji-counter/emoji-counter.component';
 import { EmojiPickerButtonComponent } from './emoji-picker-button/emoji-picker-button.component';
 import { UserService } from '../../../../services/user/user.service';
@@ -28,7 +28,7 @@ export class MessageComponent {
   public showProfileService: ShowProfileService = inject(ShowProfileService);
   chatService = inject(ChatService);
   userService = inject(UserService);
-  chat!: DirectChat;
+  chat!: Chat;
   @Input() cid: string = '';
   @ViewChild('messageItem') messageItem!: ElementRef;
   isEmojiPickerOpen = false;

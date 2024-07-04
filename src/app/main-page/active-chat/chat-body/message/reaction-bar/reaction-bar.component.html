@@ -4,7 +4,7 @@
   <app-emoji-picker-button (emojiPickerEvent)="addReaction($event)">
     <app-svg-button [source]="'./assets/img/main-page/reactions/add_reaction.svg'" />
   </app-emoji-picker-button>
-  <app-svg-button [source]="'./assets/img/main-page/reactions/comment.svg'"></app-svg-button>
+  <app-svg-button [source]="'./assets/img/main-page/reactions/comment.svg'" (click)="openThread()"></app-svg-button>
   @if (editable) {
   <div class="menu-container">
     <app-svg-button class="menu-container" [source]="'./assets/img/main-page/reactions/more_vert.svg'" (click)="toggleMessageMenu()" />

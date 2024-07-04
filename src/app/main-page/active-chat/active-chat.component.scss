@@ -9,6 +9,7 @@ section {
   min-width: 366px;
   font-family: "Nunito";
   @include displayFlex(column, unset, unset, 0px);
+  overflow: hidden;
 }
 
 app-chat-body {

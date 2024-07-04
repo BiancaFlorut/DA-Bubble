@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../services/chat/chat.service';
-import { DirectChat } from '../../../models/direct-chat.class';
+import { Chat } from '../../../models/chat.class';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
 import { AutosizeModule } from 'ngx-autosize';
 import { Message } from '../../../models/message.class';
@@ -23,9 +23,8 @@ import { Editor } from 'ngx-editor';
 export class ChatInputComponent {
   message: string = '';
   chatService: ChatService = inject(ChatService);
-  currentChat!: DirectChat;
+  currentChat!: Chat;
   firebase: FirebaseService = inject(FirebaseService);
-  @ViewChild('messageInput') messageInput!: ElementRef;
   placeholderText: string = 'Einen Nachricht schreiben...';
   isHoveringOptions: boolean = false;
   userService = inject(UserService);
@@ -78,9 +77,6 @@ export class ChatInputComponent {
     if (emoji) {
       this.editor?.commands.insertImage(emoji?.path).exec();
       this.editor?.commands.focus().exec();
-      let img = document.createElement('img');
-      img.src = emoji.path;
-  
     }
   }
 

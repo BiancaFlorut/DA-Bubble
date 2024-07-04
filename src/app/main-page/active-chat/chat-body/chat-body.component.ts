@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, QueryList, ViewChild, ViewChildren, inject } from '@angular/core';
 import { ChatService } from '../../../services/chat/chat.service';
-import { DirectChat } from '../../../models/direct-chat.class';
+import { Chat } from '../../../models/chat.class';
 import { CommonModule, DatePipe } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -24,7 +24,7 @@ export class ChatBodyComponent implements AfterViewInit {
   @ViewChild('scrollSection') scrollSection!: ElementRef;
   @ViewChildren('messageItem') messageItems!: QueryList<any>;
   chatService = inject(ChatService);
-  chat!: DirectChat;
+  chat!: Chat;
   domSanitizer = inject(DomSanitizer);
   pipe = inject(DatePipe);
   formattedDate: string | null = null;

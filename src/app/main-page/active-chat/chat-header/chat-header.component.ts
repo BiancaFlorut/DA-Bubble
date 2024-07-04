@@ -3,7 +3,7 @@ import { User } from '../../../interfaces/user';
 import { ChatService } from '../../../services/chat/chat.service';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
 import { CommonModule } from '@angular/common';
-import { DirectChat } from '../../../models/direct-chat.class';
+import { Chat } from '../../../models/chat.class';
 import { ShowProfileService } from '../../../services/show-profile/show-profile.service';
 
 @Component({
@@ -19,7 +19,7 @@ export class ChatHeaderComponent {
   firebase: FirebaseService = inject(FirebaseService);
   chatService: ChatService = inject(ChatService);
   public showProfileService = inject(ShowProfileService);
-  currentChat!: DirectChat;
+  currentChat!: Chat;
   partner: User | null = null;
   constructor() { 
     this.chatService.currentChat.subscribe(chat  => {

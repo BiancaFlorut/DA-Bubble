@@ -1,7 +1,14 @@
 <div class="message-container">
   <ngx-editor [editor]="editor!" [(ngModel)]="message.text" [disabled]="false" minHeight="50px" [placeholder]="''"></ngx-editor>
-  <div class="message-buttons">
-    <app-svg-button [source]="'./assets/img/main-page/workspace-menu/sentiment_satisfied.svg'"  />
+  <div class="message-buttons" (pointerenter)="hover()" (pointerleave)="leave()">
+    <app-emoji-picker-button (emojiPickerEvent)="addEmoji($event)" >
+      <app-three-states-button
+        [active]="isHoveringOptions"
+        [source]="
+          './assets/img/main-page/workspace-menu/sentiment-satisfied_disabled.svg'
+        "
+      />
+    </app-emoji-picker-button>
     <div class="decision-buttons">
       <button (click)="cancelEdit()">
         Abbrechen
