@@ -93,7 +93,7 @@
             </div>
             }
             <div class="button-container">
-                <button (click)="saveUserToChannel()" class="inactive-button"
+                <button (click)="saveCurrentChannelToUsers()" class="inactive-button"
                     [ngClass]="{'active-button': selectedUsers.length > 0 && specificUsersChecked || allUsersChecked}"
                     [disabled]="selectedUsers.length === 0  && specificUsersChecked">Erstellen</button>
             </div>
