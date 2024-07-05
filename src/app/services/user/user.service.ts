@@ -13,7 +13,8 @@ export class UserService {
     email: '',
     avatar: '',
     online: false,
-    channelIds: []
+    channelIds: [],
+    directChatIds: []
   };
   firebase = inject(FirebaseService);
   emojis: Emoji[] = [
@@ -42,7 +43,8 @@ export class UserService {
       email: '',
       avatar: '',
       online: false,
-      channelIds: []
+      channelIds: [],
+      directChatIds: []
     };
     this.userPassword = '';
   }

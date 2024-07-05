@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../services/chat/chat.service';
-import { DirectChat } from '../../../models/direct-chat.class';
+import { Chat } from '../../../models/chat.class';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
 import { AutosizeModule } from 'ngx-autosize';
 import { Message } from '../../../models/message.class';
@@ -11,6 +11,7 @@ import { ThreeStatesButtonComponent } from '../../svg-button/three-states-button
 import { UserService } from '../../../services/user/user.service';
 import { NgxEditorModule } from 'ngx-editor';
 import { Editor } from 'ngx-editor';
+import { User } from '../../../interfaces/user';
 
 
 @Component({
@@ -23,9 +24,10 @@ import { Editor } from 'ngx-editor';
 export class ChatInputComponent {
   message: string = '';
   chatService: ChatService = inject(ChatService);
-  currentChat!: DirectChat;
+  currentChat!: Chat;
+  user!: User;
+  partner: User | undefined;
   firebase: FirebaseService = inject(FirebaseService);
-  @ViewChild('messageInput') messageInput!: ElementRef;
   placeholderText: string = 'Einen Nachricht schreiben...';
   isHoveringOptions: boolean = false;
   userService = inject(UserService);
@@ -35,7 +37,6 @@ export class ChatInputComponent {
     this.editor = new Editor();
   }
 
-  // make sure to destory the editor
   ngOnDestroy(): void {
     if (this.editor)
     this.editor.destroy();
@@ -48,7 +49,14 @@ export class ChatInputComponent {
         this.replacePlaceholder();
         setTimeout(() => {
           this.editor?.commands.focus().exec();
-        }, 10)
+        }, 10);
+        this.currentChat.uids.forEach(uid => {
+          if (uid !== this.firebase.currentUser.uid) {
+            this.partner = this.firebase.getUser(uid);
+          } 
+          
+        });
+        this.user = this.firebase.currentUser;
       }
     });
   }
@@ -63,13 +71,15 @@ export class ChatInputComponent {
   }
 
   replacePlaceholder() {
-    if (this.currentChat.user.uid === this.firebase.currentUser.uid) {
-      if (this.currentChat.partner.uid === this.firebase.currentUser.uid) {
-        this.placeholderText = `Nachricht an dir`;
-      } else
-        this.placeholderText = `Nachricht an ${this.currentChat.partner.name}`
-    } else {
-      this.placeholderText = `Nachricht von ${this.currentChat.user.name}`
+    if (this.partner && this.user) {
+      if (this.user.uid === this.firebase.currentUser.uid) {
+        if (this.partner.uid === this.firebase.currentUser.uid) {
+          this.placeholderText = `Nachricht an dir`;
+        } else
+          this.placeholderText = `Nachricht an ${this.partner.name}`
+      } else {
+        this.placeholderText = `Nachricht von ${this.user.name}`
+      }
     }
   }
 
@@ -78,9 +88,6 @@ export class ChatInputComponent {
     if (emoji) {
       this.editor?.commands.insertImage(emoji?.path).exec();
       this.editor?.commands.focus().exec();
-      let img = document.createElement('img');
-      img.src = emoji.path;
-  
     }
   }
 

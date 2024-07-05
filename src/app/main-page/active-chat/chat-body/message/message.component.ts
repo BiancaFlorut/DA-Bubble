@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, inject, input } from '@angular/core';
 import { Message } from '../../../../models/message.class';
 import { ReactionBarComponent } from './reaction-bar/reaction-bar.component';
 import { ShowProfileService } from '../../../../services/show-profile/show-profile.service';
@@ -6,33 +6,79 @@ import { CommonModule } from '@angular/common';
 import { ChatService } from '../../../../services/chat/chat.service';
 import { User } from '../../../../interfaces/user';
 import { EditableMessageComponent } from './editable-message/editable-message.component';
-import { DirectChat } from '../../../../models/direct-chat.class';
+import { Chat } from '../../../../models/chat.class';
 import { EmojiCounterComponent } from './emoji-counter/emoji-counter.component';
 import { EmojiPickerButtonComponent } from './emoji-picker-button/emoji-picker-button.component';
 import { UserService } from '../../../../services/user/user.service';
 import { Emoji } from '../../../../models/emoji.class';
 import { SvgButtonComponent } from '../../../svg-button/svg-button.component';
+import { FirebaseService } from '../../../../services/firebase/firebase.service';
 
 @Component({
   selector: 'app-message',
   standalone: true,
-  imports: [ReactionBarComponent, CommonModule, EditableMessageComponent, EmojiCounterComponent, EmojiPickerButtonComponent, SvgButtonComponent],
+  imports: [
+    ReactionBarComponent, 
+    CommonModule, 
+    EditableMessageComponent, 
+    EmojiCounterComponent, 
+    EmojiPickerButtonComponent, 
+    SvgButtonComponent],
   templateUrl: './message.component.html',
   styleUrl: './message.component.scss'
 })
 export class MessageComponent {
   @Input() message!: Message;
-  @Input() user!: User;
-  @Input() partner!: User;
+  @Input() chat: Chat | undefined;
+
+  user!: User ;
+  partner: User | undefined;
   isEditing: boolean = false;
   public showProfileService: ShowProfileService = inject(ShowProfileService);
   chatService = inject(ChatService);
   userService = inject(UserService);
-  chat!: DirectChat;
-  @Input() cid: string = '';
+  cid!: string;
   @ViewChild('messageItem') messageItem!: ElementRef;
   isEmojiPickerOpen = false;
   oldMessage: string = '';
+  firebase = inject(FirebaseService);
+
+  constructor() { 
+    this.user = this.firebase.currentUser;    
+  }
+
+  ngOnInit(): void {
+    this.user = this.firebase.currentUser;    
+    if (this.chat) {
+      this.cid = this.chat.cid;
+      this.chat.uids.forEach(uid => {
+        if (uid !== this.firebase.currentUser.uid) {
+          this.partner =  this.firebase.getUser(uid);
+          console.log('PARTNER: ',this.partner?.avatar);	
+          
+        } 
+      });
+    }
+  }
+
+  ngOnChanges() {
+    console.log('Changes');
+    console.log('chat: ', this.chat);
+    
+    this.user = this.firebase.currentUser;
+    if (this.chat) {
+      this.cid = this.chat.cid;
+      this.chat.uids.forEach(uid => {
+        if (uid !== this.firebase.currentUser.uid) {
+          this.partner =  this.firebase.getUser(uid);
+          console.log();
+          
+          console.log('PARTNER: ',this.partner?.avatar);	
+          
+        } 
+      });
+    }
+  }
 
   editMessage(message: Message) {
     if (message) {

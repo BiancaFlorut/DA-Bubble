@@ -25,6 +25,6 @@ export class UserProfileComponent {
 
   async openDirectChat() {
     this.showProfileService.toggleShowProfile();
-    await this.chatService.setChatWith(this.chatService.currentPartner);
+    await this.chatService.getChatWith(this.chatService.currentPartner);
   }
 }

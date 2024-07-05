@@ -1,13 +1,14 @@
-import { AfterViewInit, Component, ElementRef, QueryList, ViewChild, ViewChildren, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, QueryList, ViewChild, ViewChildren, inject } from '@angular/core';
 import { ChatService } from '../../../services/chat/chat.service';
-import { DirectChat } from '../../../models/direct-chat.class';
+import { Chat } from '../../../models/chat.class';
 import { CommonModule, DatePipe } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 
 
 import { ShowProfileService } from '../../../services/show-profile/show-profile.service';
-import { ReactionBarComponent } from './message/reaction-bar/reaction-bar.component';
 import { MessageComponent } from './message/message.component';
+import { User } from '../../../interfaces/user';
+import { FirebaseService } from '../../../services/firebase/firebase.service';
 
 @Component({
   selector: 'app-chat-body',
@@ -23,20 +24,29 @@ import { MessageComponent } from './message/message.component';
 export class ChatBodyComponent implements AfterViewInit {
   @ViewChild('scrollSection') scrollSection!: ElementRef;
   @ViewChildren('messageItem') messageItems!: QueryList<any>;
+  @Input() chat!: Chat;
   chatService = inject(ChatService);
-  chat!: DirectChat;
+  user!: User;
+  partner: User | undefined;
   domSanitizer = inject(DomSanitizer);
   pipe = inject(DatePipe);
   formattedDate: string | null = null;
   latestFormattedDate: number | null = null;
   lastFormattedDate: string | null = null;
   public showProfileService: ShowProfileService = inject(ShowProfileService);
+  firebase = inject(FirebaseService);
 
   constructor() {
     this.chatService.currentChat.subscribe(chat => {
       if (chat) {
         this.chat = chat;
         this.chat.messages = chat.messages.sort((a, b) => b.timestamp - a.timestamp);
+        this.chat.uids.forEach(uid => {
+          if (uid !== this.firebase.currentUser.uid) {
+            this.partner = this.firebase.getUser(uid);
+          } 
+        });
+        this.user = this.firebase.currentUser;
       }
     });
   }
@@ -56,7 +66,7 @@ export class ChatBodyComponent implements AfterViewInit {
   }
 
   public formatDate(index: number): boolean {
-    const date = new Date(this.chat.messages[index].timestamp);
+    const date = new Date(this.chat!.messages[index].timestamp);
     const now = new Date();
     const moreDateData = this.pipe.transform(date, 'EEEE, d MMMM yyyy');
     const moreNowData = this.pipe.transform(now, 'EEEE, d MMMM yyyy');
@@ -84,15 +94,15 @@ export class ChatBodyComponent implements AfterViewInit {
       this.lastFormattedDate = null;
     }
   
-    const date = new Date(this.chat.messages[index].timestamp);
-    const nextDate = index < this.chat.messages.length - 1 ? new Date(this.chat.messages[index + 1].timestamp) : null;
+    const date = new Date(this.chat!.messages[index].timestamp);
+    const nextDate = index < this.chat!.messages.length - 1 ? new Date(this.chat!.messages[index + 1].timestamp) : null;
     const now = new Date();
   
     this.formattedDate = this.getFormattedDate(date, now);
     
     const isSameDate = nextDate ? this.isSameDay(date, nextDate) : false || this.isToday(date);
     this.lastFormattedDate = this.formattedDate;
-    return index === this.chat.messages.length - 1 || !isSameDate;
+    return index === this.chat!.messages.length - 1 || !isSameDate;
   }
   
   getFormattedDate(date: Date, now: Date) {
