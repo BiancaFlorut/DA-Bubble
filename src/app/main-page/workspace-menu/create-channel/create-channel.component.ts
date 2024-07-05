@@ -41,6 +41,7 @@ export class CreateChannelComponent {
     event.stopPropagation();
     this.createChannelService.toggleShowCreateChannel();
     this.showCreateChannel = true;
+    this.createChannelService.showChannel = false;
   }
 
   public createChannel(event: Event): void {
@@ -52,6 +53,7 @@ export class CreateChannelComponent {
     this.name = '';
     this.description = '';
     this.showCreateChannel = false;
+    this.createChannelService.showChannel = false;
   }
 
   public handleAllUsersRadioInput(): void {
@@ -98,9 +100,15 @@ export class CreateChannelComponent {
       await this.addCurrentChannelToSelectedUsers(currentChannel);
       await this.firebaseChannelService.updateChannel(currentChannel);
     }
-    this.createChannelService.showCreateChannel = false;
-    this.firebaseChannelService.openCreatedChannel = true;
-    this.showCreateChannel = true;
+    this.firebaseChannelService.usersFromChannel = [];
+    this.firebaseService.users.forEach(user => {
+      user.channelIds?.forEach(id => {
+        if (id === currentChannel) {
+          this.firebaseChannelService.usersFromChannel.push(user);
+        }
+      });
+    });
+    this.openCreatedChannel();
   }
 
   private addCurrentChannelToUsers(currentChannel: string): void {
@@ -116,10 +124,24 @@ export class CreateChannelComponent {
     this.firebaseService.users.forEach(user => {
       this.selectedUsers.forEach(selectedUser => {
         if (user === selectedUser) {
-          user.channelIds?.push(currentChannel);
-          this.firebaseService.updateUser(user);
+          if (!user.channelIds?.includes(currentChannel)) {
+            user.channelIds?.push(currentChannel);
+            this.firebaseService.updateUser(user);
+          }
         }
       });
+    });
+  }
+
+  private openCreatedChannel(): void {
+    this.createChannelService.showCreateChannel = false;
+    this.showCreateChannel = true;
+    this.firebaseChannelService.openCreatedChannel = true;
+    this.firebaseChannelService.channels.forEach(channel => {
+      if (this.userService.currentChannel === channel.id) {
+        this.firebaseChannelService.currentChannelName = channel.name;
+        this.createChannelService.showChannel = true;
+      }
     });
   }
 }

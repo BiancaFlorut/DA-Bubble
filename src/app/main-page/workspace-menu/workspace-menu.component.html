@@ -70,7 +70,8 @@
       @if (areChannelsMenuOpen) {
       <div class="all-channels-container">
         @for (channel of firebaseChannelService.channels; track $index) {
-        <div (click)="getAllUsersFromChannel(channel.id, channel.name)" class="channel">
+        <div (click)="getAllUsersFromChannel(channel.id, channel.name)" class="channel"
+          [ngClass]="{'current-channel': createChannelService.showChannel && userService.currentChannel === channel.id}">
           <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
             <mask id="mask0_58555_8757" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
               height="25">
@@ -137,7 +138,7 @@
       <div class="users-container">
         @for (user of firebaseService.users; track $index) {
         @if(firebaseService.users.length >= 0) {
-        <div class="user" (click)="openDirectChat(user)" [class.active]="chatService.currentPartner.uid === user.uid">
+        <div class="user" (click)="openDirectChat(user)" [class.active]="chatService.currentPartner.uid === user.uid && !createChannelService.showChannel && !chatService.newMessage">
           <div class="avatar">
             <img src="{{user.avatar}}" alt="avatar">
             <div class="status-container">
