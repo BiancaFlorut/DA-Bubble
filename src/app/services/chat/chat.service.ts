@@ -56,7 +56,7 @@ export class ChatService {
         this.setSubscriber(cid, partner, msgs);
       })
     }
-
+    return cid;
   }
 
   getMessage(doc: any) {

@@ -7,6 +7,7 @@ import { CreateChannelComponent } from './create-channel/create-channel.componen
 import { CreateChannelService } from '../../services/create-channel/create-channel.service';
 import { FirebaseChannelService } from '../../services/firebase-channel/firebase-channel.service';
 import { UserService } from '../../services/user/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-workspace-menu',
@@ -24,6 +25,7 @@ export class WorkspaceMenuComponent {
   chatService: ChatService = inject(ChatService);
   createChannelService: CreateChannelService = inject(CreateChannelService);
   userService: UserService = inject(UserService);
+  router: Router = inject(Router);
 
   areChannelsMenuOpen: boolean = false;
   areDirectChatsMenuOpen: boolean = true;
@@ -45,9 +47,10 @@ export class WorkspaceMenuComponent {
   }
 
   async openDirectChat(partner: User) {
-    await this.chatService.getChatWith(partner);
+    const cid = await this.chatService.getChatWith(partner);
     this.firebaseChannelService.openCreatedChannel = false;
     this.createChannelService.showChannel = false;
+    await this.router.navigate([`${localStorage.getItem('mainPageUrl')}/${cid}`]);
   }
 
   public handleNewMessage() {

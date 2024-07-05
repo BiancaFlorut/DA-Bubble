@@ -39,7 +39,7 @@ export class ChatInputComponent {
 
   ngOnDestroy(): void {
     if (this.editor)
-    this.editor.destroy();
+      this.editor.destroy();
   }
 
   constructor() {
@@ -48,13 +48,15 @@ export class ChatInputComponent {
         this.currentChat = chat;
         this.replacePlaceholder();
         setTimeout(() => {
-          this.editor?.commands.focus().exec();
+          if (this.editor) {
+            this.editor.commands.focus().exec();
+          }
         }, 10);
         this.currentChat.uids.forEach(uid => {
           if (uid !== this.firebase.currentUser.uid) {
             this.partner = this.firebase.getUser(uid);
-          } 
-          
+          }
+
         });
         this.user = this.firebase.currentUser;
       }
