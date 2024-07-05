@@ -43,7 +43,7 @@ export class WorkspaceMenuComponent {
   }
 
   async openDirectChat(partner: User) {
-    await this.chatService.setChatWith(partner);
+    await this.chatService.getChatWith(partner);
     this.firebaseChannelService.openCreatedChannel = false;
   }
 

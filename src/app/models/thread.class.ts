@@ -1,11 +1,11 @@
 import { Message } from "./message.class";
 
 export class Thread {
-  cid: string = '';
+  mid: string = '';
   messages: Message[];
 
-  constructor(cid: string, messages: Message[]) {
-    this.cid = cid;
+  constructor(mid: string, messages: Message[]) {
+    this.mid = mid;
     this.messages = messages;
   }
 }

@@ -1,0 +1,29 @@
+import { Injectable, signal } from '@angular/core';
+import { Message } from '../../../models/message.class';
+import { Chat } from '../../../models/chat.class';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ThreadChatService {
+  isThreadChat = signal(false);
+  message!: Message;
+  chat: Chat | undefined = undefined;
+  signalThreadChat = signal<Chat | undefined>(this.chat);
+  constructor() { 
+  }
+
+  setThreadChat(message: Message, chat: Chat) {
+    console.log(message, chat);
+    this.message = message;
+    this.chat = chat;
+    this.isThreadChat.set(true);
+    this.signalThreadChat.set(this.chat);
+  }
+  
+  exitThread() {
+    this.chat = undefined;
+    this.isThreadChat.set(false);
+    this.signalThreadChat.set(this.chat);
+  }
+}

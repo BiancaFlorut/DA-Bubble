@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { SvgButtonComponent } from '../../svg-button/svg-button.component';
-import { ThreadChatService } from '../../../services/chat/thread--chat/thread-chat.service';
+import { ThreadChatService } from '../../../services/chat/thread-chat/thread-chat.service';
 
 @Component({
   selector: 'app-thread-chat-header',
@@ -12,7 +12,6 @@ import { ThreadChatService } from '../../../services/chat/thread--chat/thread-ch
 export class ThreadChatHeaderComponent {
   threadService = inject(ThreadChatService);
   exitThread() {
-    console.log('exit thread');
     this.threadService.exitThread();
   }
 }

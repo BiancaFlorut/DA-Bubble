@@ -21,7 +21,8 @@ export class ChatHeaderComponent {
   public firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
 
   currentChat!: Chat;
-  partner: User | null = null;
+  partner: User | undefined;
+  user!: User;
   directChat: boolean = false;
   channelChat: boolean = false;
 
@@ -29,21 +30,27 @@ export class ChatHeaderComponent {
     this.chatService.currentChat.subscribe(chat => {
       if (chat) {
         this.currentChat = chat;
-        this.partner = this.getPartner();
+        this.currentChat.uids.forEach(uid => {
+          if (uid !== this.firebase.currentUser.uid) {
+            this.partner = this.firebase.getUser(uid);
+          } 
+          
+        });
+        this.user = this.firebase.currentUser;
         this.chatService.newMessage = false;
         this.directChat = true;
       }
     });
   }
 
-  getPartner(): User | null {
-    if (this.currentChat) {
-      if (this.currentChat.user.uid === this.firebase.currentUser.uid) {
-        return this.currentChat.partner;
-      } else {
-        return this.currentChat.user;
-      }
-    }
-    return null;
-  }
+  // getPartner(): User | null {
+  //   if (this.currentChat) {
+  //     if (this.currentChat.user.uid === this.firebase.currentUser.uid) {
+  //       return this.currentChat.partner;
+  //     } else {
+  //       return this.currentChat.user;
+  //     }
+  //   }
+  //   return null;
+  // }
 }

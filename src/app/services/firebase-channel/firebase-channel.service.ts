@@ -45,7 +45,6 @@ export class FirebaseChannelService {
   async addNewChannel() {
     await addDoc(this.getChannelRef(), this.channel)
       .then(async res => {
-        console.log('Adding user finished: ', res);
         this.channel.id = res.id;
         await this.updateChannel(res.id);
         this.userService.currentChannel = res.id;

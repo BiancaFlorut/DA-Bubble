@@ -1,16 +1,13 @@
-import { User } from "../interfaces/user";
 import { Message } from "./message.class";
 
 export class Chat {
   cid: string = '';
-  user!: User ;
-  partner!: User;
+  uids: string[] = [];
   messages: Message[];
 
-  constructor(cid: string, user: User, partner: User, messages: Message[]) {
+  constructor(cid: string, uids: string[], messages: Message[]) {
     this.cid = cid;
-    this.user = user;
-    this.partner = partner;
+    this.uids = uids;
     this.messages = messages;
   }
 }

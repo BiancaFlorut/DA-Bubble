@@ -3,7 +3,8 @@ import { Message } from '../../../../../models/message.class';
 import { SvgButtonComponent } from '../../../../svg-button/svg-button.component';
 import { UserService } from '../../../../../services/user/user.service';
 import { EmojiPickerButtonComponent } from '../emoji-picker-button/emoji-picker-button.component';
-import { ThreadChatService } from '../../../../../services/chat/thread--chat/thread-chat.service';
+import { ThreadChatService } from '../../../../../services/chat/thread-chat/thread-chat.service';
+import { ChatService } from '../../../../../services/chat/chat.service';
 
 @Component({
   selector: 'app-reaction-bar',
@@ -22,6 +23,7 @@ export class ReactionBarComponent {
   @ViewChild('messageMenu') messageMenu!: ElementRef;
   userService = inject(UserService);
   threadService = inject(ThreadChatService);
+  chatService = inject(ChatService);
 
   constructor() {
     this.userService.sortEmojis();
@@ -46,7 +48,7 @@ export class ReactionBarComponent {
   }
 
   openThread() {
-    this.threadService.setThreadChat(this.message);
+    this.threadService.setThreadChat(this.message, this.chatService.chat!);
   }
 
 }

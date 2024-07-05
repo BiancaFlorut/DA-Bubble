@@ -4,6 +4,7 @@ import { DocumentData, DocumentReference, arrayUnion, onSnapshot, setDoc } from 
 import { User } from '../../interfaces/user';
 import { Message } from '../../models/message.class';
 import { Emoji } from '../../models/emoji.class';
+import { Chat } from '../../models/chat.class';
 
 @Injectable({
   providedIn: 'root'
@@ -87,10 +88,6 @@ export class FirebaseService {
       let docRef = this.getSingleUser(user.uid);
       updateDoc(docRef, this.getJSONFromUser(user))
         .catch((err) => { console.error(err) })
-        .then((result) => {
-          console.log('User updated:', result);
-        }
-        )
     }
   }
 
@@ -107,28 +104,69 @@ export class FirebaseService {
     return JSON.parse(JSON.stringify(user));
   }
 
-  async connectChatWithUser(user: User, partner: User) {
-    if (user && user.uid && partner && partner.uid) {
-      let docRef = this.getSingleChat(user.uid + partner.uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        return docSnap.data()['cid'];
-      } else {
-        docRef = this.getSingleChat(partner.uid + user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          return docSnap.data()['cid'];
+  async getDirectChatId(uid: string, pid: string) {
+    let cid = '';
+    const user = this.getUser(uid);
+    console.log('user direct chat ids', user?.directChatIds);
+    if (user?.directChatIds) {
+      for (let i = 0; i < user.directChatIds.length; i++) {
+        if (await this.checkThisChat(user?.directChatIds[i], uid, pid)) {
+          cid = user?.directChatIds[i];
+          if (cid && cid != '') {
+            return cid;
+          }
         }
       }
-      return this.setNewChat(docRef, user, partner);
     }
-    console.log('Something went wrong in connectChatWithUser');
-    return '';
+      return await this.setDirectChat(uid, pid);
   }
 
-  async setNewChat(docRef: DocumentReference<DocumentData>, user: User, partner: User) {
-    await setDoc(docRef, { cid: docRef.id, uid: user.uid, pid: partner.uid, uName: user.name, pName: partner.name });
-    return docRef.id;
+  async checkThisChat(cid: string, uid: string, pid: string) {
+    const result = await getDoc(doc(collection(this.firestore, 'chats'), cid));
+    if (result.exists()) {
+      console.log('chats with this id', cid, result.data()['uids']);
+      const chat = result.data() as Chat;
+      console.log(result.data()['uids'].includes(uid));
+      console.log(result.data()['uids'].includes(pid));
+      console.log(result.data()['uids'].length == 2);
+
+      if (result.data()['uids'].includes(uid) && result.data()['uids'].includes(pid) && result.data()['uids'].length == 2) {
+        if (!this.currentUser.directChatIds?.includes(cid)) {
+          this.currentUser.directChatIds?.push(cid);
+          this.updateUser(this.currentUser);
+        }
+        console.log('this is the chat', cid, chat);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  async setDirectChat(uid: string, pid: string) {
+    let cid = '';
+    await addDoc(collection(this.firestore, 'chats'), { uids: [uid, pid] })
+      .then((ref) => {
+        cid = ref.id;
+        let user = this.getUser(uid);
+        let partner = this.getUser(pid);
+        this.addChatToUser(user!, cid);
+        this.addChatToUser(partner!, cid);
+      })
+    return cid;
+  }
+
+  addChatToUser(user: User, cid: string) {
+    if (user) {
+      if (!user.directChatIds) user.directChatIds = [];
+      if (!user.directChatIds.includes(cid)) {
+        user.directChatIds.push(cid);
+        this.updateUser(user);
+      }
+    }
+  }
+
+  getDirectChatMessagesRef(chatId: string) {
+    return collection(doc(this.getChatsRef(), chatId), 'messages');
   }
 
   async sendMessage(chatId: string, uid: string, timestamp: number, message: string) {
@@ -137,7 +175,7 @@ export class FirebaseService {
 
   updateMessage(cid: string, mid: string, data: any) {
     if (data.editedTimestamp)
-      updateDoc(doc(this.getDirectMessagesRef(cid), mid), { text: data.text, editedTimestamp: data.editedTimestamp });
+      updateDoc(doc(this.getDirectMessagesRef(cid), mid), { text: data.text, editedTimestamp: data.editedTimestamp, emojis: this.getEmojisJson(data.emojis) });
     else
       updateDoc(doc(this.getDirectMessagesRef(cid), mid), { timestamp: data.timestamp, text: data.text, mid: mid, emojis: this.getEmojisJson(data.emojis) });
   }
