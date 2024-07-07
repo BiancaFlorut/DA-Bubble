@@ -12,21 +12,8 @@ import { Chat } from '../../../models/chat.class';
 })
 export class ThreadBodyComponent {
   threadChatService = inject(ThreadChatService);
-  chat!: Chat;
 
-  ngOnInit() {
-    if (this.threadChatService.chat) {
-      this.chat = this.threadChatService.chat;
-    }
-  }
-
-  ngOnChanges() {
-    if (this.threadChatService.chat) {
-      this.chat = this.threadChatService.chat;
-    }
-  }
-
-  getChat() {
-    return this.threadChatService.signalThreadChat();
+  constructor() { 
+    
   }
 }

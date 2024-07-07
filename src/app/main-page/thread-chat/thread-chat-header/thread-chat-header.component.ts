@@ -11,6 +11,7 @@ import { ThreadChatService } from '../../../services/chat/thread-chat/thread-cha
 })
 export class ThreadChatHeaderComponent {
   threadService = inject(ThreadChatService);
+
   exitThread() {
     this.threadService.exitThread();
   }

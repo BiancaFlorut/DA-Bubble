@@ -16,6 +16,7 @@ export class ThreadChatService {
   setThreadChat(message: Message, chat: Chat) {
     this.message = message;
     this.chat = chat;
+    console.log('new Thread with the chat', this.chat);
     this.isThreadChat.set(true);
     this.signalThreadChat.set(this.chat);
   }

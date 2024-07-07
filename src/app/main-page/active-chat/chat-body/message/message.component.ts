@@ -57,6 +57,23 @@ export class MessageComponent {
         } else {
           this.partner = this.firebase.getUser(rest[0]);
         }
+        console.log('in message the partner is', this.partner);
+        
+    }
+  }
+
+  ngOnChanges() {
+    this.user = this.firebase.currentUser;
+    if (this.chat) {
+      this.cid = this.chat.cid;
+      const rest = this.chat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
+        if (rest.length === 0) {
+          this.partner = this.firebase.currentUser;
+        } else {
+          this.partner = this.firebase.getUser(rest[0]);
+        }
+        console.log('in message the partner is', this.partner);
+        
     }
   }
 
