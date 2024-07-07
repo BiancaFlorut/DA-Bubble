@@ -171,13 +171,13 @@ export class HeaderComponent {
   }
 
   public handleStatus(): void {
-    this.userService.user.online = !this.userService.user.online;
-    this.firebase.updateUser(this.userService.user);
+    this.firebase.currentUser.online = !this.firebase.currentUser.online;
+    this.firebase.updateUser(this.firebase.currentUser);
   }
 
   public async logOutUser() {
-    this.userService.user.online = false;
-    this.firebase.updateUser(this.userService.user);
+    this.firebase.currentUser.online = false;
+    this.firebase.updateUser(this.firebase.currentUser);
     if (this.router.url.includes('guest')) {
       this.router.navigate(['/landing-page/login']);
     } else {

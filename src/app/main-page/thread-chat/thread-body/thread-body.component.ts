@@ -21,7 +21,6 @@ export class ThreadBodyComponent {
   }
 
   ngOnChanges() {
-    console.log(this.threadChatService.chat);
     if (this.threadChatService.chat) {
       this.chat = this.threadChatService.chat;
     }

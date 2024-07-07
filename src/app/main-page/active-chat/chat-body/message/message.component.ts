@@ -54,27 +54,18 @@ export class MessageComponent {
       this.chat.uids.forEach(uid => {
         if (uid !== this.firebase.currentUser.uid) {
           this.partner =  this.firebase.getUser(uid);
-          console.log('PARTNER: ',this.partner?.avatar);	
-          
         } 
       });
     }
   }
 
   ngOnChanges() {
-    console.log('Changes');
-    console.log('chat: ', this.chat);
-    
     this.user = this.firebase.currentUser;
     if (this.chat) {
       this.cid = this.chat.cid;
       this.chat.uids.forEach(uid => {
         if (uid !== this.firebase.currentUser.uid) {
           this.partner =  this.firebase.getUser(uid);
-          console.log();
-          
-          console.log('PARTNER: ',this.partner?.avatar);	
-          
         } 
       });
     }

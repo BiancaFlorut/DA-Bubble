@@ -14,7 +14,6 @@ export class ThreadChatService {
   }
 
   setThreadChat(message: Message, chat: Chat) {
-    console.log(message, chat);
     this.message = message;
     this.chat = chat;
     this.isThreadChat.set(true);
