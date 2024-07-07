@@ -56,9 +56,7 @@ export class MessageComponent {
           this.partner = this.firebase.currentUser;
         } else {
           this.partner = this.firebase.getUser(rest[0]);
-        }
-        console.log('in message the partner is', this.partner);
-        
+        }      
     }
   }
 
@@ -72,8 +70,6 @@ export class MessageComponent {
         } else {
           this.partner = this.firebase.getUser(rest[0]);
         }
-        console.log('in message the partner is', this.partner);
-        
     }
   }
 
