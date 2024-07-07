@@ -51,23 +51,12 @@ export class MessageComponent {
     this.user = this.firebase.currentUser;    
     if (this.chat) {
       this.cid = this.chat.cid;
-      this.chat.uids.forEach(uid => {
-        if (uid !== this.firebase.currentUser.uid) {
-          this.partner =  this.firebase.getUser(uid);
-        } 
-      });
-    }
-  }
-
-  ngOnChanges() {
-    this.user = this.firebase.currentUser;
-    if (this.chat) {
-      this.cid = this.chat.cid;
-      this.chat.uids.forEach(uid => {
-        if (uid !== this.firebase.currentUser.uid) {
-          this.partner =  this.firebase.getUser(uid);
-        } 
-      });
+      const rest = this.chat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
+        if (rest.length === 0) {
+          this.partner = this.firebase.currentUser;
+        } else {
+          this.partner = this.firebase.getUser(rest[0]);
+        }
     }
   }
 

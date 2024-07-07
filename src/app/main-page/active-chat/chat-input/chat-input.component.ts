@@ -46,18 +46,18 @@ export class ChatInputComponent {
     this.chatService.currentChat.subscribe(chat => {
       if (chat) {
         this.currentChat = chat;
-        this.replacePlaceholder();
+        const rest = this.currentChat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
+        if (rest.length === 0) {
+          this.partner = this.firebase.currentUser;
+        } else {
+          this.partner = this.firebase.getUser(rest[0]);
+        }
+        this.user = this.firebase.currentUser;
+      }
+      this.replacePlaceholder();
         setTimeout(() => {
           this.editor?.commands.focus().exec();
         }, 10);
-        this.currentChat.uids.forEach(uid => {
-          if (uid !== this.firebase.currentUser.uid) {
-            this.partner = this.firebase.getUser(uid);
-          } 
-          
-        });
-        this.user = this.firebase.currentUser;
-      }
     });
   }
 
