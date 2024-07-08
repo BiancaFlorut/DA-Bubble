@@ -78,6 +78,5 @@ export class ChatService {
   editMessage(cid: string, message: Message) {
     if (message.mid)
       this.firebase.updateMessage(cid, message.mid, message);
-
   }
 }
