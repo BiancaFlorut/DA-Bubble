@@ -6,6 +6,7 @@ import { ChatService } from '../../services/chat/chat.service';
 import { CreateChannelComponent } from './create-channel/create-channel.component';
 import { CreateChannelService } from '../../services/create-channel/create-channel.service';
 import { FirebaseChannelService } from '../../services/firebase-channel/firebase-channel.service';
+import { ThreadChatService } from '../../services/chat/thread-chat/thread-chat.service';
 
 @Component({
   selector: 'app-workspace-menu',
@@ -22,6 +23,7 @@ export class WorkspaceMenuComponent {
   firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
   chatService: ChatService = inject(ChatService);
   createChannelService: CreateChannelService = inject(CreateChannelService);
+  threadChatService = inject(ThreadChatService);
 
   areChannelsMenuOpen: boolean = false;
   areDirectChatsMenuOpen: boolean = true;
@@ -43,6 +45,7 @@ export class WorkspaceMenuComponent {
   }
 
   async openDirectChat(partner: User) {
+    this.threadChatService.exitThread();
     await this.chatService.getChatWith(partner);
     this.firebaseChannelService.openCreatedChannel = false;
   }

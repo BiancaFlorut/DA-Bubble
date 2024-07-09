@@ -70,8 +70,12 @@ export class ChatInputComponent {
   async sendMessage() {
     if (this.isThread) {
       // send message in the thread
+      console.log('send message in the thread. text:', this.message);
+      
       const mid = this.threadService.message.mid;
-      const messages = await this.firebase.getThreadMessages(this.currentChat.cid, mid);
+      const messages = this.threadService.messages;
+      console.log('messages.length', messages.length);
+      
       if (messages.length === 0) {
         this.firebase.setThread(this.currentChat.cid, mid);
       } 

@@ -2,7 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Message } from '../../../models/message.class';
 import { Chat } from '../../../models/chat.class';
 import { FirebaseService } from '../../firebase/firebase.service';
-import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, onSnapshot, Unsubscribe } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,8 @@ export class ThreadChatService {
   signalThreadChat = signal<Chat | undefined>(this.chat);
   firebase = inject(FirebaseService);
   messages: Message[] = [];
-  constructor() { 
+  unsubMessages: Unsubscribe | undefined;
+  constructor() {
   }
 
   setThreadChat(message: Message, chat: Chat) {
@@ -24,7 +25,7 @@ export class ThreadChatService {
     this.signalThreadChat.set(this.chat);
     this.getMessages();
   }
-  
+
   exitThread() {
     this.chat = undefined;
     this.isThreadChat.set(false);
@@ -32,13 +33,18 @@ export class ThreadChatService {
   }
 
   getMessages() {
-    this.messages = [];
     const ref = collection(doc(this.firebase.getDirectChatMessagesRef(this.chat?.cid!), this.message.mid), 'thread');
-    onSnapshot(ref, (collection) => {
-        collection.forEach((doc) => {
-          this.messages.push(doc.data() as Message);
-        });
-        this.messages = this.messages.sort((a, b) => a.timestamp - b.timestamp);
+    if (this.unsubMessages) this.unsubMessages();
+    this.unsubMessages = onSnapshot(ref, (collection) => {
+      this.messages = [];
+      collection.forEach((doc) => {
+        this.messages.push(doc.data() as Message);
+      });
+      this.messages = this.messages.sort((a, b) => a.timestamp - b.timestamp);
     })
+  }
+
+  onNgDestroy() {
+    if (this.unsubMessages) this.unsubMessages();
   }
 }

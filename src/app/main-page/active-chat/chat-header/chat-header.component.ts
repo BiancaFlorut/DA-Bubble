@@ -34,7 +34,7 @@ export class ChatHeaderComponent {
         if (rest.length === 0) {
           this.partner = this.firebase.currentUser;
         } else {
-          this.partner = this.firebase.getUser(rest[0]);
+          this.partner = this.firebase.users.find(user => user.uid === rest[0]);
         }
         this.user = this.firebase.currentUser;
         this.chatService.newMessage = false;

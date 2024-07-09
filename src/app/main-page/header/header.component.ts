@@ -7,6 +7,7 @@ import { FirebaseService } from '../../services/firebase/firebase.service';
 import { UserService } from '../../services/user/user.service';
 import { ChatService } from '../../services/chat/chat.service';
 import { Chat } from '../../interfaces/chat.interface';
+import { ThreadChatService } from '../../services/chat/thread-chat/thread-chat.service';
 
 @Component({
   selector: 'app-header',
@@ -25,7 +26,8 @@ export class HeaderComponent {
   private authService: AuthService = inject(AuthService);
   public userService: UserService = inject(UserService);
   private firebase: FirebaseService = inject(FirebaseService);
-  private chatService: ChatService = inject(ChatService)
+  private chatService: ChatService = inject(ChatService);
+  private threadChatService: ThreadChatService = inject(ThreadChatService);
 
   public isUserMenuActive: boolean = false;
   public showProfile: boolean = false;
@@ -187,5 +189,6 @@ export class HeaderComponent {
         })
     }
     this.chatService.resetChat();
+    this.threadChatService.exitThread();
   }
 }
