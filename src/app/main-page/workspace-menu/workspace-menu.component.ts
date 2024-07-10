@@ -7,6 +7,8 @@ import { CreateChannelComponent } from './create-channel/create-channel.componen
 import { CreateChannelService } from '../../services/create-channel/create-channel.service';
 import { FirebaseChannelService } from '../../services/firebase-channel/firebase-channel.service';
 import { ThreadChatService } from '../../services/chat/thread-chat/thread-chat.service';
+import { Channel } from '../../interfaces/channel';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-workspace-menu',
@@ -24,6 +26,9 @@ export class WorkspaceMenuComponent {
   chatService: ChatService = inject(ChatService);
   createChannelService: CreateChannelService = inject(CreateChannelService);
   threadChatService = inject(ThreadChatService);
+  userService: UserService = inject(UserService);
+
+  public userChannels: any[] = [];
 
   areChannelsMenuOpen: boolean = true;
   areDirectChatsMenuOpen: boolean = true;
@@ -61,11 +66,6 @@ export class WorkspaceMenuComponent {
     }
   }
 
-  async openCreateNewChannel() {
-    this.createChannelService.toggleShowCreateChannel()
-    await this.router.navigate([`${localStorage.getItem('mainPageUrl')}`]);
-  }
-
   openDirectChatsMenu() {
     if (this.areDirectChatsMenuOpen) {
       this.areDirectChatsMenuOpen = false;
@@ -79,14 +79,12 @@ export class WorkspaceMenuComponent {
     await this.chatService.getChatWith(partner);
     this.firebaseChannelService.openCreatedChannel = false;
     this.createChannelService.showChannel = false;
-    await this.router.navigate([`${localStorage.getItem('mainPageUrl')}/${cid}`]);
   }
 
   public async handleNewMessage() {
     this.chatService.newMessage = true;
     this.firebaseChannelService.openCreatedChannel = false;
     this.createChannelService.showChannel = false;
-    await this.router.navigate([`${localStorage.getItem('mainPageUrl')}`]);
   }
 
   public getAllUsersFromChannel(channelId: string, channelName: string): void {
@@ -96,7 +94,6 @@ export class WorkspaceMenuComponent {
         if (id === channelId) {
           this.firebaseChannelService.usersFromChannel.push(user);
           this.firebaseChannelService.currentChannelName = channelName;
-          await this.router.navigate([`${localStorage.getItem('mainPageUrl')}/${id}`]);
         }
       });
     });
