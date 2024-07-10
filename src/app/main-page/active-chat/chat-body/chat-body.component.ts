@@ -41,11 +41,12 @@ export class ChatBodyComponent implements AfterViewInit {
       if (chat) {
         this.chat = chat;
         this.chat.messages = chat.messages.sort((a, b) => b.timestamp - a.timestamp);
-        this.chat.uids.forEach(uid => {
-          if (uid !== this.firebase.currentUser.uid) {
-            this.partner = this.firebase.getUser(uid);
-          } 
-        });
+        const rest = this.chat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
+        if (rest.length === 0) {
+          this.partner = this.firebase.currentUser;
+        } else {
+          this.partner = this.firebase.users.find(user => user.uid === rest[0]);
+        }
         this.user = this.firebase.currentUser;
       }
     });

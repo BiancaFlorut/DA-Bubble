@@ -121,16 +121,41 @@ export class FirebaseService {
       return await this.setDirectChat(uid, pid);
   }
 
+  async setThread(cid: string, mid: string) {
+    const messageRef = doc(this.getDirectChatMessagesRef(cid), mid);
+    const message = await getDoc(messageRef);
+    if (message.exists()) {
+      const ref = collection(messageRef, 'thread');
+      await addDoc(ref, message.data() as Message);
+    }
+  }
+
+  async getThreadMessages(cid: string, mid: string) {
+    const ref = collection(doc(this.getDirectChatMessagesRef(cid), mid), 'thread');
+    let messages: Message[] = [];
+    onSnapshot(ref, (collection) => {
+        collection.forEach((doc) => {
+          messages.push(doc.data() as Message);
+        });
+    })
+    return messages;
+  }
+
+  addThreadMessage(cid: string, mid: string, message: Message) {
+    const ref = collection(doc(this.getDirectChatMessagesRef(cid), mid), 'thread');
+    addDoc(ref, JSON.parse(JSON.stringify(message)));
+  }
+
   async checkThisChat(cid: string, uid: string, pid: string) {
     const result = await getDoc(doc(collection(this.firestore, 'chats'), cid));
     if (result.exists()) {
-      console.log('chats with this id', cid, result.data()['uids']);
       const chat = result.data() as Chat;
-      console.log(result.data()['uids'].includes(uid));
-      console.log(result.data()['uids'].includes(pid));
-      console.log(result.data()['uids'].length == 2);
-
-      if (result.data()['uids'].includes(uid) && result.data()['uids'].includes(pid) && result.data()['uids'].length == 2) {
+      if (uid === pid) {
+        if (chat.uids.includes(uid) && chat.uids.length == 1 ) {
+          return true;
+        }
+      } else
+      if (chat.uids.includes(uid) && chat.uids.includes(pid) && chat.uids.length == 2) {
         if (!this.currentUser.directChatIds?.includes(cid)) {
           this.currentUser.directChatIds?.push(cid);
           this.updateUser(this.currentUser);
@@ -144,6 +169,12 @@ export class FirebaseService {
 
   async setDirectChat(uid: string, pid: string) {
     let cid = '';
+    if (uid == pid) {
+      const ref = await addDoc(collection(this.firestore, 'chats'), { uids: [uid] });
+      cid = ref.id;
+      let user = this.getUser(uid);
+      this.addChatToUser(user!, cid);
+    } else
     await addDoc(collection(this.firestore, 'chats'), { uids: [uid, pid] })
       .then((ref) => {
         cid = ref.id;

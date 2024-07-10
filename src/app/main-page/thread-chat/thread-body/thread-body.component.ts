@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MessageComponent } from '../../active-chat/chat-body/message/message.component';
 import { ThreadChatService } from '../../../services/chat/thread-chat/thread-chat.service';
 import { Chat } from '../../../models/chat.class';
+import { Message } from '../../../models/message.class';
 
 @Component({
   selector: 'app-thread-body',
@@ -12,22 +13,9 @@ import { Chat } from '../../../models/chat.class';
 })
 export class ThreadBodyComponent {
   threadChatService = inject(ThreadChatService);
-  chat!: Chat;
+  messages: Message[] = [];
 
-  ngOnInit() {
-    if (this.threadChatService.chat) {
-      this.chat = this.threadChatService.chat;
-    }
-  }
+  constructor() { 
 
-  ngOnChanges() {
-    console.log(this.threadChatService.chat);
-    if (this.threadChatService.chat) {
-      this.chat = this.threadChatService.chat;
-    }
-  }
-
-  getChat() {
-    return this.threadChatService.signalThreadChat();
   }
 }

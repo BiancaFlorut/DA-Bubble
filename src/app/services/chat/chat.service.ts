@@ -56,7 +56,7 @@ export class ChatService {
         this.setSubscriber(cid, partner, msgs);
       })
     }
-    return cid;
+    this.currentPartner = partner;
   }
 
   getMessage(doc: any) {
@@ -78,6 +78,5 @@ export class ChatService {
   editMessage(cid: string, message: Message) {
     if (message.mid)
       this.firebase.updateMessage(cid, message.mid, message);
-
   }
 }

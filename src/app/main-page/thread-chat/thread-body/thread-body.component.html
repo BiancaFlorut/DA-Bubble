@@ -1,3 +1,11 @@
 <section>
-  <app-message [message]="threadChatService.message" [chat]="getChat()"></app-message>
+  @if (threadChatService.messages.length > 0) {
+    @for (message of threadChatService.messages; track $index) {
+      <app-message [message]="message" [chat]="threadChatService.chat"></app-message>
+    }
+  }
+ @else {
+  <app-message [message]="threadChatService.message" [chat]="threadChatService.chat"></app-message>
+ }
+  
 </section>
