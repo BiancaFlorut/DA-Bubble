@@ -47,8 +47,8 @@
             <span>Channels</span>
           </div>
         </div>
-        <svg (click)="createChannelService.toggleShowCreateChannel()" class="plus-btn" width="30" height="30"
-          viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg (click)="openCreateNewChannel()" class="plus-btn" width="30" height="30" viewBox="0 0 30 30" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#clip0_237_569)">
             <mask id="mask0_237_569" style="mask-type: alpha" maskUnits="userSpaceOnUse" x="3" y="3" width="24"
               height="24">
@@ -69,7 +69,7 @@
       </div>
       @if (areChannelsMenuOpen) {
       <div class="all-channels-container">
-        @for (channel of firebaseChannelService.channels; track $index) {
+        @for (channel of userChannels; track $index) {
         <div (click)="getAllUsersFromChannel(channel.id, channel.name)" class="channel"
           [ngClass]="{'current-channel': createChannelService.showChannel && userService.currentChannel === channel.id}">
           <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -86,7 +86,7 @@
           <span>{{channel.name}}</span>
         </div>
         }
-        <div (click)="createChannelService.toggleShowCreateChannel()" class="add-channel-container">
+        <div (click)="openCreateNewChannel()" class="add-channel-container">
           <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
             <mask id="mask0_58555_8769" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
               height="25">
@@ -138,7 +138,8 @@
       <div class="users-container">
         @for (user of firebaseService.users; track $index) {
         @if(firebaseService.users.length >= 0) {
-        <div class="user" (click)="openDirectChat(user)" [class.active]="chatService.currentPartner.uid === user.uid && !createChannelService.showChannel && !chatService.newMessage">
+        <div class="user" (click)="openDirectChat(user)"
+          [class.active]="chatService.currentPartner.uid === user.uid && !createChannelService.showChannel && !chatService.newMessage">
           <div class="avatar">
             <img src="{{user.avatar}}" alt="avatar">
             <div class="status-container">

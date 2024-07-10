@@ -8,6 +8,7 @@ import { CreateChannelService } from '../../services/create-channel/create-chann
 import { FirebaseChannelService } from '../../services/firebase-channel/firebase-channel.service';
 import { UserService } from '../../services/user/user.service';
 import { Router } from '@angular/router';
+import { Channel } from '../../interfaces/channel';
 
 @Component({
   selector: 'app-workspace-menu',
@@ -27,8 +28,35 @@ export class WorkspaceMenuComponent {
   userService: UserService = inject(UserService);
   router: Router = inject(Router);
 
-  areChannelsMenuOpen: boolean = false;
+  userChannels: Channel[] = [];
+
+  areChannelsMenuOpen: boolean = true;
   areDirectChatsMenuOpen: boolean = true;
+
+  ngOnInit(): void {
+    this.firebaseChannelService.channels$.subscribe(channels => {
+      this.processChannels(channels);
+    });
+  }
+
+  private processChannels(channels: Channel[]): void {
+    if (channels.length > 0) {
+      this.userChannels = [];
+      channels.forEach(channel => {
+        this.firebaseService.users.forEach(user => {
+          if (user.email === this.userService.user.email) {
+            user.channelIds?.forEach(id => {
+              if (id === channel.id) {
+                if (!this.userChannels.includes(channel)) {
+                  this.userChannels.push(channel);
+                }
+              }
+            });
+          }
+        });
+      });
+    }
+  }
 
   openChannelsMenu() {
     if (this.areChannelsMenuOpen) {
@@ -36,6 +64,11 @@ export class WorkspaceMenuComponent {
     } else {
       this.areChannelsMenuOpen = true;
     }
+  }
+
+  async openCreateNewChannel() {
+    this.createChannelService.toggleShowCreateChannel()
+    await this.router.navigate([`${localStorage.getItem('mainPageUrl')}`]);
   }
 
   openDirectChatsMenu() {
@@ -53,19 +86,21 @@ export class WorkspaceMenuComponent {
     await this.router.navigate([`${localStorage.getItem('mainPageUrl')}/${cid}`]);
   }
 
-  public handleNewMessage() {
+  public async handleNewMessage() {
     this.chatService.newMessage = true;
     this.firebaseChannelService.openCreatedChannel = false;
     this.createChannelService.showChannel = false;
+    await this.router.navigate([`${localStorage.getItem('mainPageUrl')}`]);
   }
 
   public getAllUsersFromChannel(channelId: string, channelName: string): void {
     this.firebaseChannelService.usersFromChannel = [];
     this.firebaseService.users.forEach(user => {
-      user.channelIds?.forEach(id => {
+      user.channelIds?.forEach(async id => {
         if (id === channelId) {
           this.firebaseChannelService.usersFromChannel.push(user);
           this.firebaseChannelService.currentChannelName = channelName;
+          await this.router.navigate([`${localStorage.getItem('mainPageUrl')}/${id}`]);
         }
       });
     });
