@@ -20,6 +20,9 @@
           </div>
           <div class="message-text mt-right own-message" [innerHTML]="message.text">
           </div>
+          @if ( message.answerCount > 0) {
+            <div class="answer-count" (click)="openThread()">{{ message.answerCount }} Antworten </div>
+          }
           @if (message.editedTimestamp) {
           <span class="timestamp"
             >bearbeitet am
@@ -61,6 +64,9 @@
           </div>
           <div class="message-text" [innerHTML]="message.text">
           </div>
+          @if ( message.answerCount > 0) {
+            <div class="answer-count" (click)="openThread()">{{ message.answerCount }} Antworten </div>
+          }
           @if (message.editedTimestamp) {
           <span class="timestamp"
             >bearbeitet am

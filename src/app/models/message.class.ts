@@ -8,6 +8,8 @@ export class Message {
   uid: string;
   mid: string;
   emojis: Emoji[] = [];
+  isAnswer: boolean = false;
+  answerCount: number = 0;
 
   constructor(mid: string, uid: string, text: string, timestamp: number, emojis: Emoji[]) {
     this.emojis = emojis;

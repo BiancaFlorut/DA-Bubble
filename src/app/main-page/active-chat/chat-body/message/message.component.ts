@@ -13,16 +13,17 @@ import { UserService } from '../../../../services/user/user.service';
 import { Emoji } from '../../../../models/emoji.class';
 import { SvgButtonComponent } from '../../../svg-button/svg-button.component';
 import { FirebaseService } from '../../../../services/firebase/firebase.service';
+import { ThreadChatService } from '../../../../services/chat/thread-chat/thread-chat.service';
 
 @Component({
   selector: 'app-message',
   standalone: true,
   imports: [
-    ReactionBarComponent, 
-    CommonModule, 
-    EditableMessageComponent, 
-    EmojiCounterComponent, 
-    EmojiPickerButtonComponent, 
+    ReactionBarComponent,
+    CommonModule,
+    EditableMessageComponent,
+    EmojiCounterComponent,
+    EmojiPickerButtonComponent,
     SvgButtonComponent],
   templateUrl: './message.component.html',
   styleUrl: './message.component.scss'
@@ -31,45 +32,46 @@ export class MessageComponent {
   @Input() message!: Message;
   @Input() chat: Chat | undefined;
 
-  user!: User ;
+  user!: User;
   partner: User | undefined;
   isEditing: boolean = false;
   public showProfileService: ShowProfileService = inject(ShowProfileService);
   chatService = inject(ChatService);
   userService = inject(UserService);
+  threadService = inject(ThreadChatService);
   cid!: string;
   @ViewChild('messageItem') messageItem!: ElementRef;
   isEmojiPickerOpen = false;
   oldMessage: string = '';
   firebase = inject(FirebaseService);
 
-  constructor() { 
-    this.user = this.firebase.currentUser;    
+  constructor() {
+    this.user = this.firebase.currentUser;
   }
 
-  ngOnInit(): void {
-    this.user = this.firebase.currentUser;    
-    if (this.chat) {
-      this.cid = this.chat.cid;
-      const rest = this.chat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
-        if (rest.length === 0) {
-          this.partner = this.firebase.currentUser;
-        } else {
-          this.partner = this.firebase.users.find(user => user.uid === rest[0]);
-        }      
-    }
-  }
-
-  ngOnChanges() {
+  async ngOnInit(): Promise<void> {
     this.user = this.firebase.currentUser;
     if (this.chat) {
       this.cid = this.chat.cid;
       const rest = this.chat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
-        if (rest.length === 0) {
-          this.partner = this.firebase.currentUser;
-        } else {
-          this.partner = this.firebase.users.find(user => user.uid === rest[0]);
-        }
+      if (rest.length === 0) {
+        this.partner = this.firebase.currentUser;
+      } else {
+        this.partner = this.firebase.users.find(user => user.uid === rest[0]);
+      }
+    }
+  }
+
+  async ngOnChanges() {
+    this.user = this.firebase.currentUser;
+    if (this.chat) {
+      this.cid = this.chat.cid;
+      const rest = this.chat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
+      if (rest.length === 0) {
+        this.partner = this.firebase.currentUser;
+      } else {
+        this.partner = this.firebase.users.find(user => user.uid === rest[0]);
+      } 
     }
   }
 
@@ -77,7 +79,7 @@ export class MessageComponent {
     if (message) {
       this.chatService.editMessage(this.cid, message);
     }
-    else{
+    else {
       this.isEditing = true;
       this.oldMessage = this.message.text;
     }
@@ -104,10 +106,10 @@ export class MessageComponent {
       const index = this.message.emojis.findIndex(e => e.id === id);
       if (index != -1) {
         if (!this.message.emojis[index].uids.includes(this.userService.firebase.currentUser.uid!))
-        this.message.emojis[index].count++;
+          this.message.emojis[index].count++;
         this.message.emojis[index].uids.push(this.userService.firebase.currentUser.uid!);
       } else {
-        const emoji = new Emoji(id,this.userService.emojis[indexUser].path, this.userService.firebase.currentUser.uid!);
+        const emoji = new Emoji(id, this.userService.emojis[indexUser].path, this.userService.firebase.currentUser.uid!);
         emoji.count = 1;
         this.message.emojis.push(emoji);
       }
@@ -131,9 +133,18 @@ export class MessageComponent {
       }
     }
     return result;
-  } 
+  }
 
   toggleEmojiPicker() {
     this.isEmojiPickerOpen = !this.isEmojiPickerOpen;
+  }
+
+  async areAnswers() {
+    const count = await this.threadService.getAnswerCount(this.message.mid, this.chat?.cid!);
+    return count;
+  }
+
+  openThread() {
+    this.threadService.openThreadChat(this.message, this.chatService.chat!);
   }
 }

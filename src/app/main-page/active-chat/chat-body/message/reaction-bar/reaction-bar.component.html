@@ -1,17 +1,41 @@
 <section>
-  <img class="reaction-button" src="{{ this.userService.emojis[0].path }}" alt="" (click)="addReaction(userService.emojis[0].id)" />
-  <img class="reaction-button" src="{{ this.userService.emojis[1].path }}" alt="" (click)="addReaction(userService.emojis[1].id)" />
+  @if (!message.isAnswer) {
+  <img
+    class="reaction-button"
+    src="{{ this.userService.emojis[0].path }}"
+    alt=""
+    (click)="addReaction(userService.emojis[0].id)"
+  />
+  <img
+    class="reaction-button"
+    src="{{ this.userService.emojis[1].path }}"
+    alt=""
+    (click)="addReaction(userService.emojis[1].id)"
+  />
+  }
   <app-emoji-picker-button (emojiPickerEvent)="addReaction($event)">
-    <app-svg-button [source]="'./assets/img/main-page/reactions/add_reaction.svg'" />
+    <app-svg-button
+      [source]="'./assets/img/main-page/reactions/add_reaction.svg'"
+    />
   </app-emoji-picker-button>
-  <app-svg-button [source]="'./assets/img/main-page/reactions/comment.svg'" (click)="openThread()"></app-svg-button>
+  @if (!message.isAnswer) {
+    <app-svg-button
+    [source]="'./assets/img/main-page/reactions/comment.svg'"
+    (click)="openThread()"
+  ></app-svg-button>
+  }
   @if (editable) {
   <div class="menu-container">
-    <app-svg-button class="menu-container" [source]="'./assets/img/main-page/reactions/more_vert.svg'" (click)="toggleMessageMenu()" />
+    <app-svg-button
+      class="menu-container"
+      [source]="'./assets/img/main-page/reactions/more_vert.svg'"
+      (click)="toggleMessageMenu()"
+    />
     @if (isMessageMenuOpen) {
-      <div class="message-menu"><span (click)="editMessage()">Nachricht bearbeiten</span></div>
+    <div class="message-menu">
+      <span (click)="editMessage()">Nachricht bearbeiten</span>
+    </div>
     }
   </div>
   }
-  
 </section>

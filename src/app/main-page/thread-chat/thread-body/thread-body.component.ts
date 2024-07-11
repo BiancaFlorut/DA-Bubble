@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { MessageComponent } from '../../active-chat/chat-body/message/message.component';
 import { ThreadChatService } from '../../../services/chat/thread-chat/thread-chat.service';
-import { Chat } from '../../../models/chat.class';
 import { Message } from '../../../models/message.class';
 
 @Component({

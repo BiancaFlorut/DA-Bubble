@@ -40,10 +40,7 @@ export class ChatService {
 
   async getChatWith(partner: User) {
     const user = this.firebase.currentUser;
-    console.log('user: ', user);
-    console.log('partner: ', partner);
     const cid = await this.firebase.getDirectChatId(user.uid!, partner.uid!);
-    console.log('cid: ', cid);
     this.loading = true;
     if (cid && cid != '') {
       this.newMessage = false;
@@ -63,13 +60,14 @@ export class ChatService {
     const emojis = doc.data()['emojis'] as Emoji[];
     let msg = new Message(doc.data()['mid'], doc.data()['uid'], doc.data()['text'], doc.data()['timestamp'], emojis);
     if (doc.data()['editedTimestamp']) msg.editedTimestamp = doc.data()['editedTimestamp'];
+    if (doc.data()['isAnswer']) msg.isAnswer = doc.data()['isAnswer'];
+    if (doc.data()['answerCount']) msg.answerCount = doc.data()['answerCount'];
     return msg;
   }
 
   setSubscriber(cid: string, partner: User, msgs: Message[]) {
     let chat: Chat = new Chat(cid, [this.firebase.currentUser.uid!, partner.uid!], msgs);
     this.chat = chat;
-    console.log(this.chat);
     this.signalChat.set(chat);
     this.chatSub.next(chat);
     this.loading = false;

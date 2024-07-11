@@ -27,7 +27,7 @@ export class MainPageComponent {
     chatService = inject(ChatService);
 
     public showWorkSpace: boolean = true;
-    isThreadChat: boolean = this.threadService.isThreadChat();
+    openSideThread: boolean = this.threadService.openSideThread();
 
     public handleWorkSpace() {
         this.showWorkSpace = !this.showWorkSpace;
