@@ -3,7 +3,8 @@
 
 .answer-count-container {
   @include displayFlex(row, center, center, 20px);
-  margin: 0 33px;
+  padding: 0 33px;
+  width: 100%;
 }
 
 .answer-count {
@@ -17,4 +18,9 @@
   flex: 1;
   border-top: 1px solid $light_purple;
   width: 100%;
+}
+
+section {
+  @include displayFlex(column-reverse, center, center, 20px);
+  flex: 1 1 0;
 }

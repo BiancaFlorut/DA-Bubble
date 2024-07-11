@@ -45,7 +45,7 @@ export class ThreadChatService {
       collection.forEach((doc) => {
         this.messages.push(doc.data() as Message);
       });
-      this.messages = this.messages.sort((a, b) => a.timestamp - b.timestamp);
+      this.messages = this.messages.sort((a, b) => b.timestamp - a.timestamp);
     })
   }
 

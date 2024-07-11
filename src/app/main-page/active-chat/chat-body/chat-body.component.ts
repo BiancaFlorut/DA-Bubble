@@ -1,10 +1,8 @@
-import { AfterViewInit, Component, ElementRef, Input, QueryList, ViewChild, ViewChildren, inject } from '@angular/core';
+import { AfterViewInit, Component, Input, QueryList, ViewChildren, inject } from '@angular/core';
 import { ChatService } from '../../../services/chat/chat.service';
 import { Chat } from '../../../models/chat.class';
 import { CommonModule, DatePipe } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
-
-
 import { ShowProfileService } from '../../../services/show-profile/show-profile.service';
 import { MessageComponent } from './message/message.component';
 import { User } from '../../../interfaces/user';
@@ -22,7 +20,6 @@ import { FirebaseService } from '../../../services/firebase/firebase.service';
   styleUrl: './chat-body.component.scss'
 })
 export class ChatBodyComponent implements AfterViewInit {
-  @ViewChild('scrollSection') scrollSection!: ElementRef;
   @ViewChildren('messageItem') messageItems!: QueryList<any>;
   @Input() chat!: Chat;
   chatService = inject(ChatService);

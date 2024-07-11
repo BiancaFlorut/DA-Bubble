@@ -3,10 +3,9 @@
   [ngStyle]="{
     'justify-content': chat.messages.length === 0 ? 'flex-end' : ''
   }"
-  #scrollSection
 >
   @if (chat.messages.length > 0) { @for (message of chat.messages; track $index)
-  { <app-message [message]="message" [chat]="chat"></app-message>
+  { <app-message [message]="message" [chat]="chat" #messageItem></app-message>
   @if (isNewDate($index)) {
   <div class="timestamp-container">
     <div class="line-container"><div class="line"></div></div>
