@@ -60,8 +60,12 @@ export class ChatInputComponent {
       if (this.isThread)
         this.placeholderText = 'Antworten...';
       else
-        this.replacePlaceholder();
-      this.editor?.commands.focus().exec();
+      this.replacePlaceholder();
+        setTimeout(() => {
+          if (this.editor) {
+            this.editor.commands.focus().exec();
+          }
+        }, 10);
     });
   }
 

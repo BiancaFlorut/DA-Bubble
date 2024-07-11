@@ -7,6 +7,8 @@ import { CreateChannelComponent } from './create-channel/create-channel.componen
 import { CreateChannelService } from '../../services/create-channel/create-channel.service';
 import { FirebaseChannelService } from '../../services/firebase-channel/firebase-channel.service';
 import { ThreadChatService } from '../../services/chat/thread-chat/thread-chat.service';
+import { Channel } from '../../interfaces/channel';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
   selector: 'app-workspace-menu',
@@ -24,9 +26,37 @@ export class WorkspaceMenuComponent {
   chatService: ChatService = inject(ChatService);
   createChannelService: CreateChannelService = inject(CreateChannelService);
   threadChatService = inject(ThreadChatService);
+  userService: UserService = inject(UserService);
 
-  areChannelsMenuOpen: boolean = false;
+  public userChannels: any[] = [];
+
+  areChannelsMenuOpen: boolean = true;
   areDirectChatsMenuOpen: boolean = true;
+
+  ngOnInit(): void {
+    this.firebaseChannelService.channels$.subscribe(channels => {
+      this.processChannels(channels);
+    });
+  }
+
+  private processChannels(channels: Channel[]): void {
+    if (channels.length > 0) {
+      this.userChannels = [];
+      channels.forEach(channel => {
+        this.firebaseService.users.forEach(user => {
+          if (user.email === this.userService.user.email) {
+            user.channelIds?.forEach(id => {
+              if (id === channel.id) {
+                if (!this.userChannels.includes(channel)) {
+                  this.userChannels.push(channel);
+                }
+              }
+            });
+          }
+        });
+      });
+    }
+  }
 
   openChannelsMenu() {
     if (this.areChannelsMenuOpen) {
@@ -48,23 +78,27 @@ export class WorkspaceMenuComponent {
     this.threadChatService.exitThread();
     await this.chatService.getChatWith(partner);
     this.firebaseChannelService.openCreatedChannel = false;
+    this.createChannelService.showChannel = false;
   }
 
-  public handleNewMessage() {
+  public async handleNewMessage() {
     this.chatService.newMessage = true;
     this.firebaseChannelService.openCreatedChannel = false;
+    this.createChannelService.showChannel = false;
   }
 
   public getAllUsersFromChannel(channelId: string, channelName: string): void {
     this.firebaseChannelService.usersFromChannel = [];
     this.firebaseService.users.forEach(user => {
-      user.channelIds?.forEach(id => {
+      user.channelIds?.forEach(async id => {
         if (id === channelId) {
           this.firebaseChannelService.usersFromChannel.push(user);
           this.firebaseChannelService.currentChannelName = channelName;
         }
       });
     });
+    this.userService.currentChannel = channelId;
+    this.createChannelService.showChannel = true;
     this.createChannelService.showCreateChannel = false;
     this.firebaseChannelService.openCreatedChannel = true;
   }

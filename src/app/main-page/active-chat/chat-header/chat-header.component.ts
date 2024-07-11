@@ -6,11 +6,16 @@ import { CommonModule } from '@angular/common';
 import { Chat } from '../../../models/chat.class';
 import { ShowProfileService } from '../../../services/show-profile/show-profile.service';
 import { FirebaseChannelService } from '../../../services/firebase-channel/firebase-channel.service';
+import { ChannelModalComponent } from './channel-modal/channel-modal.component';
+import { ChannelModalService } from '../../../services/channel-modal/channel-modal.service';
 
 @Component({
   selector: 'app-chat-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    ChannelModalComponent
+  ],
   templateUrl: './chat-header.component.html',
   styleUrl: './chat-header.component.scss'
 })
@@ -19,6 +24,7 @@ export class ChatHeaderComponent {
   chatService: ChatService = inject(ChatService);
   public showProfileService = inject(ShowProfileService);
   public firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
+  public channelModalService: ChannelModalService = inject(ChannelModalService);
 
   currentChat!: Chat;
   partner: User | undefined;

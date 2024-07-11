@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild, inject } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { FirebaseService } from '../../services/firebase/firebase.service';
@@ -42,6 +42,9 @@ export class HeaderComponent {
     this.initializeForm();
     this.userIsLogged();
     this.redirectLogin();
+    if (localStorage.getItem('mainPageUrl') === null) {
+      localStorage.setItem('mainPageUrl', `${this.router.url}`);
+    }
   }
 
   private userIsLogged(): void {

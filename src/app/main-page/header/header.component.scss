@@ -41,6 +41,7 @@
         font-size: 24px;
         line-height: 32.74px;
         color: #686868;
+        border: unset;
     }
 }
 
@@ -97,7 +98,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 2;
+    z-index: 9999;
     background-color: rgb(0, 0, 0, 0.4);
 }
 

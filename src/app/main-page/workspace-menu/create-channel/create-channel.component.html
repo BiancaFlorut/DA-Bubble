@@ -53,7 +53,7 @@
             @if (specificUsersChecked) {
             <div class="search-user-input-container">
                 <input [(ngModel)]="searchUser" (input)="filterSearchingUsers()" class="search-user" type="text"
-                    name="searchUser" id="searchUser" placeholder="Name eingeben">
+                    name="searchUser" id="searchUser" placeholder="Name eingeben" autocomplete="off">
                 @if(filteredUsers.length > 0 && searchUser !== '' || selectedUsers.length > 0) {
                 <div class="search-user-container">
                     @if(filteredUsers.length > 0 && searchUser !== ''){
