@@ -85,6 +85,7 @@ export class ChatInputComponent {
       this.firebase.addThreadMessage(this.threadService.chat!.cid, mid, message);
       message.isAnswer = false;
       this.threadService.message.answerCount++;
+      this.threadService.message.lastAnswerTimestamp = message.timestamp;
       console.log('update direct message: ', this.currentChat.cid, mid, this.threadService.message);
       
       this.firebase.updateMessage(this.currentChat.cid, mid, this.threadService.message);

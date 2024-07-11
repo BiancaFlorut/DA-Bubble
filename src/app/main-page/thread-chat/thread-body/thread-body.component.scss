@@ -1,0 +1,20 @@
+@import "./../../../../assets/styles/mixIns.scss";
+@import "./../../../../assets/styles/colors.scss";
+
+.answer-count-container {
+  @include displayFlex(row, center, center, 20px);
+  margin: 0 33px;
+}
+
+.answer-count {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24.55px;
+  color: $light_purple;
+}
+
+.line {
+  flex: 1;
+  border-top: 1px solid $light_purple;
+  width: 100%;
+}

@@ -62,6 +62,7 @@ export class ChatService {
     if (doc.data()['editedTimestamp']) msg.editedTimestamp = doc.data()['editedTimestamp'];
     if (doc.data()['isAnswer']) msg.isAnswer = doc.data()['isAnswer'];
     if (doc.data()['answerCount']) msg.answerCount = doc.data()['answerCount'];
+    if (doc.data()['lastAnswerTimestamp']) msg.lastAnswerTimestamp = doc.data()['lastAnswerTimestamp'];
     return msg;
   }
 

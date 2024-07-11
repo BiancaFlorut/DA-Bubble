@@ -147,4 +147,8 @@ export class MessageComponent {
   openThread() {
     this.threadService.openThreadChat(this.message, this.chatService.chat!);
   }
+
+  getAnswerText() {
+      return this.message.answerCount + ' ' + (this.message.answerCount > 1 ? 'Antworten' : 'Antwort');
+  }
 }
