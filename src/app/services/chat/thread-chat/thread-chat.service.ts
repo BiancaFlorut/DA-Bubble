@@ -45,7 +45,7 @@ export class ThreadChatService {
       collection.forEach((doc) => {
         this.messages.push(doc.data() as Message);
       });
-      this.messages = this.messages.sort((a, b) => b.timestamp - a.timestamp);
+      this.messages = this.messages.sort((a, b) => a.timestamp - b.timestamp);
     })
   }
 
@@ -53,6 +53,11 @@ export class ThreadChatService {
     const ref = collection(doc(this.firebase.getDirectChatMessagesRef(cid), mid), 'thread');
     const snapshot = await getCountFromServer(ref);
     return snapshot.data().count;
+  }
+
+  editMessage(message: Message, cid: string) {
+    const ref = doc(collection(doc(this.firebase.getDirectChatMessagesRef(cid), message.mid), 'thread'), message.mid);
+    this.firebase.updateRefMessage(ref, message);
   }
 
   onNgDestroy() {

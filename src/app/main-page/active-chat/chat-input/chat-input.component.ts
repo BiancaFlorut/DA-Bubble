@@ -61,11 +61,11 @@ export class ChatInputComponent {
         this.placeholderText = 'Antworten...';
       else
       this.replacePlaceholder();
-        setTimeout(() => {
+    
           if (this.editor) {
             this.editor.commands.focus().exec();
           }
-        }, 10);
+
     });
   }
 

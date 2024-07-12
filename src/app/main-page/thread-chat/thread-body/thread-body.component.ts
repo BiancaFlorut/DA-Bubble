@@ -1,7 +1,7 @@
+
 import { AfterViewInit, Component, inject, QueryList, ViewChildren } from '@angular/core';
 import { MessageComponent } from '../../active-chat/chat-body/message/message.component';
 import { ThreadChatService } from '../../../services/chat/thread-chat/thread-chat.service';
-import { Message } from '../../../models/message.class';
 
 @Component({
   selector: 'app-thread-body',
@@ -15,10 +15,7 @@ export class ThreadBodyComponent implements AfterViewInit{
   threadChatService = inject(ThreadChatService);
 
   ngAfterViewInit(): void {
-    this.messageItems.changes.subscribe((messageObj) => {
-      if (messageObj.first)
-        messageObj.first.scrollIntoView();
-    })
+    if (this.messageItems && this.messageItems.first) this.messageItems.first.scrollIntoView();
   }
 
 }

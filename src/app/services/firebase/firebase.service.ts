@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, addDoc, collection, doc, getDoc, updateDoc } from '@angular/fire/firestore';
-import { DocumentData, DocumentReference, arrayUnion, onSnapshot, setDoc } from 'firebase/firestore';
+import { CollectionReference, DocumentData, DocumentReference, arrayUnion, onSnapshot, setDoc } from 'firebase/firestore';
 import { User } from '../../interfaces/user';
 import { Message } from '../../models/message.class';
 import { Emoji } from '../../models/emoji.class';
@@ -196,7 +196,11 @@ export class FirebaseService {
   }
 
   updateMessage(cid: string, mid: string, data: any) {
-      updateDoc(doc(this.getDirectChatMessagesRef(cid), mid), this.getJsonFromObject(data));
+    updateDoc(doc(this.getDirectChatMessagesRef(cid), mid), this.getJsonFromObject(data));
+  }
+
+  updateRefMessage(ref: DocumentReference<DocumentData, DocumentData>, data: Message) {
+    updateDoc(ref, this.getJsonFromObject(data));
   }
 
   incrementEmojiCount(cid: string, mid: string, emoji: Emoji) {

@@ -77,6 +77,9 @@ export class MessageComponent {
 
   editMessage(message: Message) {
     if (message) {
+      if (message.isAnswer) {
+        this.threadService.editMessage(message, this.cid);
+      } else
       this.chatService.editMessage(this.cid, message);
     }
     else {
