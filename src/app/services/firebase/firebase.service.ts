@@ -76,7 +76,7 @@ export class FirebaseService {
       let docRef = this.getSingleUser(user.uid);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        updateDoc(docRef, { online: true }).catch(
+        await updateDoc(docRef, { online: true }).catch(
           (err) => { console.error(err); }
         );
       } else this.setNewUser(docRef, user);
@@ -90,10 +90,10 @@ export class FirebaseService {
     });
   }
 
-  updateUser(user: User) {
+  async updateUser(user: User) {
     if (user && user.uid) {
       let docRef = this.getSingleUser(user.uid);
-      updateDoc(docRef, this.getJSONFromUser(user))
+      await updateDoc(docRef, this.getJSONFromUser(user))
         .catch((err) => { console.error(err) })
     }
   }
@@ -136,13 +136,15 @@ export class FirebaseService {
       message.answerCount = 0;
       message.isAnswer = true;
       const refNewThreadMessage = await addDoc(ref, message);
+      await updateDoc(doc(ref, refNewThreadMessage.id), { tid : refNewThreadMessage.id });
       await updateDoc(messageRef, { thread: refNewThreadMessage.id });
     }
   }
 
-  addThreadMessage(cid: string, mid: string, message: Message) {
+  async addThreadMessage(cid: string, mid: string, message: Message) {
     const ref = collection(doc(this.getDirectChatMessagesRef(cid), mid), 'thread');
-    addDoc(ref, JSON.parse(JSON.stringify(message)));
+    const messageDoc = await addDoc(ref, JSON.parse(JSON.stringify(message)));
+    await updateDoc(doc(ref, messageDoc.id), { tid: messageDoc.id });
   }
 
   async checkThisChat(cid: string, uid: string, pid: string) {
@@ -157,7 +159,7 @@ export class FirebaseService {
         if (chat.uids.includes(uid) && chat.uids.includes(pid) && chat.uids.length == 2) {
           if (!this.currentUser.directChatIds?.includes(cid)) {
             this.currentUser.directChatIds?.push(cid);
-            this.updateUser(this.currentUser);
+            await this.updateUser(this.currentUser);
           }
           return true;
         }
@@ -171,25 +173,25 @@ export class FirebaseService {
       const ref = await addDoc(collection(this.firestore, 'chats'), { uids: [uid] });
       cid = ref.id;
       let user = this.getUser(uid);
-      this.addChatToUser(user!, cid);
+      await this.addChatToUser(user!, cid);
     } else
       await addDoc(collection(this.firestore, 'chats'), { uids: [uid, pid] })
-        .then((ref) => {
+        .then(async (ref) => {
           cid = ref.id;
           let user = this.getUser(uid);
           let partner = this.getUser(pid);
-          this.addChatToUser(user!, cid);
-          this.addChatToUser(partner!, cid);
+          await this.addChatToUser(user!, cid);
+          await this.addChatToUser(partner!, cid);
         })
     return cid;
   }
 
-  addChatToUser(user: User, cid: string) {
+  async addChatToUser(user: User, cid: string) {
     if (user) {
       if (!user.directChatIds) user.directChatIds = [];
       if (!user.directChatIds.includes(cid)) {
         user.directChatIds.push(cid);
-        this.updateUser(user);
+        await this.updateUser(user);
       }
     }
   }
@@ -202,21 +204,14 @@ export class FirebaseService {
     return await addDoc(collection(this.getSingleChat(chatId), 'messages'), { uid: uid, timestamp: timestamp, text: message, emojis: [] });
   }
 
-  updateMessage(cid: string, mid: string, data: any) {
-    updateDoc(doc(this.getDirectChatMessagesRef(cid), mid), this.getJsonFromObject(data));
+  async updateMessage(cid: string, mid: string, data: any) {
+    await updateDoc(doc(this.getDirectChatMessagesRef(cid), mid), this.getJsonFromObject(data));
   }
 
-  updateRefMessage(ref: DocumentReference<DocumentData, DocumentData>, data: Message) {
-    updateDoc(ref, this.getJsonFromObject(data));
+  async updateRefMessage(ref: DocumentReference<DocumentData, DocumentData>, data: Message) {
+    await updateDoc(ref, this.getJsonFromObject(data));
   }
 
-  incrementEmojiCount(cid: string, mid: string, emoji: Emoji) {
-    updateDoc(doc(this.getDirectChatMessagesRef(cid), mid), { emojis: arrayUnion(emoji) });
-  }
-
-  getEmojisJson(emojis: Emoji[]) {
-    return JSON.parse(JSON.stringify(emojis));
-  }
 
   getJsonFromObject(obj: any) {
     return JSON.parse(JSON.stringify(obj));

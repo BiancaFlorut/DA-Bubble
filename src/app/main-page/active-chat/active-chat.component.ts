@@ -17,9 +17,7 @@ export class ActiveChatComponent {
   chat: Chat | undefined;
 
   constructor() {
-    this.chatService.currentChat.subscribe(chat => {
-      this.chat = chat;
-    })
+    this.chat = this.chatService.chat;
   }
 
 }

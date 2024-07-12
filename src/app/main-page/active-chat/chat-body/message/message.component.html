@@ -28,7 +28,7 @@
           }
           <div class="emojis">
             @for (emoji of message.emojis; track $index) { @if (emoji.count > 0) {
-            <app-emoji-counter [emoji]="emoji" [message]="message" [cid]="cid" [user]="user"></app-emoji-counter>
+            <app-emoji-counter [emoji]="emoji" [message]="message" [cid]="cid"></app-emoji-counter>
             } }
             @if (areAnyEmojis()) {
               <app-emoji-picker-button (emojiPickerEvent)="addReaction($event)">
@@ -79,7 +79,7 @@
           }
           <div class="emojis">
             @for (emoji of message.emojis; track $index) { @if (emoji.count > 0) {
-              <app-emoji-counter [emoji]="emoji" [message]="message" [cid]="cid" [user]="user"></app-emoji-counter>
+              <app-emoji-counter [emoji]="emoji" [message]="message" [cid]="cid"></app-emoji-counter>
               } }
               @if (areAnyEmojis()) {
                 <app-emoji-picker-button (emojiPickerEvent)="addReaction($event)">

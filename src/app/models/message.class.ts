@@ -7,6 +7,7 @@ export class Message {
   editedTimestamp?: number;
   uid: string;
   mid: string;
+  tid?: string;
   emojis: Emoji[] = [];
   isAnswer: boolean = false;
   answerCount: number = 0;

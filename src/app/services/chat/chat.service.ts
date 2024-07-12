@@ -24,7 +24,6 @@ export class ChatService {
   loading: boolean = false;
   newMessage: boolean = true;
   firebase = inject(FirebaseService);
-  signalChat = signal(this.chat);
   constructor() {
     this.chatSub = new BehaviorSubject<Chat | undefined>(this.chat);
     this.currentChat = this.chatSub.asObservable();
@@ -32,7 +31,6 @@ export class ChatService {
 
   resetChat() {
     this.chat = undefined;
-    this.signalChat.set(this.chat);
     this.chatSub = new BehaviorSubject<Chat | undefined>(this.chat);
     this.currentChat = this.chatSub.asObservable();
     this.newMessage = true;
@@ -69,13 +67,12 @@ export class ChatService {
   setSubscriber(cid: string, partner: User, msgs: Message[]) {
     let chat: Chat = new Chat(cid, [this.firebase.currentUser.uid!, partner.uid!], msgs);
     this.chat = chat;
-    this.signalChat.set(chat);
     this.chatSub.next(chat);
     this.loading = false;
   }
 
-  editMessage(cid: string, message: Message) {
+  async editMessage(cid: string, message: Message) {
     if (message.mid)
-      this.firebase.updateMessage(cid, message.mid, message);
+      await this.firebase.updateMessage(cid, message.mid, message);
   }
 }

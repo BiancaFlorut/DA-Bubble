@@ -49,7 +49,7 @@ export class MessageComponent {
     this.user = this.firebase.currentUser;
   }
 
-  async ngOnInit(): Promise<void> {
+  async ngOnInit() {
     this.user = this.firebase.currentUser;
     if (this.chat) {
       this.cid = this.chat.cid;
@@ -59,19 +59,6 @@ export class MessageComponent {
       } else {
         this.partner = this.firebase.users.find(user => user.uid === rest[0]);
       }
-    }
-  }
-
-  async ngOnChanges() {
-    this.user = this.firebase.currentUser;
-    if (this.chat) {
-      this.cid = this.chat.cid;
-      const rest = this.chat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
-      if (rest.length === 0) {
-        this.partner = this.firebase.currentUser;
-      } else {
-        this.partner = this.firebase.users.find(user => user.uid === rest[0]);
-      } 
     }
   }
 
@@ -108,11 +95,11 @@ export class MessageComponent {
       this.userService.emojis[indexUser].count++;
       const index = this.message.emojis.findIndex(e => e.id === id);
       if (index != -1) {
-        if (!this.message.emojis[index].uids.includes(this.userService.firebase.currentUser.uid!))
+        if (!this.message.emojis[index].uids.includes(this.firebase.currentUser.uid!))
           this.message.emojis[index].count++;
-        this.message.emojis[index].uids.push(this.userService.firebase.currentUser.uid!);
+        this.message.emojis[index].uids.push(this.firebase.currentUser.uid!);
       } else {
-        const emoji = new Emoji(id, this.userService.emojis[indexUser].path, this.userService.firebase.currentUser.uid!);
+        const emoji = new Emoji(id, this.userService.emojis[indexUser].path, this.firebase.currentUser.uid!);
         emoji.count = 1;
         this.message.emojis.push(emoji);
       }
@@ -124,7 +111,7 @@ export class MessageComponent {
   }
 
   isCurrentUser(uid: string) {
-    return uid === this.userService.firebase.currentUser.uid;
+    return uid === this.firebase.currentUser.uid;
   }
 
   areAnyEmojis() {

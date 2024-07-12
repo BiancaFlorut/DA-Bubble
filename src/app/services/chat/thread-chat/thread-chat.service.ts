@@ -49,15 +49,19 @@ export class ThreadChatService {
     })
   }
 
-  async getAnswerCount(mid : string, cid: string) {
+  async getAnswerCount(mid: string, cid: string) {
     const ref = collection(doc(this.firebase.getDirectChatMessagesRef(cid), mid), 'thread');
     const snapshot = await getCountFromServer(ref);
     return snapshot.data().count;
   }
 
-  editMessage(message: Message, cid: string) {
-    const ref = doc(collection(doc(this.firebase.getDirectChatMessagesRef(cid), message.mid), 'thread'), message.mid);
-    this.firebase.updateRefMessage(ref, message);
+  async editMessage(message: Message, cid: string) {
+    if (message) {
+      const ref = doc(collection(doc(this.firebase.getDirectChatMessagesRef(cid), message.mid), 'thread'), message.tid);
+      await this.firebase.updateRefMessage(ref, message);
+    } else console.log('no message to edit');
+    
+
   }
 
   onNgDestroy() {
