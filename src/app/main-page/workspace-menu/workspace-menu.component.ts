@@ -89,7 +89,7 @@ export class WorkspaceMenuComponent {
     this.createChannelService.showChannel = false;
   }
 
-  async openCreateNewChannel() {
+  openCreateNewChannel() {
     this.createChannelService.toggleShowCreateChannel()
   }
 
@@ -107,9 +107,5 @@ export class WorkspaceMenuComponent {
     this.createChannelService.showChannel = true;
     this.createChannelService.showCreateChannel = false;
     this.firebaseChannelService.openCreatedChannel = true;
-  }
-
-  openCreateNewChannel() {
-    this.createChannelService.toggleShowCreateChannel()
   }
 }
