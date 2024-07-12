@@ -79,6 +79,9 @@ export class MessageComponent {
   closeEdit(message: Message) {
     this.isEditing = false;
     if (message)
+      if (message.isAnswer)
+        this.threadService.editMessage(message, this.cid);
+      else
       this.chatService.editMessage(this.cid, message);
     else {
       this.message.text = this.oldMessage;
@@ -95,9 +98,10 @@ export class MessageComponent {
       this.userService.emojis[indexUser].count++;
       const index = this.message.emojis.findIndex(e => e.id === id);
       if (index != -1) {
-        if (!this.message.emojis[index].uids.includes(this.firebase.currentUser.uid!))
+        if (!this.message.emojis[index].uids.includes(this.firebase.currentUser.uid!)){
           this.message.emojis[index].count++;
-        this.message.emojis[index].uids.push(this.firebase.currentUser.uid!);
+          this.message.emojis[index].uids.push(this.firebase.currentUser.uid!);
+        }
       } else {
         const emoji = new Emoji(id, this.userService.emojis[indexUser].path, this.firebase.currentUser.uid!);
         emoji.count = 1;
