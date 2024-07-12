@@ -1,11 +1,27 @@
 <section>
-  @if (threadChatService.messages.length > 0) {
-    @for (message of threadChatService.messages; track $index) {
-      <app-message [message]="message" [chat]="threadChatService.chat"></app-message>
-    }
+  @if (threadChatService.messages.length > 0) { @for (message of
+    threadChatService.messages; track $index) {
+  <app-message
+    [message]="message"
+    [chat]="threadChatService.chat"
+    #messageItem
+  ></app-message>
+  @if ($index == 0) {
+    <div class="answer-count-container">
+      <div class="answer-count">{{ threadChatService.message.answerCount }} 
+        @if (threadChatService.message.answerCount > 1) {
+          Antworten
+        } @else {
+          Antwort
+        }
+      </div>
+      <div class="line"></div>
+    </div>
   }
- @else {
-  <app-message [message]="threadChatService.message" [chat]="threadChatService.chat"></app-message>
- }
-  
+  } } @else {
+  <app-message
+    [message]="threadChatService.message"
+    [chat]="threadChatService.chat"
+  ></app-message>
+  }
 </section>

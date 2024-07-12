@@ -108,4 +108,8 @@ export class WorkspaceMenuComponent {
     this.createChannelService.showCreateChannel = false;
     this.firebaseChannelService.openCreatedChannel = true;
   }
+
+  openCreateNewChannel() {
+    this.createChannelService.toggleShowCreateChannel()
+  }
 }

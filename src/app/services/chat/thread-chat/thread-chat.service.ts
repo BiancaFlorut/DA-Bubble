@@ -2,13 +2,13 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Message } from '../../../models/message.class';
 import { Chat } from '../../../models/chat.class';
 import { FirebaseService } from '../../firebase/firebase.service';
-import { collection, doc, onSnapshot, Unsubscribe } from 'firebase/firestore';
+import { collection, doc, getCountFromServer, onSnapshot, Unsubscribe } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ThreadChatService {
-  isThreadChat = signal(false);
+  openSideThread = signal(false);
   message!: Message;
   chat: Chat | undefined = undefined;
   signalThreadChat = signal<Chat | undefined>(this.chat);
@@ -18,17 +18,22 @@ export class ThreadChatService {
   constructor() {
   }
 
+  openThreadChat(message: Message, chat: Chat) {
+    this.message = message;
+    this.chat = chat;
+    this.getMessages();
+    this.openSideThread.set(true);
+    this.signalThreadChat.set(this.chat);
+  }
+
   setThreadChat(message: Message, chat: Chat) {
     this.message = message;
     this.chat = chat;
-    this.isThreadChat.set(true);
-    this.signalThreadChat.set(this.chat);
-    this.getMessages();
   }
 
   exitThread() {
     this.chat = undefined;
-    this.isThreadChat.set(false);
+    this.openSideThread.set(false);
     this.signalThreadChat.set(this.chat);
   }
 
@@ -42,6 +47,17 @@ export class ThreadChatService {
       });
       this.messages = this.messages.sort((a, b) => a.timestamp - b.timestamp);
     })
+  }
+
+  async getAnswerCount(mid : string, cid: string) {
+    const ref = collection(doc(this.firebase.getDirectChatMessagesRef(cid), mid), 'thread');
+    const snapshot = await getCountFromServer(ref);
+    return snapshot.data().count;
+  }
+
+  editMessage(message: Message, cid: string) {
+    const ref = doc(collection(doc(this.firebase.getDirectChatMessagesRef(cid), message.mid), 'thread'), message.mid);
+    this.firebase.updateRefMessage(ref, message);
   }
 
   onNgDestroy() {

@@ -61,28 +61,34 @@ export class ChatInputComponent {
         this.placeholderText = 'Antworten...';
       else
       this.replacePlaceholder();
-        setTimeout(() => {
+    
           if (this.editor) {
             this.editor.commands.focus().exec();
           }
-        }, 10);
+
     });
   }
 
   async sendMessage() {
     if (this.isThread) {
       // send message in the thread
-      console.log('send message in the thread. text:', this.message);
-      
       const mid = this.threadService.message.mid;
       const messages = this.threadService.messages;
-      console.log('messages.length', messages.length);
-      
       if (messages.length === 0) {
-        this.firebase.setThread(this.currentChat.cid, mid);
-      } 
+        if (this.currentChat.cid && mid)
+          this.firebase.setThread(this.currentChat.cid, mid);
+        else
+          console.log('no cid or mid create a thread');
+      }
       const message = new Message(mid, this.firebase.currentUser.uid!, this.message, Date.now(), []);
-        this.firebase.addThreadMessage(this.threadService.chat!.cid, mid, message);
+      message.isAnswer = true;
+      this.firebase.addThreadMessage(this.threadService.chat!.cid, mid, message);
+      message.isAnswer = false;
+      this.threadService.message.answerCount++;
+      this.threadService.message.lastAnswerTimestamp = message.timestamp;
+      console.log('update direct message: ', this.currentChat.cid, mid, this.threadService.message);
+      
+      this.firebase.updateMessage(this.currentChat.cid, mid, this.threadService.message);
     } else {
       if (this.firebase.currentUser.uid) {
         const mid = await this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);

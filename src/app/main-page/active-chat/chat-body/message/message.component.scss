@@ -52,6 +52,7 @@ app-editable-message {
   font-weight: 700;
   line-height: 24.55px;
   padding-right: 100px;
+  width: 100%;
 }
 
 .message-header {
@@ -75,7 +76,7 @@ app-editable-message {
   white-space: pre-wrap;
   ::ng-deep p {
     vertical-align: middle;
-    font-family: 'Nunito';
+    font-family: "Nunito";
     font-size: 18px;
     line-height: 24.55px;
     font-weight: 400;
@@ -99,6 +100,43 @@ app-editable-message {
 
 .emojis {
   @include displayFlex(row, center, center, 10px);
+}
+
+.answer-count-container {
+  @include displayFlex(row, flex-end, center, 20px);
+  width: 100%;
+}
+
+.answer-count {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24.55px;
+  color: $purple_3;
+  cursor: pointer;
+  text-align: center;
+  transition: all 80ms linear;
+  &:hover {
+    font-weight: 700;
+    color: $purple_1;
+  }
+  &::before {
+    display: block;
+    content: attr(title);
+    visibility: hidden;
+    font-weight: 700;
+    overflow: hidden;
+    height: 0;
+  }
+}
+
+.align-to-left {
+  justify-content: flex-start;
+}
+
+.last-answer {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19.1px;
 }
 
 .mt-right {

@@ -48,7 +48,7 @@ export class ReactionBarComponent {
   }
 
   openThread() {
-    this.threadService.setThreadChat(this.message, this.chatService.chat!);
+    this.threadService.openThreadChat(this.message, this.chatService.chat!);
   }
 
 }

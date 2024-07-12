@@ -12,5 +12,5 @@ import { ChatInputComponent } from '../active-chat/chat-input/chat-input.compone
   styleUrl: './thread-chat.component.scss'
 })
 export class ThreadChatComponent {
-
+  
 }

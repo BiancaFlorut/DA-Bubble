@@ -37,6 +37,16 @@
             }
             
           </div>
+          <div class="answer-count-container">
+            @if ( message.answerCount > 0) {
+              <div class="answer-count" [title]="getAnswerText()" (click)="openThread()">
+                {{ getAnswerText() }}
+              </div>
+              <div class="last-answer">
+                Letzte Antwort {{ message.lastAnswerTimestamp | date : "HH:mm" }}
+              </div>
+            }
+          </div>
           <app-reaction-bar
             class="reaction-bar reaction-bar-left"
             [editable]="true"
@@ -76,6 +86,16 @@
                   <app-svg-button [source]="'./assets/img/main-page/reactions/add_reaction.svg'" />
                 </app-emoji-picker-button>
               }
+          </div>
+          <div class="answer-count-container align-to-left">
+            @if ( message.answerCount > 0) {
+              <div class="answer-count" [title]="getAnswerText()" (click)="openThread()">
+                {{ getAnswerText() }}
+              </div>
+              <div class="last-answer">
+                Letzte Antwort {{ message.lastAnswerTimestamp | date : "HH:mm" }}
+              </div>
+            }
           </div>
           <app-reaction-bar
             class="reaction-bar reaction-bar-right"

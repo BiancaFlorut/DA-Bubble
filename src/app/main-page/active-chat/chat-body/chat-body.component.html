@@ -3,24 +3,22 @@
   [ngStyle]="{
     'justify-content': chat.messages.length === 0 ? 'flex-end' : ''
   }"
-  #scrollSection
 >
   @if (chat.messages.length > 0) { @for (message of chat.messages; track $index)
-    {  <app-message [message]="message" [chat]="chat"></app-message>
-    @if (isNewDate($index)) {
-      <div class="timestamp-container">
-        <div class="line-container"><div class="line"></div></div>
-        <div class="timestamp-line">{{ lastFormattedDate }}</div>
-      </div>
-  }
-  } } @else {
+  { <app-message [message]="message" [chat]="chat" #messageItem></app-message>
+  @if (isNewDate($index)) {
+  <div class="timestamp-container">
+    <div class="line-container"><div class="line"></div></div>
+    <div class="timestamp-line">{{ lastFormattedDate }}</div>
+  </div>
+  } } } @else {
   <div class="placeholder-container">
-    @if (chat && partner && partner.avatar) {
+    @if (chat && partner) {
     <div
       (click)="showProfileService.toggleShowProfile()"
       class="placeholder-header"
     >
-      <img [src]="sanitize(partner.avatar)" alt="" />
+      <img [src]="sanitize(partner.avatar!)" alt="" />
 
       <span
         >{{ partner.name }} @if(partner.uid ==
@@ -43,6 +41,5 @@
     }
   </div>
   }
-
 </section>
 }
