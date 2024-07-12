@@ -1,7 +1,7 @@
 <section>
   @if(firebaseChannelService.openCreatedChannel){
   <div class="channel-header-container">
-    <div class="channel-name-container">
+    <div (click)="channelModalService.toggleShowUpdateChannel()" class="channel-name-container">
       <svg width="32" height="32" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
         <mask id="mask0_58555_8757" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
           height="25">
@@ -21,7 +21,7 @@
       </svg>
     </div>
     <div class="channel-users-container">
-      <div class="all-users-container">
+      <div (click)="channelModalService.toggleShowMembers()" class="all-users-container">
         <div class="users-container"
           [ngStyle]="{'width': (firebaseChannelService.usersFromChannel.length * 30) + 'px'}">
           @for (user of firebaseChannelService.usersFromChannel; track $index) {
@@ -32,7 +32,7 @@
         </div>
         <span>{{firebaseChannelService.usersFromChannel.length}}</span>
       </div>
-      <div (click)="channelModalService.toggleShowModal()" class="user-add-container">
+      <div (click)="channelModalService.toggleShowAddPeople()" class="user-add-container">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <mask id="mask0_59862_5977" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
             height="24">
@@ -47,8 +47,20 @@
       </div>
     </div>
   </div>
-  @if(channelModalService.showModal){
-  <app-channel-modal></app-channel-modal>
+  @if(channelModalService.showAddPeople || channelModalService.showMembers || channelModalService.showUpdateChannel){
+  <div (click)="toggleShowProfile($event)" class="background-channel-modal-container">
+    <div class="channel-modal-container">
+      @if(channelModalService.showAddPeople) {
+      <app-add-people></app-add-people>
+      }
+      @if(channelModalService.showMembers) {
+      <app-members></app-members>
+      }
+      @if(channelModalService.showUpdateChannel){
+      <app-update-channel></app-update-channel>
+      }
+    </div>
+  </div>
   }
   } @else {
   @if (chatService.newMessage) {

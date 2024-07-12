@@ -35,16 +35,18 @@ export class WorkspaceMenuComponent {
 
   ngOnInit(): void {
     this.firebaseChannelService.channels$.subscribe(channels => {
-      this.processChannels(channels);
+      this.firebaseService.users$.subscribe(users => {
+        this.processChannels(channels, users);
+      });
     });
   }
 
-  private processChannels(channels: Channel[]): void {
+  private processChannels(channels: Channel[], users: User[]): void {
     if (channels.length > 0) {
       this.userChannels = [];
       channels.forEach(channel => {
-        this.firebaseService.users.forEach(user => {
-          if (user.email === this.userService.user.email) {
+        users.forEach(user => {
+          if (user.uid === this.userService.user.uid) {
             user.channelIds?.forEach(id => {
               if (id === channel.id) {
                 if (!this.userChannels.includes(channel)) {
@@ -85,6 +87,10 @@ export class WorkspaceMenuComponent {
     this.chatService.newMessage = true;
     this.firebaseChannelService.openCreatedChannel = false;
     this.createChannelService.showChannel = false;
+  }
+
+  async openCreateNewChannel() {
+    this.createChannelService.toggleShowCreateChannel()
   }
 
   public getAllUsersFromChannel(channelId: string, channelName: string): void {

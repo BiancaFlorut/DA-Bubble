@@ -6,7 +6,6 @@ import { UserService } from '../../../services/user/user.service';
 import { CommonModule } from '@angular/common';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
 import { User } from '../../../interfaces/user';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-channel',
@@ -23,7 +22,6 @@ export class CreateChannelComponent {
   private firebaseService: FirebaseService = inject(FirebaseService);
   public firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
   private userService: UserService = inject(UserService);
-  private router: Router = inject(Router);
 
   @ViewChild('specificUsers') specificUsers!: ElementRef<HTMLInputElement>;
   @ViewChild('allUsers') allUsers!: ElementRef<HTMLInputElement>;
@@ -129,6 +127,7 @@ export class CreateChannelComponent {
           if (!user.channelIds?.includes(currentChannel)) {
             user.channelIds?.push(currentChannel);
             this.firebaseService.updateUser(user);
+            this.firebaseService.getUsers();
           }
         }
       });
@@ -141,7 +140,6 @@ export class CreateChannelComponent {
     this.firebaseChannelService.openCreatedChannel = true;
     this.firebaseChannelService.channels.forEach(channel => {
       if (this.userService.currentChannel === channel.id) {
-        this.router.navigate([`${localStorage.getItem('mainPageUrl')}/${channel.id}`]);
         this.firebaseChannelService.currentChannelName = channel.name;
         this.createChannelService.showChannel = true;
       }

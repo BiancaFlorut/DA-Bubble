@@ -1,23 +1,23 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ChannelModalService } from '../../../../services/channel-modal/channel-modal.service';
 import { FirebaseChannelService } from '../../../../services/firebase-channel/firebase-channel.service';
-import { CommonModule } from '@angular/common';
-import { User } from '../../../../interfaces/user';
 import { FirebaseService } from '../../../../services/firebase/firebase.service';
-import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../../services/user/user.service';
+import { User } from '../../../../interfaces/user';
 
 @Component({
-  selector: 'app-channel-modal',
+  selector: 'app-add-people',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
   ],
-  templateUrl: './channel-modal.component.html',
-  styleUrl: './channel-modal.component.scss'
+  templateUrl: './add-people.component.html',
+  styleUrl: './add-people.component.scss'
 })
-export class ChannelModalComponent {
+export class AddPeopleComponent {
   public channelModalService: ChannelModalService = inject(ChannelModalService);
   public firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
   public firebaseService: FirebaseService = inject(FirebaseService);
@@ -27,10 +27,6 @@ export class ChannelModalComponent {
   public selectedUsers: User[] = [];
 
   public searchUser: string = '';
-
-  public toggleChannelModal(): void {
-    this.channelModalService.toggleShowModal();
-  }
 
   public filterSearchingUsers(): void {
     this.filteredUsers = [];
@@ -54,6 +50,13 @@ export class ChannelModalComponent {
     this.selectedUsers.splice(index, 1);
   }
 
+  public handleOpenOrCloseModal(): void {
+    this.channelModalService.toggleShowAddPeople();
+    if(this.channelModalService.showMembers) {
+      this.channelModalService.toggleShowMembers();
+    }
+  }
+
   public async saveCurrentChannelToUsers(): Promise<void> {
     let currentChannel = this.userService.currentChannel;
     await this.addCurrentChannelToSelectedUsers(currentChannel);
@@ -71,7 +74,7 @@ export class ChannelModalComponent {
         }
       });
     });
-    this.channelModalService.toggleShowModal();
+    this.channelModalService.toggleShowAddPeople();
   }
 
   private async addCurrentChannelToSelectedUsers(currentChannel: string): Promise<void> {

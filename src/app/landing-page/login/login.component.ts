@@ -32,7 +32,6 @@ export class LoginComponent {
       password: ['', [Validators.required, Validators.pattern(/^.{8,}$/)]]
     });
     this.userService.resetUser();
-    localStorage.removeItem('mainPageUrl');
   }
 
   public async loginWithGoogle() {

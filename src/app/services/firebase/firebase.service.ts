@@ -5,6 +5,7 @@ import { User } from '../../interfaces/user';
 import { Message } from '../../models/message.class';
 import { Emoji } from '../../models/emoji.class';
 import { Chat } from '../../models/chat.class';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,12 @@ export class FirebaseService {
   private firestore: Firestore = inject(Firestore);
   unsubUsers: any;
   unsubUser: any;
+
+  private usersSubject = new BehaviorSubject<User[]>([]);
+  public users$ = this.usersSubject.asObservable();
+
   users: User[] = [];
+
   currentUser: User = {
     uid: '',
     name: '',
@@ -35,6 +41,7 @@ export class FirebaseService {
       querySnapshot.forEach((doc) => {
         this.users.push(doc.data() as User);
       });
+      this.usersSubject.next(this.users);
     })
   }
 

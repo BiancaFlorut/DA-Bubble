@@ -1,31 +1,10 @@
 @import "./../../../../../assets/styles/mixIns.scss";
 @import "./../../../../../assets/styles/colors.scss";
 
-.background-channel-modal-container {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 9999;
-    background-color: rgb(0, 0, 0, 0.4);
-
-
-    .channel-modal-container {
-        max-width: 1920px;
-        height: 100%;
-        margin: 0 auto;
-        position: relative;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-    }
-}
-
-.add-users-container {
+.add-people-container {
     width: 514px;
     height: 294px;
-    border-radius: 0 30px 30px 30px;
+    border-radius: 30px 0 30px 30px;
     padding: 40px;
     background-color: white;
     box-shadow: 0px 6px 10px 0px #00000033;
@@ -33,7 +12,7 @@
     flex-direction: column;
     gap: 20px;
     position: absolute;
-    top: 200px;
+    top: 205px;
     right: 65px;
 
     div {

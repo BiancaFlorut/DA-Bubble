@@ -1,0 +1,136 @@
+@import "./../../../../../assets/styles/mixIns.scss";
+@import "./../../../../../assets/styles/colors.scss";
+
+.members-container {
+    width: 415px;
+    height: 411px;
+    border-radius: 30px 0 30px 30px;
+    padding: 40px;
+    background-color: white;
+    box-shadow: 0px 6px 10px 0px #00000033;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: absolute;
+    top: 205px;
+    right: 125px;
+}
+
+.top-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    span {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 32.74px;
+    }
+
+    .close-icon {
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        background-image: url(./../../../../../assets/img/main-page/header/close.png);
+
+        &:hover {
+            background-image: url(./../../../../../assets/img/main-page/header/close_hover.png);
+        }
+    }
+}
+
+.users-container {
+    @include displayFlex(column, unset, unset, 13px);
+    overflow-y: auto
+}
+
+.user {
+    @include displayFlex(row, flex-start, center, 15px);
+    cursor: pointer;
+
+    padding: 4px 20px;
+    border-radius: 30px;
+    width: fit-content;
+
+    &:hover {
+        background-color: $bg_color;
+    }
+
+    &:active .avatar {
+        font-weight: 700;
+    }
+}
+
+.avatar {
+    @include displayFlex(column, center, center, 0);
+
+    img {
+        width: 50px;
+        height: 50px;
+        border-radius: 30px;
+        object-fit: cover;
+    }
+
+    .status-container {
+        @include displayFlex(row, flex-end, center, 0);
+        position: relative;
+        width: 100%;
+    }
+}
+
+.status-dot {
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    border: 2px solid white;
+    border-radius: 20px;
+    transform: translateY(-50%);
+}
+
+.name {
+    font-size: 18px;
+    line-height: 24.55px;
+}
+
+.online {
+    background: $online_green;
+}
+
+.offline {
+    background: $gray;
+}
+
+.add-members-container {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 29px;
+    border-radius: 100px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #ECEEFE;
+    }
+
+    &:hover svg path {
+        fill: #535AF1;
+        transform: scale(1.05);
+    }
+
+    &:hover span {
+        color: #535AF1;
+    }
+
+    .user-add-container {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        padding: 8px;
+        background-color: #ECEEFE;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

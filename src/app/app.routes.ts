@@ -26,6 +26,5 @@ export const routes: Routes = [
         ]
     },
     { path: 'main-page', redirectTo: 'main-page/:id', pathMatch: 'full' },
-    { path: 'main-page/:id', component: MainPageComponent },
-    { path: 'main-page/:id/:cid', component: MainPageComponent }
+    { path: 'main-page/:id', component: MainPageComponent }
 ];

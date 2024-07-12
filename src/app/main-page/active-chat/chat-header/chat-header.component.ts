@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { User } from '../../../interfaces/user';
 import { ChatService } from '../../../services/chat/chat.service';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
@@ -6,15 +6,20 @@ import { CommonModule } from '@angular/common';
 import { Chat } from '../../../models/chat.class';
 import { ShowProfileService } from '../../../services/show-profile/show-profile.service';
 import { FirebaseChannelService } from '../../../services/firebase-channel/firebase-channel.service';
-import { ChannelModalComponent } from './channel-modal/channel-modal.component';
 import { ChannelModalService } from '../../../services/channel-modal/channel-modal.service';
+import { AddPeopleComponent } from './add-people/add-people.component';
+import { MembersComponent } from './members/members.component';
+import { EditUserProfileService } from '../../../services/edit-user-profile/edit-user-profile.service';
+import { UpdateChannelComponent } from './update-channel/update-channel.component';
 
 @Component({
   selector: 'app-chat-header',
   standalone: true,
   imports: [
     CommonModule,
-    ChannelModalComponent
+    AddPeopleComponent,
+    MembersComponent,
+    UpdateChannelComponent
   ],
   templateUrl: './chat-header.component.html',
   styleUrl: './chat-header.component.scss'
@@ -25,6 +30,7 @@ export class ChatHeaderComponent {
   public showProfileService = inject(ShowProfileService);
   public firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
   public channelModalService: ChannelModalService = inject(ChannelModalService);
+  private editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
 
   currentChat!: Chat;
   partner: User | undefined;
@@ -48,4 +54,13 @@ export class ChatHeaderComponent {
       }
     });
   }
+
+  public toggleShowProfile(event: Event): void {
+    event.stopPropagation();
+    if (this.editUserProfileService.showProfile) {
+      this.editUserProfileService.showProfile = false;
+    } else {
+      this.channelModalService.closeAllModals();
+    }
   }
+}

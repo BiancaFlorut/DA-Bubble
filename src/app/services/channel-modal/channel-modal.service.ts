@@ -4,9 +4,25 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ChannelModalService {
-  public showModal: boolean = false;
+  public showAddPeople: boolean = false;
+  public showMembers: boolean = false;
+  public showUpdateChannel: boolean = false;
 
-  public toggleShowModal() {
-    this.showModal = !this.showModal;
+  public toggleShowAddPeople(): void {
+    this.showAddPeople = !this.showAddPeople;
+  }
+
+  public toggleShowMembers(): void {
+    this.showMembers = !this.showMembers;
+  }
+
+  public toggleShowUpdateChannel(): void {
+    this.showUpdateChannel = !this.showUpdateChannel;
+  }
+
+  public closeAllModals(): void {
+    this.showAddPeople = false;
+    this.showMembers = false;
+    this.showUpdateChannel = false;
   }
 }

@@ -5,21 +5,21 @@
                 <span>Profil</span>
                 <div (click)="toggleShowProfile($event)" class="close-icon"></div>
             </div>
-            <img class="avatar-icon" src="{{chatService.currentPartner.avatar}}" alt="avatar">
+            <img class="avatar-icon" src="{{showDetails().avatar}}" alt="avatar">
             <div class="user-data-container">
                 <div class="middle-container">
-                    <span>{{chatService.currentPartner.name}}</span>
+                    <span>{{showDetails().name}}</span>
                 </div>
                 <div class="status-container">
                     <div class="status-icon"
-                        [ngClass]="{'active-icon': chatService.currentPartner.online, 'inactive-icon': !chatService.currentPartner.online}">
+                        [ngClass]="{'active-icon': showDetails().online, 'inactive-icon': !showDetails().online}">
                     </div>
-                    @if (chatService.currentPartner.online) {
+                    @if (showDetails().online) {
                     <span
-                        [ngClass]="{'active-span': chatService.currentPartner.online, 'inactive-span': !chatService.currentPartner.online}">Aktive</span>
+                        [ngClass]="{'active-span': showDetails().online, 'inactive-span': !showDetails().online}">Aktive</span>
                     } @else {
                     <span
-                        [ngClass]="{'active-span': chatService.currentPartner.online, 'inactive-span': !chatService.currentPartner.online}">Abwesend</span>
+                        [ngClass]="{'active-span': showDetails().online, 'inactive-span': !showDetails().online}">Abwesend</span>
                     }
                 </div>
                 <div class="bottom-container">
@@ -27,7 +27,7 @@
                         <img src="./assets/img/main-page/header/email.png" alt="email">
                         <span>E-Mail-Adresse</span>
                     </div>
-                    <a>{{chatService.currentPartner.email}}</a>
+                    <a>{{showDetails().email}}</a>
                 </div>
                 <div (click)="openDirectChat()" class="message-button">
                     <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -1,0 +1,115 @@
+.update-channel-container {
+    width: 872px;
+    height: 616px;
+    padding: 40px;
+    border-radius: 0 30px 30px 30px;
+    background-color: white;
+    box-shadow: 0px 6px 10px 0px #00000033;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: absolute;
+    top: 205px;
+    right: 585px;
+}
+
+.top-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    span {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 32.74px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .close-icon {
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        background-image: url(./../../../../../assets/img/main-page/header/close.png);
+
+        &:hover {
+            background-image: url(./../../../../../assets/img/main-page/header/close_hover.png);
+        }
+    }
+}
+
+.border-container {
+    width: 792px;
+    height: 114px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .channel-name-top-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        span {
+            font-size: 18px;
+            line-height: 24.55px;
+
+            &:first-child {
+                font-weight: 700;
+            }
+
+            &:last-child {
+                font-weight: 600;
+                color: #535AF1;
+                cursor: pointer;
+
+                &:hover {
+                    font-weight: 700;
+                }
+            }
+        }
+    }
+
+    .channel-name-bottom-container {
+
+        .channel-name-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            line-height: 24.55px;
+        }
+
+        .input-container {
+            width: 792px;
+            height: 60px;
+            position: relative;
+
+            svg {
+                position: absolute;
+                top: 50%;
+                left: 20px;
+                transform: translateY(-50%);
+            }
+
+            input {
+                width: 100%;
+                height: 100%;
+                border-radius: 40px;
+                border: 1px solid #ADB0D9;
+                padding: 18px 20px 18px 55px;
+                color: #686868;
+                font-size: 18px;
+                line-height: 24.55px;
+            }
+        }
+    }
+}
+
+.update-channel-name {
+    border-radius: 20px;
+    border: 1px solid #ADB0D9;
+    padding: 20px;
+}

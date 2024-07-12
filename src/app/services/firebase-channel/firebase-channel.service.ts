@@ -1,4 +1,4 @@
-import { Injectable, inject, OnDestroy, CSP_NONCE } from '@angular/core';
+import { Injectable, inject, OnDestroy} from '@angular/core';
 import { Channel } from '../../interfaces/channel';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';

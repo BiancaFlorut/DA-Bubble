@@ -16,7 +16,9 @@ export class UserService {
     channelIds: [],
     directChatIds: []
   };
+
   firebase = inject(FirebaseService);
+  
   emojis: Emoji[] = [
     new Emoji('nerd face', './assets/img/main-page/reactions/emoji _nerd face_.svg', this.firebase.currentUser.uid!),
     new Emoji('person raising both hands in celebration', './assets/img/main-page/reactions/emoji _person raising both hands in celebration_.svg', this.firebase.currentUser.uid!),
