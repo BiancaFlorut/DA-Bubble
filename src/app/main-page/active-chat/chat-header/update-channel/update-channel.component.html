@@ -12,14 +12,14 @@
                         fill="black" />
                 </g>
             </svg>
-            {{firebaseChannelService.currentChannelName}}
+            {{firebaseChannelService.channel.name}}
         </span>
         <div (click)="channelModalService.toggleShowUpdateChannel()" class="close-icon"></div>
     </div>
-    <div class="border-container" [class.update-channel-name]="!updateChannelName">
+    <div class="border-container" [class.update-channel]="!updateChannelName">
         <div class="channel-name-top-container">
             <span>Channel-Name</span>
-            <span (click)="toggleUpdateChannelName()">
+            <span (click)="toggleUpdateChannelName('name')">
                 @if(updateChannelName){
                 Speichern
                 } @else {
@@ -41,7 +41,7 @@
                             fill="black" />
                     </g>
                 </svg>
-                {{firebaseChannelService.currentChannelName}}
+                {{firebaseChannelService.channel.name}}
             </div>
             } @else {
             <div class="input-container">
@@ -56,12 +56,32 @@
                             fill="black" />
                     </g>
                 </svg>
-                <input type="text" name="name" id="name" placeholder="{{firebaseChannelService.currentChannelName}}">
+                <input [(ngModel)]="name" type="text" name="name" id="name" placeholder="{{firebaseChannelService.channel.name}}">
             </div>
             }
         </div>
     </div>
-    <div class="border-container" [class.update-channel-name]="!updateChannelName">
-
+    <div class="border-container" [class.update-channel]="!updateChannelDescription">
+        <div class="channel-name-top-container">
+            <span>Beschreibung</span>
+            <span (click)="toggleUpdateChannelDescription('description')">
+                @if(updateChannelDescription){
+                Speichern
+                } @else {
+                Bearbeiten
+                }
+            </span>
+        </div>
+        @if(!updateChannelDescription){
+        <p>{{firebaseChannelService.channel.description}}</p>
+        } @else {
+        <input [(ngModel)]="description" class="description-input" type="text" name="description" id="description" placeholder="{{firebaseChannelService.channel.description}}">
+        }
+        <div class="line-container"></div>
+        <div class="creator-container">
+            <span>Erstellt von</span>
+            <span>{{firebaseChannelService.channel.creator}}</span>
+        </div>
     </div>
+    <button (click)="deleteUserFromChannel()">Channel veralssen</button>
 </div>

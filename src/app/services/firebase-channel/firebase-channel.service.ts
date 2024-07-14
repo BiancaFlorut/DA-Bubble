@@ -1,6 +1,6 @@
-import { Injectable, inject, OnDestroy} from '@angular/core';
+import { Injectable, inject, OnDestroy, signal } from '@angular/core';
 import { Channel } from '../../interfaces/channel';
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';
 import { FirebaseService } from '../firebase/firebase.service';
 import { UserService } from '../user/user.service';
@@ -20,6 +20,7 @@ export class FirebaseChannelService implements OnDestroy {
 
   public channels: Channel[] = [];
   public usersFromChannel: User[] = [];
+  public userChannels: any[] = [];
 
   public channel: Channel = {
     id: '',
@@ -35,6 +36,11 @@ export class FirebaseChannelService implements OnDestroy {
 
   constructor() {
     this.getChannels();
+    this.channels$.subscribe(channels => {
+      this.firebaseService.users$.subscribe(users => {
+        this.processChannels(channels, users);
+      });
+    });
   }
 
   private getChannelsRef() {
@@ -49,7 +55,6 @@ export class FirebaseChannelService implements OnDestroy {
         this.userService.currentChannel = res.id;
         this.firebaseService.currentUser.channelIds?.push(res.id);
         this.firebaseService.updateUser(this.firebaseService.currentUser);
-        this.getChannels();
       })
       .catch(err => {
         console.error(err)
@@ -79,9 +84,34 @@ export class FirebaseChannelService implements OnDestroy {
     });
   }
 
+  public processChannels(channels: Channel[], users: User[]): void {
+    if (channels.length > 0) {
+      this.userChannels = [];
+      channels.forEach(channel => {
+        users.forEach(user => {
+          user.channelIds?.forEach(id => {
+            if (user.uid === this.userService.user.uid) {
+              if (id === channel.id) {
+                if (!this.userChannels.includes(channel)) {
+                  this.userChannels.push(channel);
+                }
+              }
+            }
+          });
+        });
+      });
+    }
+  }
+
   ngOnDestroy() {
     if (this.unsubChannels) {
       this.unsubChannels();
     }
+  }
+
+  public async deleteChannel(channelId: string) {
+    console.log(channelId)
+    const channelDocRef = this.getSingleChannel(channelId);
+    await deleteDoc(channelDocRef);
   }
 }

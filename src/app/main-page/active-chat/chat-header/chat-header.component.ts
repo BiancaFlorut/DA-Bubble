@@ -25,30 +25,30 @@ import { UpdateChannelComponent } from './update-channel/update-channel.componen
   styleUrl: './chat-header.component.scss'
 })
 export class ChatHeaderComponent {
-  firebase: FirebaseService = inject(FirebaseService);
-  chatService: ChatService = inject(ChatService);
-  public showProfileService = inject(ShowProfileService);
+  public firebaseService: FirebaseService = inject(FirebaseService);
+  public chatService: ChatService = inject(ChatService);
+  public showProfileService: ShowProfileService = inject(ShowProfileService);
   public firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
   public channelModalService: ChannelModalService = inject(ChannelModalService);
   private editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
 
-  currentChat!: Chat;
-  partner: User | undefined;
-  user!: User;
-  directChat: boolean = false;
-  channelChat: boolean = false;
+  private currentChat!: Chat;
+  public partner: User | undefined;
+  public user!: User;
+  
+  public directChat: boolean = false;
 
   constructor() {
     this.chatService.currentChat.subscribe(chat => {
       if (chat) {
         this.currentChat = chat;
-        const rest = this.currentChat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
+        const rest = this.currentChat.uids.filter(uid => uid !== this.firebaseService.currentUser.uid);
         if (rest.length === 0) {
-          this.partner = this.firebase.currentUser;
+          this.partner = this.firebaseService.currentUser;
         } else {
-          this.partner = this.firebase.users.find(user => user.uid === rest[0]);
+          this.partner = this.firebaseService.users.find(user => user.uid === rest[0]);
         }
-        this.user = this.firebase.currentUser;
+        this.user = this.firebaseService.currentUser;
         this.chatService.newMessage = false;
         this.directChat = true;
       }

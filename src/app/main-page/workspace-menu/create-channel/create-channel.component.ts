@@ -41,15 +41,48 @@ export class CreateChannelComponent {
     event.stopPropagation();
     this.createChannelService.toggleShowCreateChannel();
     this.showCreateChannel = true;
-    this.createChannelService.showChannel = false;
+    this.createChannelService.showChannel = true;
   }
 
   public createChannel(event: Event): void {
     event.stopPropagation();
+    this.initializeAndAddChannel();
+    this.filterUsersByCurrentChannel();
+    this.updateCurrentChannelName();
+    this.resetChannelForm();
+  }
+
+  private initializeAndAddChannel(): void {
     this.firebaseChannelService.channel.name = this.name;
     this.firebaseChannelService.channel.description = this.description;
     this.firebaseChannelService.channel.creator = this.userService.user.name;
     this.firebaseChannelService.addNewChannel();
+  }
+
+  private filterUsersByCurrentChannel(): void {
+    this.firebaseService.users$.subscribe(users => {
+      this.firebaseChannelService.usersFromChannel = [];
+      users.forEach(user => {
+        user.channelIds?.forEach(id => {
+          if (id === this.userService.currentChannel) {
+            this.firebaseChannelService.usersFromChannel.push(user);
+          }
+        });
+      });
+    });
+  }
+
+  private updateCurrentChannelName(): void {
+    this.firebaseChannelService.channels$.subscribe(channels => {
+      channels.forEach(channel => {
+        if (this.userService.currentChannel === channel.id) {
+          this.firebaseChannelService.currentChannelName = channel.name;
+        }
+      });
+    });
+  }
+
+  private resetChannelForm(): void {
     this.name = '';
     this.description = '';
     this.showCreateChannel = false;
@@ -94,21 +127,31 @@ export class CreateChannelComponent {
 
   public saveCurrentChannelToUsers(): void {
     let currentChannel = this.userService.currentChannel;
+    this.updateUsersChannelSubscription(currentChannel);
+    this.loadUsersFromCurrentChannel(currentChannel);
+    this.openCreatedChannel();
+  }
+
+  private updateUsersChannelSubscription(currentChannel: string): void {
     if (this.allUsersChecked) {
       this.addCurrentChannelToUsers(currentChannel);
     } else {
       this.addCurrentChannelToSelectedUsers(currentChannel);
       this.firebaseChannelService.updateChannel(currentChannel);
     }
-    this.firebaseChannelService.usersFromChannel = [];
-    this.firebaseService.users.forEach(user => {
-      user.channelIds?.forEach(id => {
-        if (id === currentChannel) {
-          this.firebaseChannelService.usersFromChannel.push(user);
-        }
+  }
+
+  private loadUsersFromCurrentChannel(currentChannel: string): void {
+    this.firebaseService.users$.subscribe(users => {
+      this.firebaseChannelService.usersFromChannel = [];
+      users.forEach(user => {
+        user.channelIds?.forEach(id => {
+          if (id === currentChannel) {
+            this.firebaseChannelService.usersFromChannel.push(user);
+          }
+        });
       });
     });
-    this.openCreatedChannel();
   }
 
   private addCurrentChannelToUsers(currentChannel: string): void {
@@ -138,11 +181,6 @@ export class CreateChannelComponent {
     this.createChannelService.showCreateChannel = false;
     this.showCreateChannel = true;
     this.firebaseChannelService.openCreatedChannel = true;
-    this.firebaseChannelService.channels.forEach(channel => {
-      if (this.userService.currentChannel === channel.id) {
-        this.firebaseChannelService.currentChannelName = channel.name;
-        this.createChannelService.showChannel = true;
-      }
-    });
+    this.createChannelService.showChannel = true;
   }
 }
