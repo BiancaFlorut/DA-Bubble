@@ -52,19 +52,28 @@ export class AddPeopleComponent {
 
   public handleOpenOrCloseModal(): void {
     this.channelModalService.toggleShowAddPeople();
-    if(this.channelModalService.showMembers) {
+    if (this.channelModalService.showMembers) {
       this.channelModalService.toggleShowMembers();
     }
   }
 
   public async saveCurrentChannelToUsers(): Promise<void> {
     let currentChannel = this.userService.currentChannel;
+    await this.updateUsersChannel(currentChannel);
+    await this.updateChannel(currentChannel);
+    this.channelModalService.toggleShowAddPeople();
+  }
+
+  private async updateUsersChannel(currentChannel: string): Promise<void> {
     await this.addCurrentChannelToSelectedUsers(currentChannel);
     this.firebaseChannelService.channels.forEach(channel => {
       if (channel.id === currentChannel) {
         this.firebaseChannelService.channel = channel;
       }
     });
+  }
+
+  private async updateChannel(currentChannel: string): Promise<void> {
     await this.firebaseChannelService.updateChannel(currentChannel);
     this.firebaseChannelService.usersFromChannel = [];
     this.firebaseService.users.forEach(user => {
@@ -74,7 +83,6 @@ export class AddPeopleComponent {
         }
       });
     });
-    this.channelModalService.toggleShowAddPeople();
   }
 
   private async addCurrentChannelToSelectedUsers(currentChannel: string): Promise<void> {
