@@ -1,107 +1,68 @@
 <div class="input-container">
-  <ngx-editor class="message-editor" [editor]="editor!" [(ngModel)]="message" [disabled]="false" [placeholder]="placeholderText" minHeight="50px"></ngx-editor>
+  <ngx-editor
+    class="message-editor"
+    [editor]="editor!"
+    [(ngModel)]="message"
+    [disabled]="false"
+    [placeholder]="placeholderText"
+    minHeight="50px"
+  ></ngx-editor>
   <div class="send-container">
     <div
       class="send-options-container"
       (mouseleave)="isHoveringOptions = false"
       (mouseenter)="isHoveringOptions = true"
     >
-      <div class="plus-btn-container">
-        <svg
-          class="btn plus"
-          width="25"
-          height="24"
-          viewBox="0 0 25 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g clip-path="url(#clip0_57525_15908)">
-            <mask
-              id="mask0_57525_15908"
-              style="mask-type: alpha"
-              maskUnits="userSpaceOnUse"
-              x="0"
-              y="0"
-              width="25"
-              height="24"
-            >
-              <rect x="0.142822" width="24" height="24" fill="#D9D9D9" />
-            </mask>
-            <g mask="url(#mask0_57525_15908)">
-              <path
-                d="M12.1428 19C11.8595 19 11.6222 18.904 11.4308 18.712C11.2388 18.5207 11.1428 18.2833 11.1428 18V13H6.14282C5.85949 13 5.62182 12.904 5.42982 12.712C5.23849 12.5207 5.14282 12.2833 5.14282 12C5.14282 11.7167 5.23849 11.479 5.42982 11.287C5.62182 11.0957 5.85949 11 6.14282 11H11.1428V6C11.1428 5.71667 11.2388 5.479 11.4308 5.287C11.6222 5.09567 11.8595 5 12.1428 5C12.4262 5 12.6638 5.09567 12.8558 5.287C13.0472 5.479 13.1428 5.71667 13.1428 6V11H18.1428C18.4262 11 18.6635 11.0957 18.8548 11.287C19.0468 11.479 19.1428 11.7167 19.1428 12C19.1428 12.2833 19.0468 12.5207 18.8548 12.712C18.6635 12.904 18.4262 13 18.1428 13H13.1428V18C13.1428 18.2833 13.0472 18.5207 12.8558 18.712C12.6638 18.904 12.4262 19 12.1428 19Z"
-                fill="#686868"
-              />
-            </g>
-          </g>
-          <defs>
-            <clipPath id="clip0_57525_15908">
-              <rect x="0.142822" width="24" height="24" rx="12" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
-      </div>
-      <app-emoji-picker-button (emojiPickerEvent)="addEmoji($event)" >
+    <input type="file" class="file-input"
+       (change)="onFileSelected($event)" #fileUpload>
+      <div class="btn-container">
+        <app-three-states-button 
+          class="plus-btn"
+          [active]="isHoveringOptions"
+          [source]="'./assets/img/main-page/input/add_disabled.svg'"
+          (click)="fileUpload.click()"
+        ></app-three-states-button>
+
+        <app-emoji-picker-button (emojiPickerEvent)="addEmoji($event)">
+          <app-three-states-button
+            [active]="isHoveringOptions"
+            [source]="
+              './assets/img/main-page/workspace-menu/sentiment-satisfied_disabled.svg'
+            "
+          />
+        </app-emoji-picker-button>
         <app-three-states-button
           [active]="isHoveringOptions"
-          [source]="
-            './assets/img/main-page/workspace-menu/sentiment-satisfied_disabled.svg'
-          "
-        />
-      </app-emoji-picker-button>
+          [source]="'./assets/img/main-page/input/at_disabled.svg'"
+        ></app-three-states-button>
+      </div>
       <svg
-        class="btn at-sign"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
+        class="send-btn"
+        (click)="sendMessage()"
+        width="30"
+        height="30"
+        viewBox="0 0 30 30"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
         <mask
-          id="mask0_516_6322"
+          id="mask0_813_12250"
           style="mask-type: alpha"
           maskUnits="userSpaceOnUse"
           x="0"
           y="0"
-          width="24"
-          height="24"
+          width="30"
+          height="30"
         >
-          <rect width="24" height="24" fill="#D9D9D9" />
+          <rect width="30" height="30" fill="#D9D9D9" />
         </mask>
-        <g mask="url(#mask0_516_6322)">
+        <g mask="url(#mask0_813_12250)">
           <path
-            d="M12 22C10.6333 22 9.34167 21.7373 8.125 21.212C6.90833 20.6873 5.846 19.9707 4.938 19.062C4.02933 18.154 3.31267 17.0917 2.788 15.875C2.26267 14.6583 2 13.3667 2 12C2 10.6167 2.26267 9.321 2.788 8.113C3.31267 6.90433 4.02933 5.846 4.938 4.938C5.846 4.02933 6.90833 3.31233 8.125 2.787C9.34167 2.26233 10.6333 2 12 2C13.3833 2 14.679 2.26233 15.887 2.787C17.0957 3.31233 18.154 4.02933 19.062 4.938C19.9707 5.846 20.6873 6.90433 21.212 8.113C21.7373 9.321 22 10.6167 22 12V13.45C22 14.4333 21.6627 15.2707 20.988 15.962C20.3127 16.654 19.4833 17 18.5 17C17.9 17 17.3417 16.8667 16.825 16.6C16.3083 16.3333 15.8833 15.9833 15.55 15.55C15.1 16 14.571 16.3543 13.963 16.613C13.3543 16.871 12.7 17 12 17C10.6167 17 9.43767 16.5123 8.463 15.537C7.48767 14.5623 7 13.3833 7 12C7 10.6167 7.48767 9.43733 8.463 8.462C9.43767 7.48733 10.6167 7 12 7C13.3833 7 14.5627 7.48733 15.538 8.462C16.5127 9.43733 17 10.6167 17 12V13.45C17 13.9333 17.15 14.3123 17.45 14.587C17.75 14.8623 18.1 15 18.5 15C18.9 15 19.25 14.8623 19.55 14.587C19.85 14.3123 20 13.9333 20 13.45V12C20 9.81667 19.2123 7.93733 17.637 6.362C16.0623 4.78733 14.1833 4 12 4C9.81667 4 7.93733 4.78733 6.362 6.362C4.78733 7.93733 4 9.81667 4 12C4 14.1833 4.78733 16.0623 6.362 17.637C7.93733 19.2123 9.81667 20 12 20H16C16.2833 20 16.5207 20.096 16.712 20.288C16.904 20.4793 17 20.7167 17 21C17 21.2833 16.904 21.5207 16.712 21.712C16.5207 21.904 16.2833 22 16 22H12ZM12 15C12.8333 15 13.5417 14.7083 14.125 14.125C14.7083 13.5417 15 12.8333 15 12C15 11.1667 14.7083 10.4583 14.125 9.875C13.5417 9.29167 12.8333 9 12 9C11.1667 9 10.4583 9.29167 9.875 9.875C9.29167 10.4583 9 11.1667 9 12C9 12.8333 9.29167 13.5417 9.875 14.125C10.4583 14.7083 11.1667 15 12 15Z"
-            fill="#686868"
+            d="M5.5 24.2811C5.08333 24.4478 4.6875 24.4111 4.3125 24.1711C3.9375 23.932 3.75 23.5832 3.75 23.1249V18.4686C3.75 18.177 3.83333 17.9166 4 17.6874C4.16667 17.4582 4.39583 17.3124 4.6875 17.2499L13.75 14.9999L4.6875 12.7499C4.39583 12.6874 4.16667 12.5416 4 12.3124C3.83333 12.0832 3.75 11.8228 3.75 11.5311V6.87489C3.75 6.41655 3.9375 6.06739 4.3125 5.82739C4.6875 5.58822 5.08333 5.55197 5.5 5.71864L24.75 13.8436C25.2708 14.0728 25.5312 14.4582 25.5312 14.9999C25.5312 15.5416 25.2708 15.927 24.75 16.1561L5.5 24.2811Z"
+            fill="#444DF2"
           />
         </g>
       </svg>
     </div>
-    <svg
-      class="send-btn"
-      (click)="sendMessage()"
-      width="30"
-      height="30"
-      viewBox="0 0 30 30"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <mask
-        id="mask0_813_12250"
-        style="mask-type: alpha"
-        maskUnits="userSpaceOnUse"
-        x="0"
-        y="0"
-        width="30"
-        height="30"
-      >
-        <rect width="30" height="30" fill="#D9D9D9" />
-      </mask>
-      <g mask="url(#mask0_813_12250)">
-        <path
-          d="M5.5 24.2811C5.08333 24.4478 4.6875 24.4111 4.3125 24.1711C3.9375 23.932 3.75 23.5832 3.75 23.1249V18.4686C3.75 18.177 3.83333 17.9166 4 17.6874C4.16667 17.4582 4.39583 17.3124 4.6875 17.2499L13.75 14.9999L4.6875 12.7499C4.39583 12.6874 4.16667 12.5416 4 12.3124C3.83333 12.0832 3.75 11.8228 3.75 11.5311V6.87489C3.75 6.41655 3.9375 6.06739 4.3125 5.82739C4.6875 5.58822 5.08333 5.55197 5.5 5.71864L24.75 13.8436C25.2708 14.0728 25.5312 14.4582 25.5312 14.9999C25.5312 15.5416 25.2708 15.927 24.75 16.1561L5.5 24.2811Z"
-          fill="#444DF2"
-        />
-      </g>
-    </svg>
   </div>
 </div>

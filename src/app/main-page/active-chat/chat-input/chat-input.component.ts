@@ -13,6 +13,8 @@ import { NgxEditorModule } from 'ngx-editor';
 import { Editor } from 'ngx-editor';
 import { User } from '../../../interfaces/user';
 import { ThreadChatService } from '../../../services/chat/thread-chat/thread-chat.service';
+import { HttpClient } from '@angular/common/http';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 
 @Component({
@@ -35,6 +37,9 @@ export class ChatInputComponent {
   isHoveringOptions: boolean = false;
   userService = inject(UserService);
   editor!: Editor;
+  private http: HttpClient = inject(HttpClient);
+  fileName: string = '';
+  storage = getStorage();
 
   ngOnInit(): void {
     this.editor = new Editor();
@@ -60,11 +65,11 @@ export class ChatInputComponent {
       if (this.isThread)
         this.placeholderText = 'Antworten...';
       else
-      this.replacePlaceholder();
-    
-          if (this.editor) {
-            this.editor.commands.focus().exec();
-          }
+        this.replacePlaceholder();
+
+      if (this.editor) {
+        this.editor.commands.focus().exec();
+      }
 
     });
   }
@@ -87,7 +92,7 @@ export class ChatInputComponent {
       this.threadService.message.answerCount++;
       this.threadService.message.lastAnswerTimestamp = message.timestamp;
       console.log('update direct message: ', this.currentChat.cid, mid, this.threadService.message);
-      
+
       this.firebase.updateMessage(this.currentChat.cid, mid, this.threadService.message);
     } else {
       if (this.firebase.currentUser.uid) {
@@ -115,8 +120,25 @@ export class ChatInputComponent {
   addEmoji(id: string) {
     const emoji = this.userService.emojis.find(emoji => emoji.id === id);
     if (emoji) {
-      this.editor?.commands.insertImage(emoji?.path).exec();
+      this.editor?.commands.insertImage(emoji?.path, { width: '20px'}).exec();
       this.editor?.commands.focus().exec();
+    }
+  }
+
+  async onFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      this.fileName = file.name;
+      if (file.type.includes('image') || file.type.includes('pdf')) {
+        const storageRef = ref(this.storage, `temp/files/${Date.now()}_${file.name}`);
+      const uploadResult = await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(uploadResult.ref);
+      if (file.type.includes('image'))
+      this.editor.commands.insertImage(url, { width: '100px' }).exec();
+      // else
+      // this.editor.commands.insertFile(url).exec();
+    
+      }
     }
   }
 

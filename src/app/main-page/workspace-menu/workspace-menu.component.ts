@@ -78,7 +78,11 @@ export class WorkspaceMenuComponent {
 
   async openDirectChat(partner: User) {
     this.threadChatService.exitThread();
-    await this.chatService.getChatWith(partner);
+    const resp = await this.chatService.getChatWith(partner);
+    if (!resp) {
+      console.log('no chat created');
+      
+    }
     this.firebaseChannelService.openCreatedChannel = false;
     this.createChannelService.showChannel = false;
   }

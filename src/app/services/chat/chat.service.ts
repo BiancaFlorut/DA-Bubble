@@ -50,8 +50,9 @@ export class ChatService {
         });
         this.setSubscriber(cid, partner, msgs);
       })
-    }
-    this.currentPartner = partner;
+      this.currentPartner = partner;
+      return true;
+    } else return false;
   }
 
   getMessage(doc: any) {
