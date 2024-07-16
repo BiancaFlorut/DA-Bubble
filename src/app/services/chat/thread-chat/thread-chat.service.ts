@@ -21,7 +21,10 @@ export class ThreadChatService {
 
   openThreadChat(message: Message, chat: Chat) {
     this.message = message;
-    this.chat = chat;
+    if (this.channelService.isChannelSet()) {
+      this.chat = undefined;
+    } else
+      this.chat = chat;
     this.getMessages();
     this.openSideThread.set(true);
     this.signalThreadChat.set(this.chat);
@@ -34,24 +37,35 @@ export class ThreadChatService {
 
   exitThread() {
     this.chat = undefined;
+    this.messages = [];
     this.openSideThread.set(false);
     this.signalThreadChat.set(this.chat);
   }
 
   getMessages() {
-    const ref = collection(doc(this.firebase.getDirectChatMessagesRef(this.chat?.cid!), this.message.mid), 'thread');
-    if (this.unsubMessages) this.unsubMessages();
-    this.unsubMessages = onSnapshot(ref, (collection) => {
-      this.messages = [];
-      collection.forEach((doc) => {
-        this.messages.push(doc.data() as Message);
-      });
-      this.messages = this.messages.sort((a, b) => a.timestamp - b.timestamp);
-    })
+    let ref;
+    if (!this.channelService.isChannelSet()) {
+      ref = collection(doc(this.firebase.getDirectChatMessagesRef(this.chat?.cid!), this.message.mid), 'thread');
+    } else {
+      ref = this.channelService.getChannelThreadForMessage(this.message.mid);
+    }
+      if (this.unsubMessages) this.unsubMessages();
+      this.unsubMessages = onSnapshot(ref, (collection) => {
+        this.messages = [];
+        collection.forEach((doc) => {
+          this.messages.push(doc.data() as Message);
+        });
+        this.messages = this.messages.sort((a, b) => a.timestamp - b.timestamp);
+      })
+    
   }
 
   async getAnswerCount(mid: string, cid: string) {
-    const ref = collection(doc(this.firebase.getDirectChatMessagesRef(cid), mid), 'thread');
+    let ref;
+    if (this.channelService.isChannelSet()) {
+      ref = collection(this.channelService.getCurrentChannelRef(), 'thread');
+    } else
+      ref = collection(doc(this.firebase.getDirectChatMessagesRef(cid), mid), 'thread');
     const snapshot = await getCountFromServer(ref);
     return snapshot.data().count;
   }
@@ -60,20 +74,17 @@ export class ThreadChatService {
     if (message) {
       if (this.channelService.isChannelSet()) {
         console.log('edit message in channel chat');
-        
         const ref = doc(collection(doc(this.channelService.getCurrentChannelRef(), 'messages'), message.mid), 'thread');
         await this.firebase.updateRefMessage(ref, message);
       }
       else if (this.chat) {
         console.log('edit message in direct chat');
-        
-        const ref = doc(collection(doc(this.firebase.getDirectChatMessagesRef(cid), message.mid), 'thread'), message.tid);
-      await this.firebase.updateRefMessage(ref, message);
-      }
-      
-    } else console.log('no message to edit');
-    
 
+        const ref = doc(collection(doc(this.firebase.getDirectChatMessagesRef(cid), message.mid), 'thread'), message.tid);
+        const result = await this.firebase.updateRefMessage(ref, message);
+        
+      }
+    } else console.log('no message to edit');
   }
 
   onNgDestroy() {

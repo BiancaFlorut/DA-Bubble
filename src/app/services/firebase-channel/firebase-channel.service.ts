@@ -1,6 +1,6 @@
 import { Injectable, inject, OnDestroy, signal } from '@angular/core';
 import { Channel } from '../../interfaces/channel';
-import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';
 import { FirebaseService } from '../firebase/firebase.service';
 import { UserService } from '../user/user.service';
@@ -158,11 +158,43 @@ export class FirebaseChannelService implements OnDestroy {
     return doc(this.getChannelsRef(), this.channel.id);
   }
 
+  getChannelMessagesRef() {
+    return collection(this.getCurrentChannelRef(), 'messages');
+  }
+
+  getChannelRefForMessage(mid: string) {
+    return doc(this.getSingleChannel(this.channel.id), 'messages', mid);
+  }
+
+  getChannelThreadForMessage(mid: string) {
+    return collection(doc(this.getSingleChannel(this.channel.id), 'messages', mid), 'thread');
+  }
+
   async editMessage(message: Message) {
     console.log('edit message in channel chat', message, this.channel.id);
     const channelDocRef = this.getSingleChannel(this.channel.id);
     const messageDocRef = doc(channelDocRef, 'messages', message.mid);
     await updateDoc(messageDocRef, this.getJSONFromObject(message));
-
   }
+
+  async setThread(mid: string) {
+    const messageRef = doc(this.getSingleChannel(this.channel.id), 'messages', mid);
+    const messageDoc = await getDoc(messageRef);
+    if (messageDoc.exists()) {
+      const ref = collection(messageRef, 'thread');
+      let message = messageDoc.data() as Message;
+      message.answerCount = 0;
+      message.isAnswer = true;
+      const refNewThreadMessage = await addDoc(ref, message);
+      await updateDoc(doc(ref, refNewThreadMessage.id), { tid : refNewThreadMessage.id });
+      await updateDoc(messageRef, { thread: refNewThreadMessage.id });
+    }
+  }
+
+  async addThreadMessage(mid: string, message: Message) {
+    const ref = collection(doc(this.getSingleChannel(this.channel.id), 'messages', mid), 'thread');
+    const messageDoc = await addDoc(ref, JSON.parse(JSON.stringify(message)));
+    await updateDoc(doc(ref, messageDoc.id), { tid: messageDoc.id });
+  }
+
 }

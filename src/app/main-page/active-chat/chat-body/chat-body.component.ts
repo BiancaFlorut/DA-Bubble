@@ -125,7 +125,7 @@ export class ChatBodyComponent implements AfterViewInit {
   getDate(index: number): Date | null {
     if (this.channelService.isChannelSet()) {
       return new Date(this.channelService.messages[index].timestamp);
-    } else if (this.chat) {
+    } else if (this.chat && index < this.chat.messages.length) {
       return new Date(this.chat.messages[index].timestamp);
     }
     return null;
@@ -134,7 +134,7 @@ export class ChatBodyComponent implements AfterViewInit {
   getNextDate(index: number): Date | null {
     if (this.channelService.isChannelSet() && index < this.channelService.messages.length - 1) {
       return new Date(this.channelService.messages[index + 1].timestamp);
-    } else if (this.chat) {
+    } else if (this.chat && index < this.chat.messages.length - 1) {
       return new Date(this.chat.messages[index + 1].timestamp);
     }
     return null;

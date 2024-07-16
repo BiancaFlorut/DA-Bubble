@@ -70,6 +70,7 @@ export class WorkspaceMenuComponent {
 
   public getAllUsersFromChannel(channel: Channel): void {
     this.chatService.closeChat();
+    this.threadChatService.exitThread();
     this.chatService.newMessage = false;
     this.filterUsersByChannel(channel);
     this.updateChannelVisibility(channel);

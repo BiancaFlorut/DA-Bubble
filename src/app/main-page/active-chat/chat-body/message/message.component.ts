@@ -82,13 +82,15 @@ export class MessageComponent {
   }
 
 
-  closeEdit(message: Message) {
+  async closeEdit(message: Message) {
     this.isEditing = false;
     if (message)
       if (message.isAnswer)
-        this.threadService.editMessage(message, this.cid);
-      else
-      this.chatService.editMessage(this.cid, message);
+        await this.threadService.editMessage(message, this.cid);
+      else if (this.channelService.isChannelSet()) {
+        await this.channelService.editMessage(message);
+      } else
+      await this.chatService.editMessage(this.cid, message);
     else {
       this.message.text = this.oldMessage;
     }
