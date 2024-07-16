@@ -15,6 +15,7 @@ import { User } from '../../../interfaces/user';
 import { ThreadChatService } from '../../../services/chat/thread-chat/thread-chat.service';
 import { HttpClient } from '@angular/common/http';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { FirebaseChannelService } from '../../../services/firebase-channel/firebase-channel.service';
 
 
 @Component({
@@ -37,9 +38,9 @@ export class ChatInputComponent {
   isHoveringOptions: boolean = false;
   userService = inject(UserService);
   editor!: Editor;
-  private http: HttpClient = inject(HttpClient);
   fileName: string = '';
   storage = getStorage();
+  channelService = inject(FirebaseChannelService);
 
   ngOnInit(): void {
     this.editor = new Editor();
@@ -64,14 +65,27 @@ export class ChatInputComponent {
       }
       if (this.isThread)
         this.placeholderText = 'Antworten...';
-      else
+      else if (this.channelService.isChannelSet())
+        this.placeholderText = 'Nachricht an #' + this.channelService.channel.name;
+      else if (this.chatService.chat)
         this.replacePlaceholder();
-
+      else
+        this.placeholderText = 'Einen Nachricht schreiben...';
       if (this.editor) {
         this.editor.commands.focus().exec();
       }
 
     });
+  }
+
+  getPlaceholderText() {
+    if (this.isThread)
+      return 'Antworten...';
+    else if (this.channelService.isChannelSet())
+      return 'Nachricht an #' + this.channelService.channel.name;
+    else if (this.chatService.chat)
+      return this.replacePlaceholder();
+    else return 'Einen Nachricht schreiben...';
   }
 
   async sendMessage() {
@@ -95,6 +109,12 @@ export class ChatInputComponent {
 
       this.firebase.updateMessage(this.currentChat.cid, mid, this.threadService.message);
     } else {
+
+      if (this.channelService.isChannelSet()) {
+        const channel = this.channelService.channel;
+        await this.channelService.sendMessage(this.message);
+      } else
+
       if (this.firebase.currentUser.uid) {
         const mid = await this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);
         const message = new Message(mid.id, this.firebase.currentUser.uid, this.message, Date.now(), []);
@@ -108,13 +128,14 @@ export class ChatInputComponent {
     if (this.partner && this.user) {
       if (this.user.uid === this.firebase.currentUser.uid) {
         if (this.partner.uid === this.firebase.currentUser.uid) {
-          this.placeholderText = `Nachricht an dir`;
+          return `Nachricht an dir`;
         } else
-          this.placeholderText = `Nachricht an ${this.partner.name}`
+        return `Nachricht an ${this.partner.name}`
       } else {
-        this.placeholderText = `Nachricht von ${this.user.name}`
+        return `Nachricht von ${this.user.name}`
       }
     }
+    return 'Einen Nachricht schreiben...';
   }
 
   addEmoji(id: string) {

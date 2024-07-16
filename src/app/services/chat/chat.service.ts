@@ -36,6 +36,11 @@ export class ChatService {
     this.newMessage = true;
   }
 
+  closeChat() {
+    this.chat = undefined;
+    this.chatSub.next(this.chat);
+  }
+
   async getChatWith(partner: User) {
     const user = this.firebase.currentUser;
     const cid = await this.firebase.getDirectChatId(user.uid!, partner.uid!);

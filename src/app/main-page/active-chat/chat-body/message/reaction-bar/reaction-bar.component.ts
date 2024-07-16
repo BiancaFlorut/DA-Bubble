@@ -5,6 +5,7 @@ import { UserService } from '../../../../../services/user/user.service';
 import { EmojiPickerButtonComponent } from '../emoji-picker-button/emoji-picker-button.component';
 import { ThreadChatService } from '../../../../../services/chat/thread-chat/thread-chat.service';
 import { ChatService } from '../../../../../services/chat/chat.service';
+import { FirebaseChannelService } from '../../../../../services/firebase-channel/firebase-channel.service';
 
 @Component({
   selector: 'app-reaction-bar',
@@ -24,6 +25,7 @@ export class ReactionBarComponent {
   userService = inject(UserService);
   threadService = inject(ThreadChatService);
   chatService = inject(ChatService);
+  channelService = inject(FirebaseChannelService);
 
   constructor() {
     this.userService.sortEmojis();

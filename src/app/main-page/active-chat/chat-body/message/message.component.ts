@@ -14,6 +14,7 @@ import { Emoji } from '../../../../models/emoji.class';
 import { SvgButtonComponent } from '../../../svg-button/svg-button.component';
 import { FirebaseService } from '../../../../services/firebase/firebase.service';
 import { ThreadChatService } from '../../../../services/chat/thread-chat/thread-chat.service';
+import { FirebaseChannelService } from '../../../../services/firebase-channel/firebase-channel.service';
 
 @Component({
   selector: 'app-message',
@@ -41,9 +42,9 @@ export class MessageComponent {
   threadService = inject(ThreadChatService);
   cid!: string;
   @ViewChild('messageItem') messageItem!: ElementRef;
-  isEmojiPickerOpen = false;
   oldMessage: string = '';
   firebase = inject(FirebaseService);
+  channelService = inject(FirebaseChannelService);
 
   constructor() {
     this.user = this.firebase.currentUser;
@@ -59,6 +60,9 @@ export class MessageComponent {
       } else {
         this.partner = this.firebase.users.find(user => user.uid === rest[0]);
       }
+    }
+    if (this.channelService.isChannelSet() && this.message) {
+      this.partner = this.firebase.users.find(user => user.uid === this.message.uid);
     }
   }
 
@@ -129,9 +133,6 @@ export class MessageComponent {
     return result;
   }
 
-  toggleEmojiPicker() {
-    this.isEmojiPickerOpen = !this.isEmojiPickerOpen;
-  }
 
   async areAnswers() {
     const count = await this.threadService.getAnswerCount(this.message.mid, this.chat?.cid!);

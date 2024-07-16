@@ -6,6 +6,7 @@ import { FirebaseService } from '../firebase/firebase.service';
 import { UserService } from '../user/user.service';
 import { User } from '../../interfaces/user';
 import { BehaviorSubject } from 'rxjs';
+import { Message } from '../../models/message.class';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +29,8 @@ export class FirebaseChannelService implements OnDestroy {
     description: '',
     creator: '',
   };
+  messages: Message[] = [];
+  subMessages: any;
 
   public currentChannelName: string = '';
   public openCreatedChannel: boolean = false;
@@ -113,5 +116,41 @@ export class FirebaseChannelService implements OnDestroy {
     console.log(channelId)
     const channelDocRef = this.getSingleChannel(channelId);
     await deleteDoc(channelDocRef);
+  }
+
+  resetChannel() {
+    this.channel = {
+      id: '',
+      name: '',
+      description: '',
+      creator: '',
+    };
+  }
+
+  isChannelSet(): boolean {
+    return this.channel.id !== '';
+  }
+
+  async sendMessage(text: string) {
+    const message = new Message('', this.firebaseService.currentUser.uid!, text, Date.now(), []);
+    const channelDocRef = this.getSingleChannel(this.channel.id);
+    const messageDocRef = await addDoc(collection(channelDocRef, 'messages'), this.getJSONFromObject(message));
+    await updateDoc(doc(collection(channelDocRef, 'messages'), messageDocRef.id), { mid: messageDocRef.id });
+  }
+
+  getJSONFromObject(obj: any) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  subscribeToMessages() {
+    const channelDocRef = this.getSingleChannel(this.channel.id);
+    if (this.subMessages) this.subMessages();
+    this.subMessages = onSnapshot(collection(channelDocRef, 'messages'), querySnapshot => {
+      this.messages = [];
+      querySnapshot.forEach(doc => {
+        this.messages.push(doc.data() as Message);
+      });
+      this.messages = this.messages.sort((a, b) => b.timestamp - a.timestamp);
+    })
   }
 }

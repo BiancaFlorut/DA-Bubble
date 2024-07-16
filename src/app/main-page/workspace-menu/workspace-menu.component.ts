@@ -48,11 +48,11 @@ export class WorkspaceMenuComponent {
   }
 
   public async openDirectChat(partner: User): Promise<void> {
+    this.firebaseChannelService.resetChannel();
     this.threadChatService.exitThread();
     const resp = await this.chatService.getChatWith(partner);
     if (!resp) {
       console.log('no chat created');
-      
     }
     this.firebaseChannelService.openCreatedChannel = false;
     this.createChannelService.showChannel = false;
@@ -69,8 +69,11 @@ export class WorkspaceMenuComponent {
   }
 
   public getAllUsersFromChannel(channel: Channel): void {
+    this.chatService.closeChat();
+    this.chatService.newMessage = false;
     this.filterUsersByChannel(channel);
     this.updateChannelVisibility(channel);
+    this.firebaseChannelService.subscribeToMessages();
   }
 
   private filterUsersByChannel(channel: Channel): void {

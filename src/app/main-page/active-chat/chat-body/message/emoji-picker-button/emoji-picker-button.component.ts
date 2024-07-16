@@ -24,4 +24,9 @@ export class EmojiPickerButtonComponent {
   toggleEmojiPicker() {
     this.isEmojiPickerOpen = !this.isEmojiPickerOpen;
   }
+
+  closeEmojiPicker(event: Event) {
+    event.stopPropagation();
+    this.isEmojiPickerOpen = false;
+  }
 }

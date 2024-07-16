@@ -42,4 +42,43 @@
   </div>
   }
 </section>
+} @else {
+  @if (channelService.isChannelSet()) {
+    <section>
+      @if (channelService.messages.length > 0)  {
+      @for (message of channelService.messages; track $index) {
+        <app-message [message]="message" #messageItem></app-message>
+        @if (isNewDate($index)) {
+          <div class="timestamp-container">
+            <div class="line-container"><div class="line"></div></div>
+            <div class="timestamp-line">{{ lastFormattedDate }}</div>
+          </div>
+        }
+      }
+      } @else {
+        <div class="placeholder-container">
+          <div class="placeholder-text">
+            Dieser Channel ist für 
+            @for (member of channelService.usersFromChannel; track $index) {
+              <span (click)="showProfileService.toggleShowProfile()" class="link-name">
+                @if (member.uid == chatService.firebase.currentUser.uid) { <span>(Du)</span> }
+                @else {
+                  &#64;{{ member.name }}
+                }
+              </span>
+              @if ($index == channelService.usersFromChannel.length - 2) { <span> und </span> } @else {
+                @if ($index < channelService.usersFromChannel.length - 1) {
+                  <span>, </span>
+                }
+              }
+              
+              
+            }
+            zum austauschen da.
+          </div>
+        </div>
+      }
+    </section>
+    
+  }
 }

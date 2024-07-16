@@ -85,6 +85,7 @@ export class FirebaseService {
   }
 
   subUser(uid: string) {
+    if (this.unsubUser) this.unsubUser();
     this.unsubUser = onSnapshot(this.getSingleUser(uid), (doc) => {
       this.currentUser = doc.data() as User;
     });

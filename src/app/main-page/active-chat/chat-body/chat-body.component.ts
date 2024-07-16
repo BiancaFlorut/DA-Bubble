@@ -7,6 +7,7 @@ import { ShowProfileService } from '../../../services/show-profile/show-profile.
 import { MessageComponent } from './message/message.component';
 import { User } from '../../../interfaces/user';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
+import { FirebaseChannelService } from '../../../services/firebase-channel/firebase-channel.service';
 
 @Component({
   selector: 'app-chat-body',
@@ -21,10 +22,11 @@ import { FirebaseService } from '../../../services/firebase/firebase.service';
 })
 export class ChatBodyComponent implements AfterViewInit {
   @ViewChildren('messageItem') messageItems!: QueryList<any>;
-  @Input() chat!: Chat;
+  @Input() chat: Chat | undefined;
   chatService = inject(ChatService);
   user!: User;
   partner: User | undefined;
+  partners: User[] = [];
   domSanitizer = inject(DomSanitizer);
   pipe = inject(DatePipe);
   formattedDate: string | null = null;
@@ -32,6 +34,7 @@ export class ChatBodyComponent implements AfterViewInit {
   lastFormattedDate: string | null = null;
   public showProfileService: ShowProfileService = inject(ShowProfileService);
   firebase = inject(FirebaseService);
+  channelService = inject(FirebaseChannelService);
 
   constructor() {
     this.chatService.currentChat.subscribe(chat => {
@@ -45,6 +48,12 @@ export class ChatBodyComponent implements AfterViewInit {
           this.partner = this.firebase.users.find(user => user.uid === rest[0]);
         }
         this.user = this.firebase.currentUser;
+      }
+      else {
+        this.chat = undefined;
+      }
+      if (this.channelService.isChannelSet()){
+        this.partners = this.channelService.usersFromChannel;
       }
     });
   }
@@ -91,16 +100,48 @@ export class ChatBodyComponent implements AfterViewInit {
       this.formattedDate = null;
       this.lastFormattedDate = null;
     }
-  
-    const date = new Date(this.chat!.messages[index].timestamp);
-    const nextDate = index < this.chat!.messages.length - 1 ? new Date(this.chat!.messages[index + 1].timestamp) : null;
+    let date = this.getDate(index);
+    let nextDate = this.getNextDate(index);
+
+    if (!date) {
+      return false;
+    }
+    
     const now = new Date();
   
     this.formattedDate = this.getFormattedDate(date, now);
     
     const isSameDate = nextDate ? this.isSameDay(date, nextDate) : false || this.isToday(date);
     this.lastFormattedDate = this.formattedDate;
-    return index === this.chat!.messages.length - 1 || !isSameDate;
+    const result = this.getIsNewDateResult(index, isSameDate);
+    return result;
+  }
+
+  getIsNewDateResult(index: number, isSameDay: boolean): boolean {
+    if (this.channelService.isChannelSet()) {
+      return index === this.channelService.messages.length - 1 || !isSameDay;
+    } else if (this.chat) {
+      return index === this.chat.messages.length - 1 || !isSameDay;
+    }
+    return false;
+  }
+
+  getDate(index: number): Date | null {
+    if (this.channelService.isChannelSet()) {
+      return new Date(this.channelService.messages[index].timestamp);
+    } else if (this.chat) {
+      return new Date(this.chat.messages[index].timestamp);
+    }
+    return null;
+  }
+
+  getNextDate(index: number): Date | null {
+    if (this.channelService.isChannelSet() && index < this.channelService.messages.length - 1) {
+      return new Date(this.channelService.messages[index + 1].timestamp);
+    } else if (this.chat) {
+      return new Date(this.chat.messages[index + 1].timestamp);
+    }
+    return null;
   }
   
   getFormattedDate(date: Date, now: Date) {

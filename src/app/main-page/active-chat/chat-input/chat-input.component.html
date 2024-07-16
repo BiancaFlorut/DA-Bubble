@@ -4,7 +4,7 @@
     [editor]="editor!"
     [(ngModel)]="message"
     [disabled]="false"
-    [placeholder]="placeholderText"
+    [placeholder]="getPlaceholderText()"
     minHeight="50px"
   ></ngx-editor>
   <div class="send-container">
@@ -13,10 +13,14 @@
       (mouseleave)="isHoveringOptions = false"
       (mouseenter)="isHoveringOptions = true"
     >
-    <input type="file" class="file-input"
-       (change)="onFileSelected($event)" #fileUpload>
+      <input
+        type="file"
+        class="file-input"
+        (change)="onFileSelected($event)"
+        #fileUpload
+      />
       <div class="btn-container">
-        <app-three-states-button 
+        <app-three-states-button
           class="plus-btn"
           [active]="isHoveringOptions"
           [source]="'./assets/img/main-page/input/add_disabled.svg'"
