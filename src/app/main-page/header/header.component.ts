@@ -9,6 +9,7 @@ import { ChatService } from '../../services/chat/chat.service';
 import { ThreadChatService } from '../../services/chat/thread-chat/thread-chat.service';
 import { EditUserProfileComponent } from '../edit-user-profile/edit-user-profile.component';
 import { EditUserProfileService } from '../../services/edit-user-profile/edit-user-profile.service';
+import { FirebaseChannelService } from '../../services/firebase-channel/firebase-channel.service';
 
 @Component({
   selector: 'app-header',
@@ -29,6 +30,7 @@ export class HeaderComponent {
   private firebase: FirebaseService = inject(FirebaseService);
   private chatService: ChatService = inject(ChatService);
   private threadChatService: ThreadChatService = inject(ThreadChatService);
+  private channelService: FirebaseChannelService = inject(FirebaseChannelService);
   public editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
 
   public isUserMenuActive: boolean = false;
@@ -105,5 +107,6 @@ export class HeaderComponent {
     }
     this.chatService.resetChat();
     this.threadChatService.exitThread();
+    this.channelService.resetChannel();
   }
 }

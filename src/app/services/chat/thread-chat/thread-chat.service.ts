@@ -74,7 +74,7 @@ export class ThreadChatService {
     if (message) {
       if (this.channelService.isChannelSet()) {
         console.log('edit message in channel chat');
-        const ref = doc(collection(doc(this.channelService.getCurrentChannelRef(), 'messages'), message.mid), 'thread');
+        const ref = doc(this.channelService.getChannelThreadForMessage(message.mid), message.tid);
         await this.firebase.updateRefMessage(ref, message);
       }
       else if (this.chat) {

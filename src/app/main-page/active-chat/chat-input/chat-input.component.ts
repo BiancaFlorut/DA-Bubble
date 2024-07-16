@@ -90,6 +90,7 @@ export class ChatInputComponent {
   }
 
   async sendMessage() {
+    if (!this.isWhiteSpace(this.message))
     if (this.isThread) {
       const mid = this.threadService.message.mid;
       const messages = this.threadService.messages;
@@ -116,11 +117,9 @@ export class ChatInputComponent {
       } else
         this.firebase.updateMessage(this.currentChat.cid, mid, this.threadService.message);
     } else {
-
       if (this.channelService.isChannelSet()) {
         await this.channelService.sendMessage(this.message);
       } else
-
         if (this.firebase.currentUser.uid) {
           const mid = await this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);
           const message = new Message(mid.id, this.firebase.currentUser.uid, this.message, Date.now(), []);
@@ -128,6 +127,10 @@ export class ChatInputComponent {
         } else console.log('no user is logged in');
     }
     this.message = '';
+  }
+
+  isWhiteSpace(text: string) {
+    return text.trim().length === 0;
   }
 
   replacePlaceholder() {

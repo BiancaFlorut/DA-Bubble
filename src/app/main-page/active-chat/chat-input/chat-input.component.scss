@@ -51,6 +51,15 @@
   }
 }
 
+.send-btn-disabled {
+  cursor: not-allowed;
+  &:hover path {
+    fill: $light_purple;
+  }
+}
+
+
+
 .send-options-container {
   @include displayFlex(row, space-between, center, 5px);
   width: 100%;

@@ -41,7 +41,8 @@
         ></app-three-states-button>
       </div>
       <svg
-        class="send-btn"
+        [class.send-btn]="message !== ''"
+        [class.send-btn-disabled]="isWhiteSpace(message)"
         (click)="sendMessage()"
         width="30"
         height="30"
