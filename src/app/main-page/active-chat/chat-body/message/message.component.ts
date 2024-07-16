@@ -70,6 +70,8 @@ export class MessageComponent {
     if (message) {
       if (message.isAnswer) {
         await this.threadService.editMessage(message, this.cid);
+      } else if (this.channelService.isChannelSet()) {
+        await this.channelService.editMessage(message);
       } else
       await this.chatService.editMessage(this.cid, message);
     }

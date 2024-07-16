@@ -102,15 +102,11 @@ export class ChatBodyComponent implements AfterViewInit {
     }
     let date = this.getDate(index);
     let nextDate = this.getNextDate(index);
-
+    const now = new Date();
     if (!date) {
       return false;
     }
-    
-    const now = new Date();
-  
     this.formattedDate = this.getFormattedDate(date, now);
-    
     const isSameDate = nextDate ? this.isSameDay(date, nextDate) : false || this.isToday(date);
     this.lastFormattedDate = this.formattedDate;
     const result = this.getIsNewDateResult(index, isSameDate);

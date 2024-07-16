@@ -7,6 +7,7 @@ import { SvgButtonComponent } from '../../../../svg-button/svg-button.component'
 import { EmojiPickerButtonComponent } from '../emoji-picker-button/emoji-picker-button.component';
 import { ThreadChatService } from '../../../../../services/chat/thread-chat/thread-chat.service';
 import { FirebaseService } from '../../../../../services/firebase/firebase.service';
+import { FirebaseChannelService } from '../../../../../services/firebase-channel/firebase-channel.service';
 
 @Component({
   selector: 'app-emoji-counter',
@@ -23,6 +24,7 @@ export class EmojiCounterComponent {
   chatService = inject(ChatService);
   threadService = inject(ThreadChatService);
   user = this.firebase.currentUser;
+  channelService = inject(FirebaseChannelService);
 
   async incrementEmoji(id: string) {
     if (this.message.emojis) {
@@ -38,6 +40,8 @@ export class EmojiCounterComponent {
         }
         if (this.message.isAnswer)
           await this.threadService.editMessage(this.message, this.cid);
+        else if (this.channelService.isChannelSet())
+          await this.channelService.editMessage(this.message);
         else
         await this.chatService.editMessage(this.cid, this.message);
       }

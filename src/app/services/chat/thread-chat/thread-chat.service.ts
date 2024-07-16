@@ -3,6 +3,7 @@ import { Message } from '../../../models/message.class';
 import { Chat } from '../../../models/chat.class';
 import { FirebaseService } from '../../firebase/firebase.service';
 import { collection, doc, getCountFromServer, onSnapshot, Unsubscribe } from 'firebase/firestore';
+import { FirebaseChannelService } from '../../firebase-channel/firebase-channel.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,8 @@ export class ThreadChatService {
   firebase = inject(FirebaseService);
   messages: Message[] = [];
   unsubMessages: Unsubscribe | undefined;
-  constructor() {
-  }
+  channelService = inject(FirebaseChannelService);
+
 
   openThreadChat(message: Message, chat: Chat) {
     this.message = message;
@@ -57,8 +58,19 @@ export class ThreadChatService {
 
   async editMessage(message: Message, cid: string) {
     if (message) {
-      const ref = doc(collection(doc(this.firebase.getDirectChatMessagesRef(cid), message.mid), 'thread'), message.tid);
+      if (this.channelService.isChannelSet()) {
+        console.log('edit message in channel chat');
+        
+        const ref = doc(collection(doc(this.channelService.getCurrentChannelRef(), 'messages'), message.mid), 'thread');
+        await this.firebase.updateRefMessage(ref, message);
+      }
+      else if (this.chat) {
+        console.log('edit message in direct chat');
+        
+        const ref = doc(collection(doc(this.firebase.getDirectChatMessagesRef(cid), message.mid), 'thread'), message.tid);
       await this.firebase.updateRefMessage(ref, message);
+      }
+      
     } else console.log('no message to edit');
     
 

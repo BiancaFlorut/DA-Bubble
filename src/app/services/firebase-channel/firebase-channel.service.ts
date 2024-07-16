@@ -153,4 +153,16 @@ export class FirebaseChannelService implements OnDestroy {
       this.messages = this.messages.sort((a, b) => b.timestamp - a.timestamp);
     })
   }
+
+  getCurrentChannelRef() {
+    return doc(this.getChannelsRef(), this.channel.id);
+  }
+
+  async editMessage(message: Message) {
+    console.log('edit message in channel chat', message, this.channel.id);
+    const channelDocRef = this.getSingleChannel(this.channel.id);
+    const messageDocRef = doc(channelDocRef, 'messages', message.mid);
+    await updateDoc(messageDocRef, this.getJSONFromObject(message));
+
+  }
 }
