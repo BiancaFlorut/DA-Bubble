@@ -27,7 +27,7 @@ export class HeaderComponent {
   private router: Router = inject(Router);
   private authService: AuthService = inject(AuthService);
   public userService: UserService = inject(UserService);
-  private firebase: FirebaseService = inject(FirebaseService);
+  public firebase: FirebaseService = inject(FirebaseService);
   private chatService: ChatService = inject(ChatService);
   private threadChatService: ThreadChatService = inject(ThreadChatService);
   private channelService: FirebaseChannelService = inject(FirebaseChannelService);
@@ -45,27 +45,27 @@ export class HeaderComponent {
       .subscribe(user => {
         if (this.router.url.includes('guest')) {
           this.editUserProfileService.googleUser = false;
-          this.userService.user.uid = 'guest';
-          this.userService.user.name = 'New Guest';
-          this.userService.user.email = 'mail@guest.com';
-          this.userService.user.avatar = './assets/img/profile.png';
+          this.firebase.currentUser.uid = 'guest';
+          this.firebase.currentUser.name = 'New Guest';
+          this.firebase.currentUser.email = 'mail@guest.com';
+          this.firebase.currentUser.avatar = './assets/img/profile.png';
           this.userService.currentAvatar = './assets/img/profile.png';
-          this.userService.user.online = true;
-          this.firebase.updateUser(this.userService.user);
-          this.firebase.connectUser(this.userService.user);
+          this.firebase.currentUser.online = true;
+          this.firebase.updateUser(this.firebase.currentUser);
+          this.firebase.connectUser(this.firebase.currentUser);
         } else if (user) {
           this.editUserProfileService.googleUser = user.providerData[0].providerId === 'google.com' ? true : false;
-          this.userService.user.uid = user.uid!;
-          this.userService.user.name = user.displayName!;
-          this.userService.user.email = user.email!;
-          this.userService.user.avatar = user.photoURL!;
+          this.firebase.currentUser.uid = user.uid!;
+          this.firebase.currentUser.name = user.displayName!;
+          this.firebase.currentUser.email = user.email!;
+          this.firebase.currentUser.avatar = user.photoURL!;
           this.userService.currentAvatar = user.photoURL!;
           if (user.photoURL?.includes('https://lh3.googleusercontent.com')) {
-            this.userService.user.avatar = './assets/img/profile.png';
+            this.firebase.currentUser.avatar = './assets/img/profile.png';
             this.userService.currentAvatar = './assets/img/profile.png';
           }
-          this.userService.user.online = true;
-          this.firebase.connectUser(this.userService.user);
+          this.firebase.currentUser.online = true;
+          this.firebase.connectUser(this.firebase.currentUser);
         } else {
           this.router.navigate(['landing-page/login']);
         }
@@ -84,8 +84,8 @@ export class HeaderComponent {
     } else {
       this.isUserMenuActive = !this.isUserMenuActive;
     }
-    if (this.userService.user.avatar !== this.userService.currentAvatar) {
-      this.userService.user.avatar = this.userService.currentAvatar;
+    if (this.firebase.currentUser.avatar !== this.userService.currentAvatar) {
+      this.firebase.currentUser.avatar = this.userService.currentAvatar;
     }
   }
 

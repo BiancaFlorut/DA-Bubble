@@ -13,6 +13,7 @@
   &:hover .message-text {
     background-color: white;
   }
+
   &:hover .reaction-bar {
     display: block;
   }
@@ -74,6 +75,7 @@ app-editable-message {
   background-color: $bg_color;
   padding: 15px;
   white-space: pre-wrap;
+
   ::ng-deep p {
     vertical-align: middle;
     font-family: "Nunito";
@@ -115,10 +117,12 @@ app-editable-message {
   cursor: pointer;
   text-align: center;
   transition: all 80ms linear;
+
   &:hover {
     font-weight: 700;
     color: $purple_1;
   }
+
   &::before {
     display: block;
     content: attr(title);
@@ -160,4 +164,25 @@ app-editable-message {
 
 .hide {
   display: none;
+}
+
+.background-message-modal-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.4);
+
+
+  .message-modal-container {
+    max-width: 1920px;
+    height: 100%;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
 }
