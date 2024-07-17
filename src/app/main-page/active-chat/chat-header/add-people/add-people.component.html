@@ -15,7 +15,7 @@
                     fill="#797EF3" />
             </g>
         </svg>
-        <span>{{firebaseChannelService.currentChannelName}}</span>
+        <span>{{firebaseChannelService.channel.name}}</span>
     </div>
     <div class="search-user-input-container">
         <input [(ngModel)]="searchUser" (input)="filterSearchingUsers()" class="search-user" type="text"

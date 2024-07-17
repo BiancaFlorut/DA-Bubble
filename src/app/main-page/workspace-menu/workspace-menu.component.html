@@ -141,7 +141,11 @@
         <div class="user" (click)="openDirectChat(user)"
           [class.active]="chatService.currentPartner.uid === user.uid && !createChannelService.showChannel && !chatService.newMessage">
           <div class="avatar">
-            <img src="{{user.avatar}}" alt="avatar">
+            @if(user.uid === firebaseService.currentUser.uid){
+              <img src="{{firebaseService.currentUser.avatar}}" alt="avatar">
+            } @else {
+              <img src="{{user.avatar}}" alt="avatar">
+            }
             <div class="status-container">
               <div class="status-dot" [ngClass]="user.online ? 'online' : 'offline'"></div>
             </div>

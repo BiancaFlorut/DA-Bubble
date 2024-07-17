@@ -78,10 +78,40 @@ a {
     gap: 30px;
     animation: moveAndFade 0.8s ease 1.5s forwards;
 
-    div {
-        font-size: 80px;
-        font-weight: 700;
-        color: white;
+    .intro-input-container {
+        position: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        animation: moveAndFade 0.8s ease 1.5s forwards;
+
+        div {
+            font-size: 80px;
+            font-weight: 700;
+            color: white;
+        }
+    }
+}
+
+.mobile-create-account-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    span {
+        font-size: 18px;
+        padding-bottom: 30px;
+    }
+
+    a {
+        text-decoration: none;
+        font-size: 18px;
+        line-height: 24.55px;
+        color: #444DF2;
+        border: 1px solid #797EF3;
+        border-radius: 25px;
+        padding: 7px 18px;
     }
 }
 
@@ -99,6 +129,31 @@ a {
     }
 }
 
+@keyframes moveAndFadeCenter {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        z-index: -1;
+    }
+}
+
+@keyframes moveAndFadeCenterImg {
+    0% {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    100% {
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
 @keyframes moveToTopLeft {
     0% {
         top: 50%;
@@ -110,5 +165,57 @@ a {
         top: 80px;
         left: 80px;
         transform: translate(0, 0);
+    }
+}
+
+@keyframes moveToTopCenter {
+    0% {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    100% {
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+@media (max-width: 720px) {
+    .landing-page-container {
+        justify-content: unset;
+        gap: 50px;
+    }
+
+    .header-container {
+
+        img {
+            animation: moveToTopCenter 0.8s ease 1.5s forwards;
+        }
+    }
+
+    .header-container {
+
+        .create-account-container {
+            display: none;
+        }
+    }
+
+    .legal-links-container {
+        display: none;
+    }
+
+    .intro-container {
+        animation: moveAndFadeCenter 0.8s ease 1.5s forwards;
+
+        .intro-input-container {
+            position: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            animation: moveAndFadeCenterImg 0.8s ease 1.5s forwards;
+        }
     }
 }

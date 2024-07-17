@@ -14,11 +14,19 @@
             <a routerLink="imprint">Impressum</a>
             <a routerLink="privacy-policy">Datenschutz</a>
         </div>
+        @if(isLoginUrl){
+        <div class="mobile-create-account-container">
+            <span>Neu bei DABubble?</span>
+            <a routerLink="signup">Konto erstellen</a>
+        </div>
+        }
     </div>
 </div>
 <div class="intro-container">
-    <img src="./assets/img/landing-page/intro_logo.png" alt="intro logo">
-    <div data-aos="fade-right" data-aos-delay="500" data-aos-easing="ease-in-sine">
-        DABubble
+    <div class="intro-input-container">
+        <img src="./assets/img/landing-page/intro_logo.png" alt="intro logo">
+        <div data-aos="fade-right" data-aos-delay="500" data-aos-easing="ease-in-sine">
+            DABubble
+        </div>
     </div>
 </div>

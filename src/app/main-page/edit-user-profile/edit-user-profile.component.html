@@ -8,24 +8,24 @@
         <div (click)="toggleProfile($event)" class="close-icon"></div>
     </div>
     <img [ngClass]="{'c-pointer': editUserProfileService.editUser}" (click)="onUploadButtonClick()" class="avatar-icon"
-        src="{{userService.user.avatar}}" alt="avatar">
+        src="{{firebaseService.currentUser.avatar}}" alt="avatar">
     <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" />
     @if(!editUserProfileService.editUser) {
     <div class="user-data-container">
         <div class="middle-container">
-            <span>{{userService.user.name}}</span>
+            <span>{{firebaseService.currentUser.name}}</span>
             <span (click)="toggleEditMenu()">Bearbeiten</span>
         </div>
         <div class="status-container">
             <div class="status-icon"
-                [ngClass]="{'active-icon': userService.user.online, 'inactive-icon': !userService.user.online}">
+                [ngClass]="{'active-icon': firebaseService.currentUser.online, 'inactive-icon': !firebaseService.currentUser.online}">
             </div>
-            @if (userService.user.online) {
+            @if (firebaseService.currentUser.online) {
             <span (click)="handleStatus()"
-                [ngClass]="{'active-span': userService.user.online, 'inactive-span': !userService.user.online}">Online</span>
+                [ngClass]="{'active-span': firebaseService.currentUser.online, 'inactive-span': !firebaseService.currentUser.online}">Online</span>
             } @else {
             <span (click)="handleStatus()"
-                [ngClass]="{'active-span': userService.user.online, 'inactive-span': !userService.user.online}">Offline</span>
+                [ngClass]="{'active-span': firebaseService.currentUser.online, 'inactive-span': !firebaseService.currentUser.online}">Offline</span>
             }
         </div>
         <div class="bottom-container">
@@ -33,7 +33,7 @@
                 <img src="./assets/img/main-page/header/email.png" alt="email">
                 <span>E-Mail-Adresse</span>
             </div>
-            <a>{{userService.user.email}}</a>
+            <a>{{firebaseService.currentUser.email}}</a>
         </div>
     </div>
     } @else{

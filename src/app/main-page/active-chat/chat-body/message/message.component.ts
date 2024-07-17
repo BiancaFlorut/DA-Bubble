@@ -14,6 +14,8 @@ import { Emoji } from '../../../../models/emoji.class';
 import { SvgButtonComponent } from '../../../svg-button/svg-button.component';
 import { FirebaseService } from '../../../../services/firebase/firebase.service';
 import { ThreadChatService } from '../../../../services/chat/thread-chat/thread-chat.service';
+import { EditUserProfileService } from '../../../../services/edit-user-profile/edit-user-profile.service';
+import { EditUserProfileComponent } from '../../../edit-user-profile/edit-user-profile.component';
 
 @Component({
   selector: 'app-message',
@@ -24,7 +26,9 @@ import { ThreadChatService } from '../../../../services/chat/thread-chat/thread-
     EditableMessageComponent,
     EmojiCounterComponent,
     EmojiPickerButtonComponent,
-    SvgButtonComponent],
+    SvgButtonComponent,
+    EditUserProfileComponent
+  ],
   templateUrl: './message.component.html',
   styleUrl: './message.component.scss'
 })
@@ -36,6 +40,7 @@ export class MessageComponent {
   partner: User | undefined;
   isEditing: boolean = false;
   public showProfileService: ShowProfileService = inject(ShowProfileService);
+  public editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
   chatService = inject(ChatService);
   userService = inject(UserService);
   threadService = inject(ThreadChatService);

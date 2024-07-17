@@ -6,6 +6,7 @@ import { UserService } from '../../../services/user/user.service';
 import { CommonModule } from '@angular/common';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
 import { User } from '../../../interfaces/user';
+import { ChatService } from '../../../services/chat/chat.service';
 
 @Component({
   selector: 'app-create-channel',
@@ -22,6 +23,7 @@ export class CreateChannelComponent {
   private firebaseService: FirebaseService = inject(FirebaseService);
   public firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
   private userService: UserService = inject(UserService);
+  private chatService: ChatService = inject(ChatService);
 
   @ViewChild('specificUsers') specificUsers!: ElementRef<HTMLInputElement>;
   @ViewChild('allUsers') allUsers!: ElementRef<HTMLInputElement>;
@@ -41,7 +43,9 @@ export class CreateChannelComponent {
     event.stopPropagation();
     this.createChannelService.toggleShowCreateChannel();
     this.showCreateChannel = true;
-    this.createChannelService.showChannel = true;
+    this.createChannelService.showChannel = false;
+    this.chatService.newMessage = true;
+    this.firebaseChannelService.openCreatedChannel = false;
   }
 
   public createChannel(event: Event): void {
@@ -55,7 +59,7 @@ export class CreateChannelComponent {
   private initializeAndAddChannel(): void {
     this.firebaseChannelService.channel.name = this.name;
     this.firebaseChannelService.channel.description = this.description;
-    this.firebaseChannelService.channel.creator = this.userService.user.name;
+    this.firebaseChannelService.channel.creator = this.firebaseService.currentUser.name;
     this.firebaseChannelService.addNewChannel();
   }
 

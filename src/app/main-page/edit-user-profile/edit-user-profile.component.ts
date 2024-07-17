@@ -20,7 +20,7 @@ import { EditUserProfileService } from '../../services/edit-user-profile/edit-us
 export class EditUserProfileComponent {
   public userService: UserService = inject(UserService);
   private authService: AuthService = inject(AuthService);
-  private firebaseService: FirebaseService = inject(FirebaseService);
+  public firebaseService: FirebaseService = inject(FirebaseService);
   public editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
   private router: Router = inject(Router);
   private fb: FormBuilder = inject(FormBuilder);
@@ -69,13 +69,13 @@ export class EditUserProfileComponent {
   }
 
   private setNameAndEmailValue(): void {
-    this.userForm.get('name')?.setValue(this.userService.user.name);
-    this.userForm.get('email')?.setValue(this.userService.user.email);
+    this.userForm.get('name')?.setValue(this.firebaseService.currentUser.name);
+    this.userForm.get('email')?.setValue(this.firebaseService.currentUser.email);
   }
 
   private userAvatarIsNotSave() {
-    if (this.userService.user.avatar !== this.userService.currentAvatar) {
-      this.userService.user.avatar = this.userService.currentAvatar;
+    if (this.firebaseService.currentUser.avatar !== this.userService.currentAvatar) {
+      this.firebaseService.currentUser.avatar = this.userService.currentAvatar;
     }
   }
 
@@ -91,30 +91,30 @@ export class EditUserProfileComponent {
       this.file = fileInput.files[0];
       let uploadedPhoto = await this.authService.uploadProfileImageTemp(this.file);
       if (uploadedPhoto) {
-        this.userService.user.avatar = uploadedPhoto;
+        this.firebaseService.currentUser.avatar = uploadedPhoto;
       }
     }
   }
 
   public async editUserData() {
-    this.userService.user.name = this.userForm.get('name')?.value;
-    const emailExists = this.userService.user.email === this.userForm.get('email')?.value;
+    this.firebaseService.currentUser.name = this.userForm.get('name')?.value;
+    const emailExists = this.firebaseService.currentUser.email === this.userForm.get('email')?.value;
     if (!this.router.url.includes('guest')) {
-      await this.authService.updateUserName(this.userService.user.name);
+      await this.authService.updateUserName(this.firebaseService.currentUser.name);
     }
-    if (this.userService.user.avatar) {
-      this.userService.currentAvatar = this.userService.user.avatar;
+    if (this.firebaseService.currentUser.avatar) {
+      this.userService.currentAvatar = this.firebaseService.currentUser.avatar;
       if (!this.router.url.includes('guest')) {
-        await this.authService.updateUserPhotoURL(this.userService.user.avatar)
+        await this.authService.updateUserPhotoURL(this.firebaseService.currentUser.avatar)
       }
     }
     if (!emailExists) {
-      this.userService.user.email = this.userForm.get('email')?.value;
+      this.firebaseService.currentUser.email = this.userForm.get('email')?.value;
       if (!this.router.url.includes('guest')) {
-        await this.authService.updateUserEmail(this.userService.user.email);
+        await this.authService.updateUserEmail(this.firebaseService.currentUser.email);
       }
     }
-    this.firebaseService.updateUser(this.userService.user);
+    this.firebaseService.updateUser(this.firebaseService.currentUser);
     this.toggleEditMenu();
   }
 

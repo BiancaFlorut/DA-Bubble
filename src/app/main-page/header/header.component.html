@@ -8,11 +8,11 @@
             <input type="text" name="search" id="search" placeholder="Code learning durchsuchen">
         </div>
         <div (click)="toggleMenu()" class="user-header-container">
-            <span>{{userService.user.name}}</span>
+            <span>{{firebase.currentUser.name}}</span>
             <div class="avatar-container">
-                <img src="{{userService.user.avatar}}" alt="avatar">
+                <img src="{{firebase.currentUser.avatar}}" alt="avatar">
                 <div class="status-icon"
-                    [ngClass]="{'active-icon': userService.user.online, 'inactive-icon': !userService.user.online}">
+                    [ngClass]="{'active-icon': firebase.currentUser.online, 'inactive-icon': !firebase.currentUser.online}">
                 </div>
             </div>
             <div class="arrow_down" alt="arrow down"></div>

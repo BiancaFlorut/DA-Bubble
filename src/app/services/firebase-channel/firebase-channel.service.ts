@@ -31,7 +31,7 @@ export class FirebaseChannelService implements OnDestroy {
 
   public currentChannelName: string = '';
   public openCreatedChannel: boolean = false;
-
+  
   private unsubChannels: any;
 
   constructor() {
@@ -90,7 +90,7 @@ export class FirebaseChannelService implements OnDestroy {
       channels.forEach(channel => {
         users.forEach(user => {
           user.channelIds?.forEach(id => {
-            if (user.uid === this.userService.user.uid) {
+            if (user.uid === this.firebaseService.currentUser.uid) {
               if (id === channel.id) {
                 if (!this.userChannels.includes(channel)) {
                   this.userChannels.push(channel);
