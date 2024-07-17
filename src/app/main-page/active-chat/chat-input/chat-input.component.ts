@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, ViewChild, inject } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../services/chat/chat.service';
 import { Chat } from '../../../models/chat.class';
@@ -13,10 +13,8 @@ import { NgxEditorModule } from 'ngx-editor';
 import { Editor } from 'ngx-editor';
 import { User } from '../../../interfaces/user';
 import { ThreadChatService } from '../../../services/chat/thread-chat/thread-chat.service';
-import { HttpClient } from '@angular/common/http';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { FirebaseChannelService } from '../../../services/firebase-channel/firebase-channel.service';
-import { collection, doc } from 'firebase/firestore';
 
 
 @Component({
@@ -42,6 +40,7 @@ export class ChatInputComponent {
   fileName: string = '';
   storage = getStorage();
   channelService = inject(FirebaseChannelService);
+  loading: boolean = false;
 
   ngOnInit(): void {
     this.editor = new Editor();
@@ -91,42 +90,58 @@ export class ChatInputComponent {
 
   async sendMessage() {
     if (!this.isWhiteSpace(this.message))
-    if (this.isThread) {
-      const mid = this.threadService.message.mid;
-      const messages = this.threadService.messages;
-      if (messages.length === 0) {
-        if (this.currentChat && this.currentChat.cid && mid)
-          this.firebase.setThread(this.currentChat.cid, mid);
-        else
-          if (this.channelService.isChannelSet())
-            this.channelService.setThread(mid);
-          else
-            console.log('no cid or mid create a thread');
+      if (this.isThread) {
+        this.sendThreadMessage();
+      } else {
+        if (this.channelService.isChannelSet()) {
+          await this.channelService.sendMessage(this.message);
+        } else
+          if (this.firebase.currentUser.uid) {
+            const mid = await this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);
+            const message = new Message(mid.id, this.firebase.currentUser.uid, this.message, Date.now(), []);
+            this.firebase.updateMessage(this.currentChat.cid, mid.id, message);
+          } else console.log('no user is logged in');
       }
-      const message = new Message(mid, this.firebase.currentUser.uid!, this.message, Date.now(), []);
-      message.isAnswer = true;
-      if (this.channelService.isChannelSet())
-        this.channelService.addThreadMessage(mid, message);
-      else if (this.currentChat.cid && mid)
-        this.firebase.addThreadMessage(this.threadService.chat!.cid, mid, message);
-      message.isAnswer = false;
-      this.threadService.message.answerCount++;
-      this.threadService.message.lastAnswerTimestamp = message.timestamp;
-      if (this.channelService.isChannelSet()) {
-        this.firebase.updateRefMessage(this.channelService.getChannelRefForMessage(mid), this.threadService.message);
-      } else
-        this.firebase.updateMessage(this.currentChat.cid, mid, this.threadService.message);
-    } else {
-      if (this.channelService.isChannelSet()) {
-        await this.channelService.sendMessage(this.message);
-      } else
-        if (this.firebase.currentUser.uid) {
-          const mid = await this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);
-          const message = new Message(mid.id, this.firebase.currentUser.uid, this.message, Date.now(), []);
-          this.firebase.updateMessage(this.currentChat.cid, mid.id, message);
-        } else console.log('no user is logged in');
-    }
     this.message = '';
+  }
+
+  sendThreadMessage() {
+    const mid = this.threadService.message.mid;
+    const messages = this.threadService.messages;
+    if (messages.length === 0) {
+      this.createThreadMessage(mid);
+    }
+    const message = new Message(mid, this.firebase.currentUser.uid!, this.message, Date.now(), []);
+    message.isAnswer = true;
+    this.addMessageToThread(mid, message);
+    message.isAnswer = false;
+    this.threadService.message.answerCount++;
+    this.threadService.message.lastAnswerTimestamp = message.timestamp;
+    this.updateThreadMessage(mid);
+  }
+
+  createThreadMessage(mid: string) {
+    if (this.currentChat && this.currentChat.cid && mid)
+      this.firebase.setThread(this.currentChat.cid, mid);
+    else
+      if (this.channelService.isChannelSet())
+        this.channelService.setThread(mid);
+      else
+        console.log('no cid or mid create a thread');
+  }
+
+  addMessageToThread(mid: string, message: Message) {
+    if (this.channelService.isChannelSet())
+      this.channelService.addThreadMessage(mid, message);
+    else if (this.currentChat.cid && mid)
+      this.firebase.addThreadMessage(this.threadService.chat!.cid, mid, message);
+  }
+
+  updateThreadMessage(mid: string) {
+    if (this.channelService.isChannelSet()) {
+      this.firebase.updateRefMessage(this.channelService.getChannelRefForMessage(mid), this.threadService.message);
+    } else
+      this.firebase.updateMessage(this.currentChat.cid, mid, this.threadService.message);
   }
 
   isWhiteSpace(text: string) {
@@ -160,14 +175,24 @@ export class ChatInputComponent {
     if (file) {
       this.fileName = file.name;
       if (file.type.includes('image') || file.type.includes('pdf')) {
+        this.loading = true;
         const storageRef = ref(this.storage, `temp/files/${Date.now()}_${file.name}`);
         const uploadResult = await uploadBytes(storageRef, file);
         const url = await getDownloadURL(uploadResult.ref);
+        this.loading = false;
         if (file.type.includes('image'))
           this.editor.commands.insertImage(url, { width: '100px' }).exec();
-        // else
-        // this.editor.commands.insertFile(url).exec();
-
+        else {
+          this.editor.commands
+            .insertLink(file.name, { href: url } )
+            .insertNewLine()
+            .insertImage("./assets/img/main-page/input/pdf.png", { width: '80px' })
+            .insertNewLine()
+            .focus()
+            .exec()
+        }
+      } else {
+        window.alert('Bitte wähle nur Bilder oder PDFs aus!');
       }
     }
   }

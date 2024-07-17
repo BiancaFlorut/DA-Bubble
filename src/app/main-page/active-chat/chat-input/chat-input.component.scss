@@ -93,7 +93,37 @@ ngx-editor::ng-deep {
     font-weight: 400;
     margin: 0;
   }
+  .file-container {
+    @include displayFlex(column, center, center, 10px);
+    background-color: aqua;
+  }
   // .NgxEditor__Content img {
   //   height: 20px;
   // }
+}
+
+.bg-spinner {
+  background-color: rgba(0, 0, 0, 0.2);
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  @include displayFlex(column, center, center, 0);
+  width: 100vw;
+  height: 100vh;
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 5px solid $purple_2;
+    border-top: 5px solid $light_purple;
+    animation: spin 1s linear infinite;
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  }
 }
