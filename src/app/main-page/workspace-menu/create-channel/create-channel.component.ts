@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
 import { User } from '../../../interfaces/user';
 import { ChatService } from '../../../services/chat/chat.service';
+import { ThreadChatService } from '../../../services/chat/thread-chat/thread-chat.service';
 
 @Component({
   selector: 'app-create-channel',
@@ -24,6 +25,7 @@ export class CreateChannelComponent {
   public firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
   private userService: UserService = inject(UserService);
   private chatService: ChatService = inject(ChatService);
+  private threadChatService: ThreadChatService = inject(ThreadChatService);
 
   @ViewChild('specificUsers') specificUsers!: ElementRef<HTMLInputElement>;
   @ViewChild('allUsers') allUsers!: ElementRef<HTMLInputElement>;
@@ -50,6 +52,8 @@ export class CreateChannelComponent {
 
   public createChannel(event: Event): void {
     event.stopPropagation();
+    this.chatService.closeChat();
+    this.threadChatService.exitThread();
     this.initializeAndAddChannel();
     this.filterUsersByCurrentChannel();
     this.updateCurrentChannelName();
@@ -130,6 +134,7 @@ export class CreateChannelComponent {
   }
 
   public saveCurrentChannelToUsers(): void {
+    this.chatService.newMessage = false;
     let currentChannel = this.userService.currentChannel;
     this.updateUsersChannelSubscription(currentChannel);
     this.loadUsersFromCurrentChannel(currentChannel);
