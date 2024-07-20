@@ -1,6 +1,6 @@
 .privacy-policy-container {
-    width: 1000px;
-    height: 769px;
+    max-width: 1000px;
+    max-height: 769px;
     border-radius: 30px;
     background: #FFFFFF;
     box-shadow: 0px 2px 10px 0px #00000014;
@@ -46,5 +46,49 @@
         p {
             font-size: 20px;
         }
+    }
+}
+
+@media(max-width: 500px) {
+    .privacy-policy-container {
+        height: 400px;
+        padding: 48px 20px;
+
+        .back-arrow {
+            left: 10px;
+            top: 0;
+        }
+
+        .scroll-container {
+            overflow: scroll;
+    
+            h2 {
+                font-size: 20px;
+    
+                &:first-child {
+                    font-size: 32px;
+                }
+            }
+    
+            h3 {
+                font-size: 14px;
+            }
+    
+            p {
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+@media(max-height: 720px) and (min-width: 400px) {
+    .privacy-policy-container {
+        height: 420px;
+    }
+}
+
+@media (max-height: 800px) and (min-width: 1200px) {
+    .privacy-policy-container {
+        height: 420px;
     }
 }

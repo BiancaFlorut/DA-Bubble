@@ -1,6 +1,6 @@
 .choose-avatar-container {
-    width: 606px;
-    height: 669px;
+    max-width: 606px;
+    max-height: 669px;
     border-radius: 30px;
     background: #FFFFFF;
     box-shadow: 0px 2px 10px 0px #00000014;
@@ -10,13 +10,14 @@
     align-items: center;
     gap: 10px;
     position: relative;
+    text-align: center;
 
     .back-arrow {
         cursor: pointer;
         width: 40px;
         height: 40px;
         position: absolute;
-        top: 60px;
+        top: 50px;
         left: 30px;
         background-image: url(./../../../assets/img/landing-page/arrow_back.png);
         background-size: cover;
@@ -28,7 +29,7 @@
     }
 
     h2 {
-        font-size: 46px;
+        font-size: 35px;
         font-weight: 700;
         color: #444DF2;
     }
@@ -170,5 +171,70 @@
             right: -28%;
             animation: slideFromRight 0.1s ease-in-out 0.5s forwards;
         }
+    }
+}
+
+@media(max-width: 560px) {
+    .choose-avatar-container {
+        padding: 5px 20px;
+
+        .back-arrow {
+            top: 10px;
+            left: -5px;
+        }
+    }
+
+    .profile-container {
+
+        img {
+            width: 120px;
+            height: 120px;
+        }
+    }
+
+    .avatar-container {
+        align-items: center;
+        gap: 5px;
+
+        .avatar {
+            gap: unset;
+
+            img {
+                width: 48px;
+                height: 48px;
+            }
+        }
+    }
+
+    .personal-img-container {
+        gap: unset;
+    }
+}
+
+@media(max-width: 350px) {
+    .avatar-container {
+
+        .avatar {
+
+            img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    }
+}
+
+@media (max-height: 800px) and (min-width: 760px) {
+    .choose-avatar-container {
+        padding: 20px 50px;
+        gap: 5px;
+
+        .back-arrow {
+            top: 23px;
+        }
+    }
+
+    .avatar-container {
+        gap: 5px;
     }
 }

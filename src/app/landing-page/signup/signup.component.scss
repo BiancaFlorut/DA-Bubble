@@ -1,6 +1,5 @@
 .signup-container {
-    width: 606px;
-    height: 669px;
+    max-width: 606px;
     border-radius: 30px;
     background: #FFFFFF;
     box-shadow: 0px 2px 10px 0px #00000014;
@@ -18,6 +17,7 @@
         position: absolute;
         top: 50px;
         left: 25px;
+        z-index: 2;
         background-image: url(./../../../assets/img/landing-page/arrow_back.png);
         background-size: cover;
         background-repeat: no-repeat;
@@ -55,7 +55,6 @@ form {
 
     .d-flex-dir-col {
         width: 100%;
-        height: 35px;
         display: flex;
         flex-direction: column;
 
@@ -69,8 +68,9 @@ form {
                 cursor: pointer;
                 width: 18px;
                 height: 18px;
-                background-size: cover;
+                background-size: contain;
                 background-repeat: no-repeat;
+                border: 1px solid transparent;
 
                 &:hover {
                     filter: drop-shadow(0px 0px 5px #797EF3);
@@ -126,14 +126,97 @@ form {
     }
 }
 
-.inactive-button{
+.inactive-button {
     background-color: #686868;
 }
 
-.active-button{
+.active-button {
     background-color: #444DF2;
 
     &:hover {
         background-color: #797EF3;
+    }
+}
+
+@media (max-width: 720px) {
+    .signup-container {
+        width: 398px;
+        padding: 35px 20px;
+        gap: 20px;
+        text-align: center;
+
+        .back-arrow {
+            top: 35px;
+        }
+
+        h2 {
+            font-size: 32px;
+            line-height: 38.4px;
+        }
+
+        p {
+            font-size: 17px;
+        }
+    }
+}
+
+@media (max-width: 430px) {
+    .signup-container {
+        width: 300px;
+        padding: 20px;
+        gap: 20px;
+
+        .back-arrow {
+            left: 0;
+            top: 20px;
+        }
+
+        h2 {
+            font-size: 32px;
+            line-height: 38.4px;
+        }
+
+        p {
+            font-size: 14px;
+        }
+    }
+
+    form {
+        gap: 10px;
+    }
+
+    .pos-rel-container input {
+        padding: 18px 55px;
+        font-size: 12px;
+    }
+}
+
+@media(max-height: 720px) and (min-width: 400px) {
+    .signup-container {
+        padding: 20px 50px;
+        gap: 5px;
+
+        .back-arrow {
+            top: 20px;
+        }
+    }
+
+    form {
+        gap: 5px;
+    }
+}
+
+@media (max-height: 800px) and (min-width: 1000px) {
+    .signup-container {
+        padding: 5px 50px;
+        gap: 10px;
+
+        .back-arrow {
+            top: 20px;
+        }
+
+        form {
+            gap: 10px;
+        }
     }
 }

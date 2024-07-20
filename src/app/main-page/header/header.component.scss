@@ -22,7 +22,7 @@
 }
 
 .input-container {
-    width: 989px;
+    width: 100%;
     height: 100%;
     position: relative;
 
@@ -37,7 +37,7 @@
         width: 100%;
         height: 100%;
         border-radius: 42px;
-        padding: 17.5px 45px;
+        padding: 17.5px 80px 17.5px 45px;
         font-size: 24px;
         line-height: 32.74px;
         color: #686868;
@@ -51,8 +51,9 @@
     align-items: center;
     gap: 20px;
     cursor: pointer;
+    text-align: center;
 
-    &:hover span{
+    &:hover span {
         color: #797EF3;
 
     }
@@ -83,6 +84,7 @@
         width: 100%;
         height: 100%;
         border-radius: 50%;
+        object-fit: contain;
     }
 
     .status-icon {
@@ -140,6 +142,55 @@
     }
 }
 
+.mobile-user-menu-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-height: 206px;
+    border-radius: 30px 30px 0px 0px;
+    padding: 30px 26px;
+    background-color: white;
+    box-shadow: 0px -3px 10px 0px #00000033;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+
+    .line-container {
+        width: 62px;
+        height: 6px;
+        border-radius: 23px;
+        background-color: #D9D9D9;
+    }
+
+    .option-container {
+        width: 100%;
+        display: flex;
+        gap: 15px;
+
+        span {
+            font-weight: 600;
+            font-size: 20px;
+            line-height: 27.28px;
+        }
+    }
+}
+
+.slide-mobile-menu-container {
+    animation: slideUp 0.2s ease-in-out forwards;
+}
+
+@keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
 .status-icon {
     width: 16.67px;
     height: 16.67px;
@@ -153,4 +204,64 @@
 
 .inactive-icon {
     background-color: #686868;
+}
+
+@media(max-width: 1080px) {
+    .user-header-container {
+
+        span {
+            display: none;
+        }
+
+        .arrow_down {
+            display: none;
+        }
+    }
+
+    .header-container {
+        .right-container {
+            justify-content: flex-end;
+        }
+    }
+
+    .input-container {
+        display: none;
+    }
+}
+
+@media(max-width: 450px) {
+    .header-container {
+
+        img {
+            width: 162px;
+            height: 50px;
+            object-fit: contain;
+        }
+    }
+
+    .avatar-container {
+
+        img {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            width: 50px;
+        }
+
+        .status-icon {
+            display: none;
+        }
+    }
+
+    .user-menu-container {
+
+        .choose-container {
+            display: none;
+        }
+    }
+
+    .mobile-user-menu-container {
+        display: flex;
+    }
 }
