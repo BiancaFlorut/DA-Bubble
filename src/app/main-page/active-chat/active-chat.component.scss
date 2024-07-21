@@ -30,3 +30,9 @@ app-chat-input {
   position: relative;
   z-index: 1;
 }
+
+@media(max-width: 870px) {
+  section {
+    display: none;
+  }
+}

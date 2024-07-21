@@ -18,6 +18,7 @@
   display: flex;
   width: 100%;
   max-height: 100%;
+  height: calc(100% - 115px);
   flex: 1;
   padding: 0 20px 25px 20px;
   gap: 20px;
@@ -37,7 +38,7 @@ app-active-chat {
   bottom: 15%;
   left: 0;
   z-index: 1;
-  width: 60px;
+  width: 55px;
   height: 347px;
   padding: 23px 14px 23px 14px;
   border-top-right-radius: 30px;
