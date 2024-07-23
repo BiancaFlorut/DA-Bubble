@@ -38,7 +38,7 @@ export class MessageComponent {
   @Input() chat: Chat | undefined;
 
   user!: User;
-  partner: User | undefined;
+  partner: User | undefined = undefined;
   isEditing: boolean = false;
   public showProfileService: ShowProfileService = inject(ShowProfileService);
   public editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
@@ -53,9 +53,11 @@ export class MessageComponent {
 
   constructor() {
     this.user = this.firebase.currentUser;
+    if (this.message)
+    this.partner = this.firebase.users.find(user => user.uid === this.message.uid);
   }
 
-  async ngOnInit() {
+  ngOnChanges() {
     this.user = this.firebase.currentUser;
     if (this.chat) {
       this.cid = this.chat.cid;
@@ -68,7 +70,10 @@ export class MessageComponent {
     }
     if (this.channelService.isChannelSet() && this.message) {
       this.partner = this.firebase.users.find(user => user.uid === this.message.uid);
+      if (!this.partner)
+        console.log('partner not found');
     }
+    console.log("For message: ", this.message, " partner: ", this.partner);
   }
 
   async editMessage(message: Message) {
@@ -78,7 +83,7 @@ export class MessageComponent {
       } else if (this.channelService.isChannelSet()) {
         await this.channelService.editMessage(message);
       } else
-      await this.chatService.editMessage(this.cid, message);
+        await this.chatService.editMessage(this.cid, message);
     }
     else {
       this.isEditing = true;
@@ -95,7 +100,7 @@ export class MessageComponent {
       else if (this.channelService.isChannelSet()) {
         await this.channelService.editMessage(message);
       } else
-      await this.chatService.editMessage(this.cid, message);
+        await this.chatService.editMessage(this.cid, message);
     else {
       this.message.text = this.oldMessage;
     }
@@ -111,7 +116,7 @@ export class MessageComponent {
       this.userService.emojis[indexUser].count++;
       const index = this.message.emojis.findIndex(e => e.id === id);
       if (index != -1) {
-        if (!this.message.emojis[index].uids.includes(this.firebase.currentUser.uid!)){
+        if (!this.message.emojis[index].uids.includes(this.firebase.currentUser.uid!)) {
           this.message.emojis[index].count++;
           this.message.emojis[index].uids.push(this.firebase.currentUser.uid!);
         }
@@ -153,6 +158,6 @@ export class MessageComponent {
   }
 
   getAnswerText() {
-      return this.message.answerCount + ' ' + (this.message.answerCount > 1 ? 'Antworten' : 'Antwort');
+    return this.message.answerCount + ' ' + (this.message.answerCount > 1 ? 'Antworten' : 'Antwort');
   }
 }
