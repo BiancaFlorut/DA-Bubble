@@ -10,6 +10,7 @@ import { ThreadChatService } from '../../services/chat/thread-chat/thread-chat.s
 import { EditUserProfileComponent } from '../edit-user-profile/edit-user-profile.component';
 import { EditUserProfileService } from '../../services/edit-user-profile/edit-user-profile.service';
 import { FirebaseChannelService } from '../../services/firebase-channel/firebase-channel.service';
+import { ToggleDNoneService } from '../../services/toggle-d-none/toggle-d-none.service';
 
 @Component({
   selector: 'app-header',
@@ -32,6 +33,7 @@ export class HeaderComponent {
   private threadChatService: ThreadChatService = inject(ThreadChatService);
   private channelService: FirebaseChannelService = inject(FirebaseChannelService);
   public editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
+  public toggleDNone: ToggleDNoneService = inject(ToggleDNoneService);
 
   public isUserMenuActive: boolean = false;
 

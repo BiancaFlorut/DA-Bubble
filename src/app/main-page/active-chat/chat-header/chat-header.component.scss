@@ -241,3 +241,19 @@ section {
     align-items: center;
   }
 }
+
+@media(max-width: 870px) {
+  section {
+    padding: 0 20px 20px 20px;
+  }
+
+  .channel-header-container {
+
+    .channel-users-container {
+
+      .all-users-container {
+        display: none;
+      }
+    }
+  }
+}

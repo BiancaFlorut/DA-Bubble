@@ -6,6 +6,7 @@ import { EmojiPickerButtonComponent } from '../emoji-picker-button/emoji-picker-
 import { ThreadChatService } from '../../../../../services/chat/thread-chat/thread-chat.service';
 import { ChatService } from '../../../../../services/chat/chat.service';
 import { FirebaseChannelService } from '../../../../../services/firebase-channel/firebase-channel.service';
+import { ToggleDNoneService } from '../../../../../services/toggle-d-none/toggle-d-none.service';
 
 @Component({
   selector: 'app-reaction-bar',
@@ -26,6 +27,7 @@ export class ReactionBarComponent {
   threadService = inject(ThreadChatService);
   chatService = inject(ChatService);
   channelService = inject(FirebaseChannelService);
+  public toggleDNone: ToggleDNoneService = inject(ToggleDNoneService);
 
   constructor() {
     this.userService.sortEmojis();
@@ -51,6 +53,7 @@ export class ReactionBarComponent {
 
   openThread() {
     this.threadService.openThreadChat(this.message, this.chatService.chat!);
+    this.toggleDNone.toggleIsThreadActive();
   }
 
 }

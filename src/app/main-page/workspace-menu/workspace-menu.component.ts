@@ -9,6 +9,7 @@ import { FirebaseChannelService } from '../../services/firebase-channel/firebase
 import { ThreadChatService } from '../../services/chat/thread-chat/thread-chat.service';
 import { UserService } from '../../services/user/user.service';
 import { Channel } from '../../interfaces/channel';
+import { ToggleDNoneService } from '../../services/toggle-d-none/toggle-d-none.service';
 
 @Component({
   selector: 'app-workspace-menu',
@@ -27,6 +28,7 @@ export class WorkspaceMenuComponent {
   public createChannelService: CreateChannelService = inject(CreateChannelService);
   private threadChatService = inject(ThreadChatService);
   public userService: UserService = inject(UserService);
+  private toggleDNone: ToggleDNoneService = inject(ToggleDNoneService);
 
   public areChannelsMenuOpen: boolean = true;
   public areDirectChatsMenuOpen: boolean = true;
@@ -56,16 +58,18 @@ export class WorkspaceMenuComponent {
     }
     this.firebaseChannelService.openCreatedChannel = false;
     this.createChannelService.showChannel = false;
+    this.toggleDNone.toggleIsClassRemoved();
   }
 
   public handleNewMessage(): void {
     this.chatService.newMessage = true;
     this.firebaseChannelService.openCreatedChannel = false;
     this.createChannelService.showChannel = false;
+    this.toggleDNone.toggleIsClassRemoved();
   }
 
   public openCreateNewChannel(): void {
-    this.createChannelService.toggleShowCreateChannel()
+    this.createChannelService.toggleShowCreateChannel();
   }
 
   public getAllUsersFromChannel(channel: Channel): void {
@@ -75,6 +79,7 @@ export class WorkspaceMenuComponent {
     this.filterUsersByChannel(channel);
     this.updateChannelVisibility(channel);
     this.firebaseChannelService.subscribeToMessages();
+    this.toggleDNone.toggleIsClassRemoved();
   }
 
   private filterUsersByChannel(channel: Channel): void {

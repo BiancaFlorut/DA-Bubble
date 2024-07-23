@@ -1,6 +1,7 @@
 <div class="header-container">
     <div class="left-container">
-        <img src="./assets/img/logo.png" alt="logo">
+        <img [class.d-none]="toggleDNone.isClassRemoved" src="./assets/img/logo.png" alt="logo">
+        <img (click)="toggleDNone.openWorkspace()" [class.d-none]="!toggleDNone.isClassRemoved" class="devspace-logo" src="./assets/img/main-page/header/devspace_logo.png" alt="devspace logo">
     </div>
     <div class="right-container">
         <div class="input-container">
@@ -27,7 +28,8 @@
             <span (click)="toggleProfile($event)">Profil</span>
             <span (click)="logOutUser()">Log out</span>
         </div>
-        <div [ngClass]="!editUserProfileService.showProfile ? 'slide-mobile-menu-container' : ''" class="mobile-user-menu-container" (click)="$event.stopPropagation()">
+        <div [ngClass]="!editUserProfileService.showProfile ? 'slide-mobile-menu-container' : ''"
+            class="mobile-user-menu-container" (click)="$event.stopPropagation()">
             <div class="line-container"></div>
             <div (click)="toggleProfile($event)" class="option-container">
                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -35,7 +35,7 @@ export class ChatHeaderComponent {
   private currentChat!: Chat;
   public partner: User | undefined;
   public user!: User;
-  
+
   public directChat: boolean = false;
 
   constructor() {
@@ -61,6 +61,15 @@ export class ChatHeaderComponent {
       this.editUserProfileService.showProfile = false;
     } else {
       this.channelModalService.closeAllModals();
+    }
+  }
+
+  public handleShowMembersAndShowAddPeople(): void {
+    if (window.innerWidth <= 870) {
+      console.log('drinnen')
+      this.channelModalService.showMembers = true;
+    } else {
+      this.channelModalService.toggleShowAddPeople();
     }
   }
 }

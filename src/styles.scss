@@ -33,12 +33,18 @@ body {
     }
   }
 
-  > img {
+  >img {
     position: absolute;
     top: 50%;
     bottom: 50%;
     left: 30px;
     transform: translateY(-50%);
+  }
+}
+
+@media(max-width: 870px) {
+  .d-none {
+    display: none !important;
   }
 }
 

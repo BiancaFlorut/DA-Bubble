@@ -77,3 +77,14 @@ app-active-chat {
 .show {
   display: block;
 }
+
+@media(max-width: 870px) {
+  .chat-container {
+    padding: 0;
+    gap: 0;
+  }
+
+  .handle-work-space-menu-container {
+    display: none;
+  }
+}

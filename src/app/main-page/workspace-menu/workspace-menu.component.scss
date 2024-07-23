@@ -14,7 +14,8 @@ section {
   @include displayFlex(column, unset, unset, 25px);
   max-height: 940px;
   height: calc(100% - 75px);
-  overflow: auto
+  overflow: auto;
+  scrollbar-width: none;
 }
 
 .logo-container {
@@ -289,6 +290,14 @@ section {
   background: $gray;
 }
 
+.new-message {
+  display: none;
+  position: fixed;
+  right: 25px;
+  bottom: 25px;
+  z-index: 2;
+}
+
 @media(max-width: 965px) {
   .input-container {
     display: block;
@@ -296,5 +305,17 @@ section {
 
   .logo-container {
     display: none;
+  }
+}
+
+@media(max-width: 870px) {
+  section {
+    width: 100vw;
+    border-radius: unset;
+    padding: 32px 20px;
+  }
+
+  .new-message {
+    display: unset;
   }
 }

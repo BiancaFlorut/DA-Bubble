@@ -7,6 +7,8 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ShowProfileService } from '../services/show-profile/show-profile.service';
 import { ThreadChatService } from '../services/chat/thread-chat/thread-chat.service';
 import { ChatService } from '../services/chat/chat.service';
+import { CommonModule } from '@angular/common';
+import { ToggleDNoneService } from '../services/toggle-d-none/toggle-d-none.service';
 
 @Component({
     selector: 'app-main-page',
@@ -18,11 +20,13 @@ import { ChatService } from '../services/chat/chat.service';
         WorkspaceMenuComponent,
         ActiveChatComponent,
         ThreadChatComponent,
-        UserProfileComponent
+        UserProfileComponent,
+        CommonModule
     ]
 })
 export class MainPageComponent {
     public showProfileService: ShowProfileService = inject(ShowProfileService);
+    public toggleDNone: ToggleDNoneService = inject(ToggleDNoneService);
     threadService = inject(ThreadChatService);
     chatService = inject(ChatService);
 
@@ -32,6 +36,4 @@ export class MainPageComponent {
     public handleWorkSpace() {
         this.showWorkSpace = !this.showWorkSpace;
     }
-
-    
 }
