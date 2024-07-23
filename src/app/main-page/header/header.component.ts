@@ -52,8 +52,8 @@ export class HeaderComponent {
           this.firebase.currentUser.email = 'mail@guest.com';
           this.firebase.currentUser.avatar = './assets/img/profile.png';
           this.userService.currentAvatar = './assets/img/profile.png';
-          this.firebase.currentUser.online = true;
-          this.firebase.updateUser(this.firebase.currentUser);
+          // this.firebase.currentUser.online = true;
+          // this.firebase.updateUser(this.firebase.currentUser);
           this.firebase.connectUser(this.firebase.currentUser);
         } else if (user) {
           this.editUserProfileService.googleUser = user.providerData[0].providerId === 'google.com' ? true : false;
@@ -66,7 +66,7 @@ export class HeaderComponent {
             this.firebase.currentUser.avatar = './assets/img/profile.png';
             this.userService.currentAvatar = './assets/img/profile.png';
           }
-          this.firebase.currentUser.online = true;
+          // this.firebase.currentUser.online = true;
           this.firebase.connectUser(this.firebase.currentUser);
         } else {
           this.router.navigate(['landing-page/login']);
