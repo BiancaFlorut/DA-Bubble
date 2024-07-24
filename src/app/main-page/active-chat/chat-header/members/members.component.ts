@@ -29,8 +29,12 @@ export class MembersComponent {
 
   public openAddPeople(event: Event) {
     event.stopPropagation();
-    this.channelModalService.toggleShowMembers();
-    this.channelModalService.toggleShowAddPeople();
+    if (this.channelModalService.showMembers) {
+      this.channelModalService.toggleShowMembers();
+      this.channelModalService.toggleShowAddPeople();
+    } else {
+      this.channelModalService.toggleaddMobileClassToAddPeople();
+    }
   }
 
   public openUserProfile() {

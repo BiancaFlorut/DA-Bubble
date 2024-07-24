@@ -1,7 +1,7 @@
-<div (click)="$event.stopPropagation()" class="members-container">
+<div (click)="$event.stopPropagation()" [class.mobile-channel-members-container]="!channelModalService.showMembers" class="members-container">
     <div class="top-container">
         <span>Mitglieder</span>
-        <div (click)="channelModalService.toggleShowMembers()" class="close-icon"></div>
+        <div (click)="channelModalService.toggleShowMembers()" [ngStyle]="{'display': !channelModalService.showMembers ? 'none' : ''}" class="close-icon"></div>
     </div>
     <div class="users-container">
         @for (user of firebaseChannelService.usersFromChannel; track $index) {

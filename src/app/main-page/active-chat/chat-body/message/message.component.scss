@@ -186,3 +186,14 @@ app-editable-message {
     align-items: center;
   }
 }
+
+@media(max-width: 450px) {
+  .message-container {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .message-content {
+    padding-right: 70px;
+  }
+}

@@ -1,7 +1,8 @@
-<div (click)="$event.stopPropagation()" class="add-people-container">
+<div (click)="$event.stopPropagation()" [ngStyle]="{'display': channelModalService.addMobileClassToAddPeople ? '' : 'none'}" [class.mobile-add-people-container]="channelModalService.addMobileClassToAddPeople" class="add-people-container">
+    <div id="line-container"></div>
     <div class="top-container">
         <span>Leute hinzufügen</span>
-        <div (click)="channelModalService.toggleShowAddPeople()" class="close-icon"></div>
+        <div (click)="handleClose()" class="close-icon"></div>
     </div>
     <div class="channel-name-container">
         <svg width="24" height="24" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">

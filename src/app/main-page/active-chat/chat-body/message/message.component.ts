@@ -17,6 +17,7 @@ import { ThreadChatService } from '../../../../services/chat/thread-chat/thread-
 import { EditUserProfileService } from '../../../../services/edit-user-profile/edit-user-profile.service';
 import { EditUserProfileComponent } from '../../../edit-user-profile/edit-user-profile.component';
 import { FirebaseChannelService } from '../../../../services/firebase-channel/firebase-channel.service';
+import { ToggleDNoneService } from '../../../../services/toggle-d-none/toggle-d-none.service';
 
 @Component({
   selector: 'app-message',
@@ -42,6 +43,7 @@ export class MessageComponent {
   isEditing: boolean = false;
   public showProfileService: ShowProfileService = inject(ShowProfileService);
   public editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
+  public toggleDNone: ToggleDNoneService = inject(ToggleDNoneService);
   chatService = inject(ChatService);
   userService = inject(UserService);
   threadService = inject(ThreadChatService);
@@ -155,6 +157,7 @@ export class MessageComponent {
 
   openThread() {
     this.threadService.openThreadChat(this.message, this.chatService.chat!);
+    this.toggleDNone.toggleIsThreadActive();
   }
 
   getAnswerText() {

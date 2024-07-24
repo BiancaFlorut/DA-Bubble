@@ -7,6 +7,7 @@ export class ChannelModalService {
   public showAddPeople: boolean = false;
   public showMembers: boolean = false;
   public showUpdateChannel: boolean = false;
+  public addMobileClassToAddPeople: boolean = false;
 
   public toggleShowAddPeople(): void {
     this.showAddPeople = !this.showAddPeople;
@@ -18,6 +19,10 @@ export class ChannelModalService {
 
   public toggleShowUpdateChannel(): void {
     this.showUpdateChannel = !this.showUpdateChannel;
+  }
+
+  public toggleaddMobileClassToAddPeople(): void {
+    this.addMobileClassToAddPeople = !this.addMobileClassToAddPeople;
   }
 
   public closeAllModals(): void {

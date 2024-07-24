@@ -5,13 +5,17 @@ import { CommonModule } from '@angular/common';
 import { FirebaseService } from '../../../../services/firebase/firebase.service';
 import { ChatService } from '../../../../services/chat/chat.service';
 import { FormsModule } from '@angular/forms';
+import { MembersComponent } from '../members/members.component';
+import { AddPeopleComponent } from '../add-people/add-people.component';
 
 @Component({
   selector: 'app-update-channel',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    MembersComponent,
+    AddPeopleComponent
   ],
   templateUrl: './update-channel.component.html',
   styleUrl: './update-channel.component.scss'

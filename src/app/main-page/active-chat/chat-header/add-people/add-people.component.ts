@@ -97,4 +97,12 @@ export class AddPeopleComponent {
       });
     });
   }
+
+  public handleClose():void {
+    if(this.channelModalService.addMobileClassToAddPeople) {
+      this.channelModalService.toggleaddMobileClassToAddPeople();
+    }else {
+      this.channelModalService.toggleShowAddPeople();
+    }
+  }
 }
