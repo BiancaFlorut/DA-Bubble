@@ -17,3 +17,17 @@ app-thread-body {
   padding-top: 19px;
   padding-bottom: 25px;
 }
+
+@media(max-width: 1000px) {
+  section {
+    min-width: 366px;
+  }
+}
+
+@media(max-width: 870px) {
+  section {
+    min-width: unset;
+    width: 100vw;
+    border-radius: unset;
+  }
+}

@@ -157,6 +157,19 @@
                 }
             }
         }
+
+        .mobile-search-user-container {
+            position: fixed;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            border-radius: 20px;
+        }
+
+        .mobile-search-user-container::-webkit-scrollbar {
+            width: 0;
+        }
     }
 }
 

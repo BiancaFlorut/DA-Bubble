@@ -270,3 +270,9 @@ section {
     }
   }
 }
+
+@media(max-width: 450px) {
+  .name {
+    font-size: 20px;
+  }
+}

@@ -270,6 +270,16 @@
                 display: unset;
             }
         }
+
+        .bottom-container {
+
+            a{
+
+                &:last-child {
+                    margin: 0;
+                }
+            }
+        }
     }
 }
 

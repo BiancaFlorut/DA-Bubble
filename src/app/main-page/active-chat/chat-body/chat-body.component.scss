@@ -21,7 +21,7 @@ section {
     color: #535af1;
   }
 
-  > img {
+  >img {
     width: 100px;
     height: 100px;
     border-radius: 100px;
@@ -84,4 +84,15 @@ section {
   width: 100%;
   border-top: 1px solid $light_purple;
   z-index: 0;
+}
+
+@media(max-width: 450px) {
+  .placeholder-header {
+    font-size: 20px;
+    word-wrap: break-word;
+
+    span {
+      width: 105px;
+    }
+  }
 }

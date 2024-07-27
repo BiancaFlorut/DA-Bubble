@@ -1,4 +1,4 @@
-<div (click)="$event.stopPropagation()" [ngStyle]="{'display': channelModalService.addMobileClassToAddPeople ? '' : 'none'}" [class.mobile-add-people-container]="channelModalService.addMobileClassToAddPeople" class="add-people-container">
+<div (click)="$event.stopPropagation()" [ngStyle]="{'display': channelModalService.addMobileClassToAddPeople ? '' : 'flex'}" [class.mobile-add-people-container]="channelModalService.addMobileClassToAddPeople" class="add-people-container">
     <div id="line-container"></div>
     <div class="top-container">
         <span>Leute hinzufügen</span>
@@ -22,7 +22,7 @@
         <input [(ngModel)]="searchUser" (input)="filterSearchingUsers()" class="search-user" type="text"
             name="searchUser" id="searchUser" placeholder="Name eingeben" autocomplete="off">
         @if(filteredUsers.length > 0 && searchUser !== '' || selectedUsers.length > 0) {
-        <div class="search-user-container">
+        <div class="search-user-container" [class.mobile-search-user-container]="channelModalService.addMobileClassToAddPeople">
             @if(filteredUsers.length > 0 && searchUser !== ''){
             @for (user of filteredUsers; track $index) {
             <div (click)="addUserToChannel($index)" class="user">
