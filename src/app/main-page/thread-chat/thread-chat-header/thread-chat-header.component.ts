@@ -17,5 +17,7 @@ export class ThreadChatHeaderComponent {
   exitThread() {
     this.threadService.exitThread();
     this.toggleDNone.toggleIsThreadActive();
+    console.log(this.toggleDNone.isThreadActive)
+    console.log(this.toggleDNone.isScreenWide)
   }
 }

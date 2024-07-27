@@ -16,3 +16,9 @@ section {
   font-weight: 700;
   line-height: 32.74px;
 }
+
+@media(max-width: 870px) {
+  section {
+    border-radius: 0;
+  }
+}
