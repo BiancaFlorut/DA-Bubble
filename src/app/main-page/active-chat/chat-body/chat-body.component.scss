@@ -96,3 +96,21 @@ section {
     }
   }
 }
+
+@media(min-width: 1000px) and (max-height: 800px) {
+  section {
+    padding: unset;
+  }
+
+  .placeholder-container {
+    gap: unset;
+  }
+
+  .placeholder-header {
+
+    img {
+      width: 50px;
+      height: 50px;
+    }
+  }
+}

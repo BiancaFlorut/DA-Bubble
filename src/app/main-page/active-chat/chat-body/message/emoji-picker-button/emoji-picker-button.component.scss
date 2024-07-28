@@ -41,3 +41,9 @@ section {
   z-index: 2;
   background-color: rgba(0, 0, 0, 0.1);
 }
+
+@media(max-width: 870px) {
+  .emoji-picker {
+    bottom: 146px;
+  }
+}
