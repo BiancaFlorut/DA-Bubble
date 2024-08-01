@@ -16,3 +16,38 @@ section {
   font-weight: 700;
   line-height: 32.74px;
 }
+
+.progress-container {
+  @include displayFlex(row, flex-start, center, 0);
+  width: 100%;
+  overflow: hidden;
+
+  .progress-bar {
+    position: relative;
+    left: 0;
+    height: 4px;
+    width: 70%;
+    background: $gray;
+    border-radius: 30px;
+  }
+}
+
+.progress {
+  animation: progress-bar 2s infinite;
+}
+
+.progressing-container {
+  animation: progress-bar 1s infinite;
+}
+
+@keyframes progress-bar {
+  0% {
+    width: 0%;
+    left: 0%;
+  }
+
+  100% {
+    width: 100%;
+    left: 100%;
+  }
+}

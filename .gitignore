@@ -42,5 +42,4 @@ testem.log
 Thumbs.db
 
 # Emulator logs
-firestore-debug.log
-firebase-debug.log
+*.log

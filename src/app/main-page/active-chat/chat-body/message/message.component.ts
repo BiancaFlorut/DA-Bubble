@@ -72,10 +72,7 @@ export class MessageComponent {
     }
     if (this.channelService.isChannelSet() && this.message) {
       this.partner = this.firebase.users.find(user => user.uid === this.message.uid);
-      if (!this.partner)
-        console.log('partner not found');
     }
-    console.log("For message: ", this.message, " partner: ", this.partner);
   }
 
   async editMessage(message: Message) {

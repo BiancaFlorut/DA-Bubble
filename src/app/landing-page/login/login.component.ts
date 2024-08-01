@@ -57,14 +57,7 @@ export class LoginComponent {
         } else if (error.code === 'auth/too-many-requests') {
           this.errorMessage = 'too-many-requests';
         }
-        this.setTimeOutErrorMessage();
       });
-  }
-
-  private setTimeOutErrorMessage() {
-    setTimeout(() => {
-      this.errorMessage = '';
-    }, 2000);
   }
 
   public loginAsGuest() {

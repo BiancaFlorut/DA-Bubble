@@ -17,9 +17,11 @@ export class ThreadChatService {
   messages: Message[] = [];
   unsubMessages: Unsubscribe | undefined;
   channelService = inject(FirebaseChannelService);
+  loading = false;
 
 
   openThreadChat(message: Message, chat: Chat) {
+    this.loading = true;
     this.message = message;
     if (this.channelService.isChannelSet()) {
       this.chat = undefined;
@@ -28,6 +30,7 @@ export class ThreadChatService {
     this.getMessages();
     this.openSideThread.set(true);
     this.signalThreadChat.set(this.chat);
+    this.loading = false;
   }
 
   setThreadChat(message: Message, chat: Chat) {
@@ -73,13 +76,10 @@ export class ThreadChatService {
   async editMessage(message: Message, cid: string) {
     if (message) {
       if (this.channelService.isChannelSet()) {
-        console.log('edit message in channel chat');
         const ref = doc(this.channelService.getChannelThreadForMessage(message.mid), message.tid);
         await this.firebase.updateRefMessage(ref, message);
       }
       else if (this.chat) {
-        console.log('edit message in direct chat');
-
         const ref = doc(collection(doc(this.firebase.getDirectChatMessagesRef(cid), message.mid), 'thread'), message.tid);
         const result = await this.firebase.updateRefMessage(ref, message);
         

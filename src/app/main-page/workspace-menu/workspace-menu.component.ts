@@ -64,6 +64,7 @@ export class WorkspaceMenuComponent {
   public handleNewMessage(): void {
     this.chatService.newMessage = true;
     this.firebaseChannelService.openCreatedChannel = false;
+    this.firebaseChannelService.resetChannel();
     this.createChannelService.showChannel = false;
     this.toggleDNone.toggleIsClassRemoved();
   }

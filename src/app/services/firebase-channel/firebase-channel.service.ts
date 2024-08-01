@@ -125,6 +125,10 @@ export class FirebaseChannelService implements OnDestroy {
       description: '',
       creator: '',
     };
+    this.messages = [];
+    if (this.subMessages) {
+      this.subMessages();
+    }
   }
 
   isChannelSet(): boolean {
@@ -171,7 +175,6 @@ export class FirebaseChannelService implements OnDestroy {
   }
 
   async editMessage(message: Message) {
-    console.log('edit message in channel chat', message, this.channel.id);
     const channelDocRef = this.getSingleChannel(this.channel.id);
     const messageDocRef = doc(channelDocRef, 'messages', message.mid);
     await updateDoc(messageDocRef, this.getJSONFromObject(message));
