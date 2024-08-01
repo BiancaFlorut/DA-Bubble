@@ -253,6 +253,7 @@
         right: unset;
         transform: translate(-50%, -50%);
         border-radius: 30px;
+        gap: 20px;
     }
 
     .user-data-container {
@@ -269,6 +270,25 @@
             svg {
                 display: unset;
             }
+        }
+
+        .bottom-container {
+
+            a{
+
+                &:last-child {
+                    margin: 0;
+                }
+            }
+        }
+    }
+}
+
+@media(max-width: 420px) {
+    .edit-user-data-container {
+
+        .button-container {
+            gap: 10px;
         }
     }
 }

@@ -51,3 +51,9 @@ section {
     left: 100%;
   }
 }
+
+@media(max-width: 870px) {
+  section {
+    border-radius: 0;
+  }
+}

@@ -145,6 +145,8 @@
     </div>
     <app-members class="d-none-members"
         [ngStyle]="{'display': channelModalService.showMembers ? 'none' : ''}"></app-members>
+    <div (click)="channelModalService.toggleaddMobileClassToAddPeople()" [ngStyle]="{'display': channelModalService.addMobileClassToAddPeople ? '' : 'none'}" class="background-update-channel-container">
         <app-add-people></app-add-people>
+    </div>
     <button (click)="deleteUserFromChannel()">Channel veralssen</button>
 </div>

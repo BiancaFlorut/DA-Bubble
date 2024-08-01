@@ -157,6 +157,19 @@
                 }
             }
         }
+
+        .mobile-search-user-container {
+            position: fixed;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            border-radius: 20px;
+        }
+
+        .mobile-search-user-container::-webkit-scrollbar {
+            width: 0;
+        }
     }
 }
 
@@ -275,5 +288,24 @@ input {
 @media(max-width: 870px) {
     #line-container {
         display: unset;
+    }
+
+    .add-people-container {
+        gap: 15px;
+    }
+}
+
+@media(max-width: 650px) {
+    .add-people-container {
+        right: 50%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 95%;
+    }
+
+    .mobile-add-people-container {
+        width: 100%;
+        transform: unset;
+        left: 0;
     }
 }

@@ -171,3 +171,26 @@
 .inactive-span {
     color: #686868;
 }
+
+@media(max-width: 550px) {
+    .profile-container {
+        width: 95%;
+
+        .user-data-container {
+
+            .bottom-container {
+
+                a {
+                    margin-left: unset;
+                }
+            }
+        }
+    }
+}
+
+@media(max-height: 720px) {
+    .profile-container {
+        height: 95%;
+        gap: 15px;
+    }
+}

@@ -42,6 +42,18 @@ body {
   }
 }
 
+@media(min-width: 1401px) {
+  .d-none-workspace {
+    display: none !important;
+  }
+}
+
+@media (min-width: 871px) and (max-width: 1400px) {
+  .d-none-thread-workspace {
+    display: none !important;
+  }
+}
+
 @media(max-width: 870px) {
   .d-none {
     display: none !important;

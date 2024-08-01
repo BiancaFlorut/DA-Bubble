@@ -141,5 +141,25 @@
     max-height: unset;
     box-shadow: unset;
     border-radius: 20px;
+    padding: 20px;
     border: 1px solid #ADB0D9;
+}
+
+@media(max-width: 870px) {
+    .members-container {
+        right: 50%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .mobile-channel-members-container {
+        transform: unset;
+    }
+}
+
+@media(max-width: 450px) {
+    .members-container {
+        width: 95%;
+        padding: 40px 20px;
+    }
 }

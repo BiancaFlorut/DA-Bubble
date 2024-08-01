@@ -66,7 +66,6 @@ export class ChatHeaderComponent {
 
   public handleShowMembersAndShowAddPeople(): void {
     if (window.innerWidth <= 870) {
-      console.log('drinnen')
       this.channelModalService.showMembers = true;
     } else {
       this.channelModalService.toggleShowAddPeople();

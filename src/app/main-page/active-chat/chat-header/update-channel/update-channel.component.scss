@@ -191,8 +191,27 @@ button {
     }
 }
 
+.background-update-channel-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: rgb(0, 0, 0, 0.4);
+}
+
 .d-none-members {
     display: none;
+}
+
+@media(max-width: 1360px) {
+    .update-channel-container {
+        left: 50%;
+        right: 50%;
+        transform: translateX(-50%);
+        width: 860px;
+    }
 }
 
 @media(max-width: 870px) {
@@ -207,6 +226,7 @@ button {
         border-radius: 0;
         padding-top: 100px;
         overflow: auto;
+        transform: unset;
     }
 
     .update-channel-container::-webkit-scrollbar {
@@ -263,5 +283,13 @@ button {
 
     .d-none-members {
         display: unset;
+    }
+}
+
+@media(min-width: 1000px) and (max-height: 800px) {
+    .update-channel-container {
+        top: 50%;
+        transform: translate(-50%, -50%);
+        height: 95%;
     }
 }

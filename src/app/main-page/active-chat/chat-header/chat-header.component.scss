@@ -163,7 +163,6 @@ section {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
 
     .all-users-container {
       cursor: pointer;
@@ -242,15 +241,14 @@ section {
   }
 }
 
-@media(max-width: 950px) {
-  section {
-    padding: 0 10px;
-  }
-
+@media(max-width: 1100px) {
   .channel-header-container {
 
     .channel-users-container {
-      gap: 0;
+
+      .all-users-container {
+        display: none;
+      }
     }
   }
 }
@@ -267,6 +265,23 @@ section {
       .all-users-container {
         display: none;
       }
+    }
+  }
+}
+
+@media(max-width: 450px) {
+  section {
+    padding: 0 10px 20px 10px;
+  }
+
+  .name {
+    font-size: 20px;
+  }
+
+  .channel-header-container {
+
+    .channel-name-container {
+      gap: 0;
     }
   }
 }

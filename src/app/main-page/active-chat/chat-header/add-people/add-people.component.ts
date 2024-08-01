@@ -62,6 +62,7 @@ export class AddPeopleComponent {
     await this.updateUsersChannel(currentChannel);
     await this.updateChannel(currentChannel);
     this.channelModalService.toggleShowAddPeople();
+    this.handleClose();
   }
 
   private async updateUsersChannel(currentChannel: string): Promise<void> {
