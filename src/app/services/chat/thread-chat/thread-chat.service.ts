@@ -4,6 +4,7 @@ import { Chat } from '../../../models/chat.class';
 import { FirebaseService } from '../../firebase/firebase.service';
 import { collection, doc, getCountFromServer, onSnapshot, Unsubscribe } from 'firebase/firestore';
 import { FirebaseChannelService } from '../../firebase-channel/firebase-channel.service';
+import { User } from '../../../interfaces/user';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class ThreadChatService {
   unsubMessages: Unsubscribe | undefined;
   channelService = inject(FirebaseChannelService);
   loading = false;
+  users: User[] = [];
 
 
   openThreadChat(message: Message, chat: Chat) {
@@ -25,8 +27,13 @@ export class ThreadChatService {
     this.message = message;
     if (this.channelService.isChannelSet()) {
       this.chat = undefined;
-    } else
+      this.users = this.channelService.usersFromChannel;
+    } else {
       this.chat = chat;
+      for (let uid of this.chat.uids) {
+        this.users.push(this.firebase.getUser(uid)!);
+      }
+    }
     this.getMessages();
     this.openSideThread.set(true);
     this.signalThreadChat.set(this.chat);

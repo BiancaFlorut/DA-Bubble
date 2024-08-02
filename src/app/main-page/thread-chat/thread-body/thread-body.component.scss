@@ -24,3 +24,7 @@ section {
   @include displayFlex(column, unset, center, 20px);
   height: 100%;
 }
+
+.message-container {
+  width: 100%;  
+}

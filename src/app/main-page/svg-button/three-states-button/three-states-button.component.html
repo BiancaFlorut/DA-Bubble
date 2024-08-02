@@ -1,4 +1,5 @@
 <div class="svg-container" (pointerdown)="setActive()" (pointerup)="setBack()" (mouseenter)="enterSource()"
 (mouseleave)="leaveSource()">
   <img class="svg-img" [src]="getSource()" alt="" #img />
+  <ng-content></ng-content>
 </div>

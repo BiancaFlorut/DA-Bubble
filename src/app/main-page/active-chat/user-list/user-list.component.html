@@ -1,0 +1,10 @@
+<section class="user-list">
+  @for (user of users; track $index) {
+    <div class="user">
+      <div class="avatar">
+        <img src="{{user.avatar}}" alt="" />
+      </div>
+      <div class="name">{{user.name}}</div>
+    </div>
+  }
+</section>

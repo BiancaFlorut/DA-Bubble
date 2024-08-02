@@ -252,12 +252,17 @@ body {
 
 ::-webkit-scrollbar {
   width: 6px;
+  padding: 50px 0;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: $gray;
   border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  margin: 10px 0;
 }
 
 /* Handle on hover */

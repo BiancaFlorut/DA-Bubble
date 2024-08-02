@@ -127,3 +127,23 @@ ngx-editor::ng-deep {
     }
   }
 }
+
+.user-list-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.075);
+}
+
+.user-list {
+  position: absolute;
+  z-index: 11;
+}
+
+@media (max-width: 1440px) {
+  .input-container {
+    margin: 0 16px 30px 16px;
+  }
+}

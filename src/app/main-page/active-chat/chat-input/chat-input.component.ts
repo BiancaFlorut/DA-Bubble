@@ -15,12 +15,13 @@ import { User } from '../../../interfaces/user';
 import { ThreadChatService } from '../../../services/chat/thread-chat/thread-chat.service';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { FirebaseChannelService } from '../../../services/firebase-channel/firebase-channel.service';
+import { UserListComponent } from '../user-list/user-list.component';
 
 
 @Component({
   selector: 'app-chat-input',
   standalone: true,
-  imports: [FormsModule, CommonModule, AutosizeModule, EmojiPickerButtonComponent, ThreeStatesButtonComponent, NgxEditorModule],
+  imports: [FormsModule, CommonModule, AutosizeModule, EmojiPickerButtonComponent, ThreeStatesButtonComponent, NgxEditorModule, UserListComponent],
   templateUrl: './chat-input.component.html',
   styleUrl: './chat-input.component.scss'
 })
@@ -31,6 +32,7 @@ export class ChatInputComponent {
   threadService: ThreadChatService = inject(ThreadChatService);
   currentChat!: Chat;
   user!: User;
+  users: User[] = [];
   partner: User | undefined;
   firebase: FirebaseService = inject(FirebaseService);
   placeholderText: string = 'Einen Nachricht schreiben...';
@@ -41,10 +43,16 @@ export class ChatInputComponent {
   storage = getStorage();
   channelService = inject(FirebaseChannelService);
   loading: boolean = false;
+  isUserListOpen: boolean = false;
 
   ngOnInit(): void {
     this.editor = new Editor();
+      this.editor.commands.focus().exec();
+    if (this.channelService.isChannelSet()){
+      this.users = this.channelService.usersFromChannel;
+    }
   }
+
 
   ngOnDestroy(): void {
     if (this.editor)
@@ -53,36 +61,37 @@ export class ChatInputComponent {
 
   constructor() {
     this.chatService.currentChat.subscribe(chat => {
+      this.users = [];
       if (chat) {
         this.currentChat = chat;
         const rest = this.currentChat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
         if (rest.length === 0) {
           this.partner = this.firebase.currentUser;
+          this.users.push(this.firebase.currentUser);
         } else {
           this.partner = this.firebase.getUser(rest[0]);
+          for (let i = 0; i < rest.length; i++) {
+            this.users.push(this.firebase.getUser(rest[i])!);
+          }
         }
         this.user = this.firebase.currentUser;
       }
-      if (this.isThread)
-        this.placeholderText = 'Antworten...';
-      else if (this.channelService.isChannelSet())
-        this.placeholderText = 'Nachricht an #' + this.channelService.channel.name;
-      else if (this.chatService.chat)
-        this.replacePlaceholder();
-      else
-        this.placeholderText = 'Einen Nachricht schreiben...';
       if (this.editor) {
         this.editor.commands.focus().exec();
       }
-
     });
   }
 
+
   getPlaceholderText() {
-    if (this.isThread)
+    if (this.isThread){
       return 'Antworten...';
-    else if (this.channelService.isChannelSet())
+    }
+    else if (this.channelService.isChannelSet()){
+      this.users = this.channelService.usersFromChannel;
       return 'Nachricht an #' + this.channelService.channel.name;
+      
+    }
     else if (this.chatService.chat)
       return this.replacePlaceholder();
     else return 'Einen Nachricht schreiben...';
@@ -197,4 +206,18 @@ export class ChatInputComponent {
     }
   }
 
+  showUsersList() {
+    this.isUserListOpen = true;
+    if (this.isThread) this.users = this.threadService.users;
+  }
+
+  selectUser(user: User) {
+    console.log("select user", user);
+    this.isUserListOpen = false;
+  }
+
+  closeUsersList(event : Event) {
+    event.stopPropagation();
+    this.isUserListOpen = false;
+  }
 }

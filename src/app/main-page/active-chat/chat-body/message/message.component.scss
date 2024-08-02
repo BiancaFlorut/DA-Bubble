@@ -1,6 +1,10 @@
 @import "./../../../../../assets/styles/mixIns.scss";
 @import "./../../../../../assets/styles/colors.scss";
 
+.section {
+  width: 100%;
+}
+
 .message-container {
   @include displayFlex(row, flex-start, flex-start, 30px);
   padding: 10px 45px;
