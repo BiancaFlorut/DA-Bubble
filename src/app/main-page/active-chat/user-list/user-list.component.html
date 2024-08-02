@@ -1,6 +1,6 @@
 <section class="user-list">
   @for (user of users; track $index) {
-    <div class="user">
+    <div class="user" (click)="selectUser(user, $event)">
       <div class="avatar">
         <img src="{{user.avatar}}" alt="" />
       </div>

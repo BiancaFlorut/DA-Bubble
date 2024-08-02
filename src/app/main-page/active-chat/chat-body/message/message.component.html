@@ -15,7 +15,8 @@
           {{ message.timestamp | date : "HH:mm" }} Uhr
         </span>
       </div>
-      <div class="message-text mt-right own-message" [innerHTML]="message.text">
+      <div class="message-text mt-right own-message" 
+      [innerHTML]="message.text | safeHtml : true">
       </div>
       @if (message.editedTimestamp) {
       <span class="timestamp">bearbeitet am
@@ -57,7 +58,7 @@
         </span>
         <span class="timestamp">{{ message.timestamp | date : "HH:mm" }} Uhr</span>
       </div>
-      <div class="message-text" [innerHTML]="message.text">
+      <div class="message-text" [innerHTML]="message.text | safeHtml : false ">>
       </div>
       @if (message.editedTimestamp) {
       <span class="timestamp">bearbeitet am

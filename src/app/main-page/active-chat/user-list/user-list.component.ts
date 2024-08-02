@@ -13,4 +13,9 @@ export class UserListComponent {
   firebase = inject(FirebaseService);
   @Input() users: User[] = [];
   @Output() userSelectedEvent: EventEmitter<User> = new EventEmitter();
+
+  selectUser(user: User, event: Event) {
+    event.stopPropagation();
+    this.userSelectedEvent.emit(user);
+  }
 }

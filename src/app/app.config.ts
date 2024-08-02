@@ -28,12 +28,12 @@ export const appConfig: ApplicationConfig = {
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideAuth(() => {
       const auth = getAuth();
-      // connectAuthEmulator(auth, "http://127.0.0.1:9099");
+      connectAuthEmulator(auth, "http://127.0.0.1:9099");
       return auth;
     }),
     provideFirestore(() => {
       const db = getFirestore();
-      // connectFirestoreEmulator(db, '127.0.0.1', 8080);
+      connectFirestoreEmulator(db, '127.0.0.1', 8080);
       return db;
     }),
     { provide: LOCALE_ID, useValue: "de-DE" },

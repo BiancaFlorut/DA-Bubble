@@ -191,6 +191,11 @@ app-editable-message {
   }
 }
 
+.mention {
+  color: #535AF1;
+  cursor: pointer;
+}
+
 @media(max-width: 1000px) {
   .ms-c-right {
     padding-left: 70px;

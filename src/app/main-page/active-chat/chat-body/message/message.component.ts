@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild, inject, input } from '@angular/core';
+import { Component, ElementRef, Input, Pipe, PipeTransform, SecurityContext, ViewChild, ViewEncapsulation, inject, input } from '@angular/core';
 import { Message } from '../../../../models/message.class';
 import { ReactionBarComponent } from './reaction-bar/reaction-bar.component';
 import { ShowProfileService } from '../../../../services/show-profile/show-profile.service';
@@ -18,6 +18,29 @@ import { EditUserProfileService } from '../../../../services/edit-user-profile/e
 import { EditUserProfileComponent } from '../../../edit-user-profile/edit-user-profile.component';
 import { FirebaseChannelService } from '../../../../services/firebase-channel/firebase-channel.service';
 import { ToggleDNoneService } from '../../../../services/toggle-d-none/toggle-d-none.service';
+import { DomSanitizer } from '@angular/platform-browser';
+
+@Pipe({
+  name: 'safeHtml',
+  standalone: true
+})
+export class SafeHtmlPipe implements PipeTransform {
+  sanitizer = inject(DomSanitizer);
+  transform(text: string, isOwn: boolean) {
+    text = this.sanitizer.sanitize(SecurityContext.HTML, text)!;
+    if (text.includes('@')) {
+      const dom = (new DOMParser()).parseFromString(text, "text/html");
+      dom.querySelectorAll('span').forEach((span) => {
+        if (span.textContent?.includes('@')) {
+          if (!isOwn) span.style.color = '#535AF1';
+          else span.style.color = '#ECEEFE';
+          console.log(span.outerHTML);
+        }
+      });
+      return this.sanitizer.bypassSecurityTrustHtml(dom.documentElement.outerHTML);
+    } return text;
+  }
+}
 
 @Component({
   selector: 'app-message',
@@ -29,10 +52,12 @@ import { ToggleDNoneService } from '../../../../services/toggle-d-none/toggle-d-
     EmojiCounterComponent,
     EmojiPickerButtonComponent,
     SvgButtonComponent,
-    EditUserProfileComponent
+    EditUserProfileComponent,
+    SafeHtmlPipe
   ],
   templateUrl: './message.component.html',
-  styleUrl: './message.component.scss'
+  styleUrl: './message.component.scss',
+  // encapsulation: ViewEncapsulation.None
 })
 export class MessageComponent {
   @Input() message!: Message;
@@ -52,6 +77,7 @@ export class MessageComponent {
   oldMessage: string = '';
   firebase = inject(FirebaseService);
   channelService = inject(FirebaseChannelService);
+  
 
   constructor() {
     this.user = this.firebase.currentUser;
@@ -160,4 +186,5 @@ export class MessageComponent {
   getAnswerText() {
     return this.message.answerCount + ' ' + (this.message.answerCount > 1 ? 'Antworten' : 'Antwort');
   }
+
 }

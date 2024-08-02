@@ -212,8 +212,16 @@ export class ChatInputComponent {
   }
 
   selectUser(user: User) {
-    console.log("select user", user);
     this.isUserListOpen = false;
+    this.editor?.commands.
+    textColor("#535AF1").    
+    insertText(`@${user.name}`).
+    exec();
+    this.editor?.commands.
+    textColor("#000000").
+    insertText(` `).
+    focus().
+    exec();
   }
 
   closeUsersList(event : Event) {
