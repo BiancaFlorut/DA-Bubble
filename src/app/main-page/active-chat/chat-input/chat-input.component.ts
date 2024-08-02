@@ -219,6 +219,7 @@ export class ChatInputComponent {
     exec();
     this.editor?.commands.
     textColor("#000000").
+    insertHTML(`&nbsp;`).
     insertText(` `).
     focus().
     exec();

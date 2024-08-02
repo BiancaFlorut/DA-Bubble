@@ -34,7 +34,6 @@ export class SafeHtmlPipe implements PipeTransform {
         if (span.textContent?.includes('@')) {
           if (!isOwn) span.style.color = '#535AF1';
           else span.style.color = '#ECEEFE';
-          console.log(span.outerHTML);
         }
       });
       return this.sanitizer.bypassSecurityTrustHtml(dom.documentElement.outerHTML);
