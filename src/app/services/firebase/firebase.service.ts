@@ -158,10 +158,6 @@ export class FirebaseService {
         }
       } else
         if (chat.uids.includes(uid) && chat.uids.includes(pid) && chat.uids.length == 2) {
-          if (!this.currentUser.directChatIds?.includes(cid)) {
-            this.currentUser.directChatIds?.push(cid);
-            await this.updateUser(this.currentUser);
-          }
           return true;
         }
     }

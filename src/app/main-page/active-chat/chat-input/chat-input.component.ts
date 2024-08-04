@@ -44,6 +44,7 @@ export class ChatInputComponent {
   channelService = inject(FirebaseChannelService);
   loading: boolean = false;
   isUserListOpen: boolean = false;
+  usersToMessage: User[] = [];
 
   ngOnInit(): void {
     this.editor = new Editor();
@@ -52,7 +53,6 @@ export class ChatInputComponent {
       this.users = this.channelService.usersFromChannel;
     }
   }
-
 
   ngOnDestroy(): void {
     if (this.editor)
@@ -76,9 +76,6 @@ export class ChatInputComponent {
         }
         this.user = this.firebase.currentUser;
       }
-      if (this.editor) {
-        this.editor.commands.focus().exec();
-      }
     });
   }
 
@@ -90,31 +87,49 @@ export class ChatInputComponent {
     else if (this.channelService.isChannelSet()){
       this.users = this.channelService.usersFromChannel;
       return 'Nachricht an #' + this.channelService.channel.name;
-      
     }
     else if (this.chatService.chat)
       return this.replacePlaceholder();
-    else return 'Einen Nachricht schreiben...';
+    return 'Einen Nachricht schreiben...';
   }
 
   async sendMessage() {
+    console.log("message to sent: " + this.message);
+    console.log("users to message: " + this.usersToMessage);
+    
     if (!this.isWhiteSpace(this.message))
       if (this.isThread) {
-        this.sendThreadMessage();
-      } else {
+        await this.sendThreadMessage();
+        console.log("sent thread message");
+        
+      }else if(this.chatService.newMessage) {
+        console.log("new message to be sent to: " + this.usersToMessage.length);
+        for (let partner of this.usersToMessage) {
+          console.log("sending message to: " + partner.name);
+          await this.chatService.sendMessageToUser(partner.uid!, this.message);
+          console.log("sent message to: " + partner.name);
+          
+        }
+        console.log("message sent to users end");
+        this.usersToMessage = [];
+      }     
+      else {
         if (this.channelService.isChannelSet()) {
           await this.channelService.sendMessage(this.message);
+          console.log("sent channel message");
         } else
-          if (this.firebase.currentUser.uid) {
+          if (this.firebase.currentUser.uid && this.currentChat && this.currentChat.cid) {
             const mid = await this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);
             const message = new Message(mid.id, this.firebase.currentUser.uid, this.message, Date.now(), []);
-            this.firebase.updateMessage(this.currentChat.cid, mid.id, message);
-          } else console.log('no user is logged in');
+            await this.firebase.updateMessage(this.currentChat.cid, mid.id, message);
+            console.log("sent chat message");
+          } 
+          else console.log('no user is logged in');
       }
     this.message = '';
   }
 
-  sendThreadMessage() {
+  async sendThreadMessage() {
     const mid = this.threadService.message.mid;
     const messages = this.threadService.messages;
     if (messages.length === 0) {
@@ -122,7 +137,7 @@ export class ChatInputComponent {
     }
     const message = new Message(mid, this.firebase.currentUser.uid!, this.message, Date.now(), []);
     message.isAnswer = true;
-    this.addMessageToThread(mid, message);
+    await this.addMessageToThread(mid, message);
     message.isAnswer = false;
     this.threadService.message.answerCount++;
     this.threadService.message.lastAnswerTimestamp = message.timestamp;
@@ -139,11 +154,11 @@ export class ChatInputComponent {
         console.log('no cid or mid create a thread');
   }
 
-  addMessageToThread(mid: string, message: Message) {
+  async addMessageToThread(mid: string, message: Message) {
     if (this.channelService.isChannelSet())
-      this.channelService.addThreadMessage(mid, message);
+      await this.channelService.addThreadMessage(mid, message);
     else if (this.currentChat.cid && mid)
-      this.firebase.addThreadMessage(this.threadService.chat!.cid, mid, message);
+      await this.firebase.addThreadMessage(this.threadService.chat!.cid, mid, message);
   }
 
   updateThreadMessage(mid: string) {
@@ -209,13 +224,23 @@ export class ChatInputComponent {
   showUsersList() {
     this.isUserListOpen = true;
     if (this.isThread) this.users = this.threadService.users;
+    if (this.chatService.newMessage)
+      Object.assign(this.users, this.firebase.users);
+    if (this.users.find(user => user.uid === this.firebase.currentUser.uid)) {
+      this.users.splice(this.users.findIndex(user => user.uid === this.firebase.currentUser.uid), 1);
+    }
   }
 
   selectUser(user: User) {
+    this.usersToMessage.push(user);
+    console.log(this.usersToMessage);
+    let html = /*html*/`
+        <span style="color: #535AF1;">@${user.name}</span>
+    `;
     this.isUserListOpen = false;
     this.editor?.commands.
     textColor("#535AF1").    
-    insertText(`@${user.name}`).
+    insertHTML(html).
     exec();
     this.editor?.commands.
     textColor("#000000").

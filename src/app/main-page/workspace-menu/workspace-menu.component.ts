@@ -50,6 +50,7 @@ export class WorkspaceMenuComponent {
   }
 
   public async openDirectChat(partner: User): Promise<void> {
+    this.chatService.closeChat();
     this.firebaseChannelService.resetChannel();
     this.threadChatService.exitThread();
     const resp = await this.chatService.getChatWith(partner);
@@ -62,6 +63,7 @@ export class WorkspaceMenuComponent {
   }
 
   public handleNewMessage(): void {
+    this.chatService.closeChat();
     this.chatService.newMessage = true;
     this.firebaseChannelService.openCreatedChannel = false;
     this.firebaseChannelService.resetChannel();
