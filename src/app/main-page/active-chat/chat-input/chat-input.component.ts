@@ -16,6 +16,7 @@ import { ThreadChatService } from '../../../services/chat/thread-chat/thread-cha
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { FirebaseChannelService } from '../../../services/firebase-channel/firebase-channel.service';
 import { UserListComponent } from '../user-list/user-list.component';
+import { NewMessageService } from '../../../services/new-message/new-message.service';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class ChatInputComponent {
   message: string = '';
   chatService: ChatService = inject(ChatService);
   threadService: ThreadChatService = inject(ThreadChatService);
+  newMessageService: NewMessageService = inject(NewMessageService);
   currentChat!: Chat;
   user!: User;
   users: User[] = [];
@@ -97,13 +99,18 @@ export class ChatInputComponent {
       if (this.isThread) {
         await this.sendThreadMessage();
       }else if(this.chatService.newMessage) {
-        //TODO: here we need to send the message to the chats selected in the header
-
-
-        // for (let partner of this.usersToMessage) {
-        //   await this.chatService.sendMessageToUser(partner.uid!, this.message);
+        if (this.newMessageService.selectedUserChats().length > 0) {
+          for (let partner of this.newMessageService.selectedUserChats()) {
+            await this.chatService.sendMessageToUser(partner.uid!, this.message);
+          }
+          this.newMessageService.selectedUserChats.set([]);
+        }
+        //TODO: here we need to send the message to the channels selected in the header
+        // if (this.newMessageService.selectedChannels().length > 0) {
+        //   for (let channel of this.newMessageService.selectedChannels()) {
+        //     await this.channelService.sendMessageToChannel(channel.cid, this.message);
+        //   }
         // }
-        // this.usersToMessage = [];
       }     
       else {
         if (this.channelService.isChannelSet()) {

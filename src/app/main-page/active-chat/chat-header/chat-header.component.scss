@@ -261,36 +261,46 @@ section {
 }
 
 .users-list-container {
+  overflow-y: auto;
   position: absolute;
   z-index: 10;
   background-color: white;
   border: 1px solid $light_purple;
   box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
   border-radius: 0 20px 20px 20px;
-  padding: 20px 10px;
+  padding: 10px;
   margin-left: 40px;
   margin-top: -14px;
   max-height: 160px;
   max-width: 320px;
-  overflow-y: auto;
-  @include displayFlex(column, center, unset, 8px);
+  
+  @include displayFlex(column, unser, unset, 8px);
   box-sizing: content-box;
+  .user:first-child {
+    margin-top: auto;
+  }
+
+  .user:last-child {
+    margin-bottom: auto;
+  }
 }
 
 .user {
-  @include displayFlex(row, unset, unset, 8px);
+  @include displayFlex(row, unset, center, 8px);
+  flex: 1 0 auto;
   cursor: pointer;
   transition: 0.1s ease-in;
   border-radius: 20px;
   padding: 6px 10px;
+  max-width: fit-content;
   &:hover {
     background-color: $bg_color;
   }
 }
 
 .avatar {
-  width: 20px;
-  height: 20px;
+  width: 26px;
+  height: 26px;
   border-radius: 20px;
   overflow: hidden;
   img {
@@ -301,12 +311,13 @@ section {
 }
 
 .user-name {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .selected-chats {
   @include displayFlex(row, unset, center, 8px);
   padding-top: 10px;
+  flex-wrap: wrap;
 }
 
 @media(max-width: 1100px) {

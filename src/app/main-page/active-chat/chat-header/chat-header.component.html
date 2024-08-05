@@ -135,7 +135,7 @@
           <div
             class="user"
             (click)="selectUser(suggestedUser)"
-            [class.selected]="selectedUsers.includes(suggestedUser)"
+            [class.selected]="newMessageService.selectedUserChats().includes(suggestedUser)"
           >
             <div class="avatar">
               <img src="{{ suggestedUser.avatar }}" alt="avatar" />
@@ -149,9 +149,26 @@
         }
       </div>
     }
-    @if (selectedUsers.length > 0) {
+    @if (isSuggestedChannelListOpen) {
+      <div class="users-list-bg" (click)="closeSuggestedChannelList($event)"></div>
+      <div class="users-list-container">
+        @for (suggestedChannel of channelList; track $index) {
+          <div
+            class="user"
+            (click)="selectChannel(suggestedChannel)"
+            [class.selected]="selectedChannels.includes(suggestedChannel)"
+          >
+            <div class="avatar">
+              <img src="./assets/img/main-page/workspace-menu/hashtag.svg" alt="avatar" />
+            </div>
+            <div class="user-name">{{ suggestedChannel.name }}</div>
+          </div>
+        }
+      </div>
+    }
+    @if (newMessageService.selectedUserChats().length > 0) {
       <div class="selected-chats">
-        @for (selectedUser of selectedUsers; track $index) {
+        @for (selectedUser of newMessageService.selectedUserChats(); track $index) {
           <div class="user" (click)="selectUser(selectedUser)">
             <div class="avatar">
               <img src="{{ selectedUser.avatar }}" alt="avatar" />
@@ -161,6 +178,18 @@
               ></div>
             </div>
             <div class="user-name">{{ selectedUser.name }}</div>
+          </div>
+        }
+      </div>
+    }
+    @if (selectedChannels.length > 0) {
+      <div class="selected-chats">
+        @for (selectedChannel of newMessageService.selectedChannels(); track $index) {
+          <div class="user" (click)="selectChannel(selectedChannel)">
+            <div class="avatar">
+              <img src="./assets/img/main-page/workspace-menu/hashtag.svg" alt="avatar" />
+            </div>
+            <div class="user-name">{{ selectedChannel.name }}</div>
           </div>
         }
       </div>

@@ -12,6 +12,8 @@ import { MembersComponent } from './members/members.component';
 import { EditUserProfileService } from '../../../services/edit-user-profile/edit-user-profile.service';
 import { UpdateChannelComponent } from './update-channel/update-channel.component';
 import { FormsModule } from '@angular/forms';
+import { Channel } from '../../../interfaces/channel';
+import { NewMessageService } from '../../../services/new-message/new-message.service';
 
 @Component({
   selector: 'app-chat-header',
@@ -33,6 +35,7 @@ export class ChatHeaderComponent {
   public firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
   public channelModalService: ChannelModalService = inject(ChannelModalService);
   private editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
+  public newMessageService = inject(NewMessageService);
 
   private currentChat!: Chat;
   public partner: User | undefined;
@@ -40,7 +43,10 @@ export class ChatHeaderComponent {
   public directChat: boolean = false;
   searchToken: string = '';
   users: User[] = this.firebaseService.users;
+  channelList: Channel[] = this.firebaseChannelService.userChannels;
+  selectedChannels: Channel[] = [];
   isSuggestedUserListOpen: boolean = false;
+  isSuggestedChannelListOpen: boolean = false;
   selectedUsers: User[] = [];
 
   constructor() {
@@ -78,28 +84,55 @@ export class ChatHeaderComponent {
   }
 
   search(): void {
-    if (this.searchToken.includes('@')) {
-      this.isSuggestedUserListOpen = true;
-      let token = this.searchToken.split('@');
-      if (token[1].length === 0) {
-        this.users = this.firebaseService.users;
-      } else{
-        this.users = [];
-        this.firebaseService.users.forEach(user => {
-          if (user.name.toLowerCase().includes(token[1].toLowerCase())) {
-            this.users.push(user);
-          }
-        });
-      }
+    if (this.searchToken.includes('@'))
+      this.searchForUsers();
+    else if (this.searchToken.includes('#'))
+      this.searchForChannels();
+    else  
+      this.isSuggestedUserListOpen = false;
+  }
+
+  searchForUsers(): void {
+    let token = this.searchToken.split('@');
+    if (token[1].length === 0) {
+      this.users = this.firebaseService.users;
+    } else {
+      this.users = [];
+      this.firebaseService.users.forEach(user => {
+        if (user.name.toLowerCase().includes(token[1].toLowerCase())) {
+          this.users.push(user);
+        }
+      });
     }
+    if (this.users.length === 0 || this.searchToken.length === 0) this.isSuggestedUserListOpen = false;
+      else this.isSuggestedUserListOpen = true;
+  }
+
+  searchForChannels(): void {
+    let token = this.searchToken.split('#');
+    if (token[1].length === 0) {
+      this.channelList = this.firebaseChannelService.userChannels;
+    } else {
+      this.channelList = [];
+      this.firebaseChannelService.userChannels.forEach(channel => {
+        if (channel.name.toLowerCase().includes(token[1].toLowerCase())) {
+          this.channelList.push(channel);
+        }
+      });
+    }
+    if (this.channelList.length === 0 || this.searchToken.length === 0) this.isSuggestedChannelListOpen = false;
+      else this.isSuggestedChannelListOpen = true;
   }
 
   selectUser(user: User): void {
-    if (this.selectedUsers.includes(user)) {
-      this.selectedUsers.splice(this.selectedUsers.indexOf(user), 1);
+    if (this.newMessageService.selectedUserChats().includes(user)) {
+      this.newMessageService.selectedUserChats.update( users => {
+        return users.filter(u => u.uid !== user.uid);
+      });
     } else
-    this.selectedUsers.push(user);
-    console.log(this.selectedUsers);
+    this.newMessageService.selectedUserChats.update( users => {
+      return [...users, user];
+    })
     this.isSuggestedUserListOpen = false;
     this.searchToken = '';
   }
@@ -107,6 +140,22 @@ export class ChatHeaderComponent {
   closeSuggestedUserList(event: Event): void {
     event.stopPropagation();
     this.isSuggestedUserListOpen = false;
+    this.searchToken = '';
+  }
+
+  selectChannel(channel: Channel): void {
+    if (this.selectedChannels.includes(channel)) {
+      this.selectedChannels.splice(this.selectedChannels.indexOf(channel), 1);
+    } else
+      this.selectedChannels.push(channel);
+    this.newMessageService.selectedChannels.set(this.selectedChannels);
+    this.isSuggestedChannelListOpen = false;
+    this.searchToken = '';
+  }
+
+  closeSuggestedChannelList(event: Event): void {
+    event.stopPropagation();
+    this.isSuggestedChannelListOpen = false;
     this.searchToken = '';
   }
 }
