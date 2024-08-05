@@ -94,35 +94,23 @@ export class ChatInputComponent {
   }
 
   async sendMessage() {
-    console.log("message to sent: " + this.message);
-    console.log("users to message: " + this.usersToMessage);
-    
     if (!this.isWhiteSpace(this.message))
       if (this.isThread) {
         await this.sendThreadMessage();
-        console.log("sent thread message");
-        
       }else if(this.chatService.newMessage) {
-        console.log("new message to be sent to: " + this.usersToMessage.length);
-        for (let partner of this.usersToMessage) {
-          console.log("sending message to: " + partner.name);
-          await this.chatService.sendMessageToUser(partner.uid!, this.message);
-          console.log("sent message to: " + partner.name);
-          
-        }
-        console.log("message sent to users end");
-        this.usersToMessage = [];
+        // for (let partner of this.usersToMessage) {
+        //   await this.chatService.sendMessageToUser(partner.uid!, this.message);
+        // }
+        // this.usersToMessage = [];
       }     
       else {
         if (this.channelService.isChannelSet()) {
           await this.channelService.sendMessage(this.message);
-          console.log("sent channel message");
         } else
           if (this.firebase.currentUser.uid && this.currentChat && this.currentChat.cid) {
             const mid = await this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);
             const message = new Message(mid.id, this.firebase.currentUser.uid, this.message, Date.now(), []);
             await this.firebase.updateMessage(this.currentChat.cid, mid.id, message);
-            console.log("sent chat message");
           } 
           else console.log('no user is logged in');
       }
@@ -196,7 +184,7 @@ export class ChatInputComponent {
 
   async onFileSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
+    if (file && file.size < 500000) {
       this.fileName = file.name;
       if (file.type.includes('image') || file.type.includes('pdf')) {
         this.loading = true;
@@ -204,20 +192,21 @@ export class ChatInputComponent {
         const uploadResult = await uploadBytes(storageRef, file);
         const url = await getDownloadURL(uploadResult.ref);
         this.loading = false;
-        if (file.type.includes('image'))
-          this.editor.commands.insertImage(url, { width: '100px' }).exec();
-        else {
-          this.editor.commands
+        let imgPath = url;
+        if (file.type.includes('pdf'))
+          imgPath = './assets/img/main-page/input/pdf.png';
+        this.editor.commands
             .insertLink(file.name, { href: url } )
             .insertNewLine()
-            .insertImage("./assets/img/main-page/input/pdf.png", { width: '80px' })
+            .insertImage(imgPath, { width: '80px' })
             .insertNewLine()
             .focus()
             .exec()
-        }
       } else {
         window.alert('Bitte wähle nur Bilder oder PDFs aus!');
       }
+    } else {
+      window.alert('Die Datei ist zu groß!');
     }
   }
 
@@ -225,15 +214,10 @@ export class ChatInputComponent {
     this.isUserListOpen = true;
     if (this.isThread) this.users = this.threadService.users;
     if (this.chatService.newMessage)
-      Object.assign(this.users, this.firebase.users);
-    if (this.users.find(user => user.uid === this.firebase.currentUser.uid)) {
-      this.users.splice(this.users.findIndex(user => user.uid === this.firebase.currentUser.uid), 1);
-    }
+      this.users = this.firebase.users;
   }
 
   selectUser(user: User) {
-    this.usersToMessage.push(user);
-    console.log(this.usersToMessage);
     let html = /*html*/`
         <span style="color: #535AF1;">@${user.name}</span>
     `;

@@ -46,7 +46,13 @@ export class ChatService {
     const cid = await this.firebase.getDirectChatId(user.uid!, partner.uid!);
     this.loading = true;
     if (cid && cid != '') {
-      this.newMessage = false;
+      this.setActualChat(cid, partner);
+      return true;
+    } else return false;
+  }
+
+  setActualChat(cid: string, partner: User) {
+    this.newMessage = false;
       onSnapshot(this.firebase.getDirectChatMessagesRef(cid), (collection) => {
         let msgs = [] as Message[];
         collection.forEach((doc) => {
@@ -56,8 +62,6 @@ export class ChatService {
         this.setSubscriber(cid, partner, msgs);
       })
       this.currentPartner = partner;
-      return true;
-    } else return false;
   }
 
   getMessage(doc: any) {
@@ -83,7 +87,12 @@ export class ChatService {
   }
 
   async sendMessageToUser(uid: string, message: string) {
+    
     const partner = this.firebase.getUser(uid)!;
+    if (uid.length == 0) {
+      console.log("no user to send message to");
+      return;
+    }
     if (partner){
       const cid = await this.firebase.getDirectChatId(this.firebase.currentUser.uid!, uid);
       const mid = await this.firebase.sendMessage(cid, this.firebase.currentUser.uid!, Date.now(), message);

@@ -1,9 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, addDoc, collection, doc, getDoc, updateDoc } from '@angular/fire/firestore';
-import { CollectionReference, DocumentData, DocumentReference, arrayUnion, onSnapshot, setDoc } from 'firebase/firestore';
+import { DocumentData, DocumentReference, onSnapshot, setDoc } from 'firebase/firestore';
 import { User } from '../../interfaces/user';
 import { Message } from '../../models/message.class';
-import { Emoji } from '../../models/emoji.class';
 import { Chat } from '../../models/chat.class';
 import { BehaviorSubject } from 'rxjs';
 
