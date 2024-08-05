@@ -28,7 +28,7 @@
     height: 100%;
     position: relative;
 
-    img {
+    .input-img {
         position: absolute;
         top: 50%;
         right: 45px;
@@ -44,6 +44,51 @@
         line-height: 32.74px;
         color: #686868;
         border: unset;
+    }
+}
+
+.founded-content-container {
+    position: absolute;
+    z-index: 9999;
+    top: 78px;
+    left: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: white;
+    padding: 30px;
+    max-height: 320px;
+    border-radius: 0 20px 20px 20px;
+    overflow-y: auto;
+    box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.2);
+
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+
+    span {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        padding: 5px 29px;
+        border-radius: 100px;
+
+        &:hover {
+            background-color: #ECEEFE;
+            color: #535AF1;
+        }
+
+        span {
+            font-weight: 900;
+            padding: 0;
+        }
+
+        img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
     }
 }
 

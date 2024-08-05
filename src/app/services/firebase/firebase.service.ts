@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, addDoc, collection, doc, getDoc, updateDoc } from '@angular/fire/firestore';
-import { DocumentData, DocumentReference, onSnapshot, setDoc } from 'firebase/firestore';
+import { DocumentData, DocumentReference, getDocs, onSnapshot, setDoc } from 'firebase/firestore';
 import { User } from '../../interfaces/user';
 import { Message } from '../../models/message.class';
 import { Chat } from '../../models/chat.class';
@@ -136,7 +136,7 @@ export class FirebaseService {
       message.answerCount = 0;
       message.isAnswer = true;
       const refNewThreadMessage = await addDoc(ref, message);
-      await updateDoc(doc(ref, refNewThreadMessage.id), { tid : refNewThreadMessage.id });
+      await updateDoc(doc(ref, refNewThreadMessage.id), { tid: refNewThreadMessage.id });
       await updateDoc(messageRef, { thread: refNewThreadMessage.id });
     }
   }

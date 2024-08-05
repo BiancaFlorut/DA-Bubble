@@ -1,12 +1,24 @@
 <div class="header-container">
     <div class="left-container">
         <img [class.d-none]="toggleDNone.isClassRemoved" src="./assets/img/logo.png" alt="logo">
-        <img (click)="toggleDNone.openWorkspace()" [class.d-none]="!toggleDNone.isClassRemoved" class="devspace-logo" src="./assets/img/main-page/header/devspace_logo.png" alt="devspace logo">
+        <img (click)="toggleDNone.openWorkspace()" [class.d-none]="!toggleDNone.isClassRemoved" class="devspace-logo"
+            src="./assets/img/main-page/header/devspace_logo.png" alt="devspace logo">
     </div>
     <div class="right-container">
         <div class="input-container">
-            <img src="./assets/img/main-page/header/search.png" alt="search">
-            <input type="text" name="search" id="search" placeholder="Code learning durchsuchen">
+            <img class="input-img" src="./assets/img/main-page/header/search.png" alt="search">
+            <input [(ngModel)]="search" (input)="searchContent()" type="text" name="search" id="search"
+                placeholder="Code learning durchsuchen" autocomplete="off">
+            @if(foundChannels.length > 0 || foundUsers.length > 0) {
+            <div class="founded-content-container">
+                @for (channel of foundChannels; track $index) {
+                <span (click)="chooseFoundedChannel(channel)">Channel: <span># {{channel.name}}</span></span>
+                }
+                @for (user of foundUsers; track $index) {
+                <span (click)="chooseFoundedUser(user)">User: <img src="{{user.avatar}}" alt="avatar"> <span>{{user.name}}</span></span>
+                }
+            </div>
+            }
         </div>
         <div (click)="toggleMenu()" class="user-header-container">
             <span>{{firebase.currentUser.name}}</span>
