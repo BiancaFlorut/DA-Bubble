@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 import { UserService } from '../../services/user/user.service';
@@ -11,6 +11,7 @@ import { EditUserProfileComponent } from '../edit-user-profile/edit-user-profile
 import { EditUserProfileService } from '../../services/edit-user-profile/edit-user-profile.service';
 import { FirebaseChannelService } from '../../services/firebase-channel/firebase-channel.service';
 import { ToggleDNoneService } from '../../services/toggle-d-none/toggle-d-none.service';
+import { SearchService } from '../../services/search/search.service';
 
 @Component({
   selector: 'app-header',
@@ -19,7 +20,8 @@ import { ToggleDNoneService } from '../../services/toggle-d-none/toggle-d-none.s
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    EditUserProfileComponent
+    EditUserProfileComponent,
+    FormsModule
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -34,8 +36,14 @@ export class HeaderComponent {
   private channelService: FirebaseChannelService = inject(FirebaseChannelService);
   public editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
   public toggleDNone: ToggleDNoneService = inject(ToggleDNoneService);
+  private searchService: SearchService = inject(SearchService);
+  private firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
+
+  public foundChannels: any[] = [];
+  public foundUsers: any[] = [];
 
   public isUserMenuActive: boolean = false;
+  public search: string = '';
 
   ngOnInit(): void {
     this.userIsLogged();
@@ -111,5 +119,34 @@ export class HeaderComponent {
     this.threadChatService.exitThread();
     this.channelService.resetChannel();
     this.chatService.newMessage = true;
+  }
+
+  public searchContent(): void {
+    this.foundChannels = [];
+    this.foundUsers = [];
+    this.channelService.channels.forEach(channel => {
+      if (channel.name.toLowerCase().includes(this.search.toLowerCase()) && this.search !== '') {
+        this.foundChannels.push(channel);
+      }
+    });
+    this.firebase.users.forEach(user => {
+      if (user.name.toLowerCase().includes(this.search.toLowerCase()) && this.search !== '') {
+        this.foundUsers.push(user);
+      }
+    });
+  }
+
+  public chooseFoundedChannel(channel: any): void {
+    this.search = '';
+    this.foundChannels = [];
+    this.foundUsers = [];
+    this.searchService.getAllUsersFromChannel(channel);
+  }
+
+  public chooseFoundedUser(user: any): void {
+    this.search = '';
+    this.foundChannels = [];
+    this.foundUsers = [];
+    this.searchService.openDirectChat(user);
   }
 }
