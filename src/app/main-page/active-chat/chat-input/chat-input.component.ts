@@ -79,7 +79,6 @@ export class ChatInputComponent {
     });
   }
 
-
   getPlaceholderText() {
     if (this.isThread){
       return 'Antworten...';
@@ -98,6 +97,9 @@ export class ChatInputComponent {
       if (this.isThread) {
         await this.sendThreadMessage();
       }else if(this.chatService.newMessage) {
+        //TODO: here we need to send the message to the chats selected in the header
+
+
         // for (let partner of this.usersToMessage) {
         //   await this.chatService.sendMessageToUser(partner.uid!, this.message);
         // }

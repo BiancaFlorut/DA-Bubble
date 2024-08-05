@@ -11,6 +11,7 @@ import { AddPeopleComponent } from './add-people/add-people.component';
 import { MembersComponent } from './members/members.component';
 import { EditUserProfileService } from '../../../services/edit-user-profile/edit-user-profile.service';
 import { UpdateChannelComponent } from './update-channel/update-channel.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-chat-header',
@@ -19,7 +20,8 @@ import { UpdateChannelComponent } from './update-channel/update-channel.componen
     CommonModule,
     AddPeopleComponent,
     MembersComponent,
-    UpdateChannelComponent
+    UpdateChannelComponent,
+    FormsModule
   ],
   templateUrl: './chat-header.component.html',
   styleUrl: './chat-header.component.scss'
@@ -35,8 +37,11 @@ export class ChatHeaderComponent {
   private currentChat!: Chat;
   public partner: User | undefined;
   public user!: User;
-
   public directChat: boolean = false;
+  searchToken: string = '';
+  users: User[] = this.firebaseService.users;
+  isSuggestedUserListOpen: boolean = false;
+  selectedUsers: User[] = [];
 
   constructor() {
     this.chatService.currentChat.subscribe(chat => {
@@ -70,5 +75,38 @@ export class ChatHeaderComponent {
     } else {
       this.channelModalService.toggleShowAddPeople();
     }
+  }
+
+  search(): void {
+    if (this.searchToken.includes('@')) {
+      this.isSuggestedUserListOpen = true;
+      let token = this.searchToken.split('@');
+      if (token[1].length === 0) {
+        this.users = this.firebaseService.users;
+      } else{
+        this.users = [];
+        this.firebaseService.users.forEach(user => {
+          if (user.name.toLowerCase().includes(token[1].toLowerCase())) {
+            this.users.push(user);
+          }
+        });
+      }
+    }
+  }
+
+  selectUser(user: User): void {
+    if (this.selectedUsers.includes(user)) {
+      this.selectedUsers.splice(this.selectedUsers.indexOf(user), 1);
+    } else
+    this.selectedUsers.push(user);
+    console.log(this.selectedUsers);
+    this.isSuggestedUserListOpen = false;
+    this.searchToken = '';
+  }
+
+  closeSuggestedUserList(event: Event): void {
+    event.stopPropagation();
+    this.isSuggestedUserListOpen = false;
+    this.searchToken = '';
   }
 }
