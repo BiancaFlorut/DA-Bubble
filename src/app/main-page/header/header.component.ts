@@ -12,6 +12,11 @@ import { EditUserProfileService } from '../../services/edit-user-profile/edit-us
 import { FirebaseChannelService } from '../../services/firebase-channel/firebase-channel.service';
 import { ToggleDNoneService } from '../../services/toggle-d-none/toggle-d-none.service';
 import { SearchService } from '../../services/search/search.service';
+import { User } from '../../interfaces/user';
+import { Message } from '../../models/message.class';
+import { Channel } from '../../interfaces/channel';
+import { Chat } from '../../models/chat.class';
+import { ScrollService } from '../../services/scroll/scroll.service';
 
 @Component({
   selector: 'app-header',
@@ -37,10 +42,12 @@ export class HeaderComponent {
   public editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
   public toggleDNone: ToggleDNoneService = inject(ToggleDNoneService);
   private searchService: SearchService = inject(SearchService);
-  private firebaseChannelService: FirebaseChannelService = inject(FirebaseChannelService);
+  private scrollService = inject(ScrollService);
 
-  public foundChannels: any[] = [];
-  public foundUsers: any[] = [];
+
+  public foundChannels: Channel[] = [];
+  public foundUsers: User[] = [];
+  public foundMessages: { user: User, message: Message, channel?: Channel, chat?: Chat }[] = [];
 
   public isUserMenuActive: boolean = false;
   public search: string = '';
@@ -124,11 +131,21 @@ export class HeaderComponent {
   public searchContent(): void {
     this.foundChannels = [];
     this.foundUsers = [];
-    this.channelService.channels.forEach(channel => {
-      if (channel.name.toLowerCase().includes(this.search.toLowerCase()) && this.search !== '') {
-        this.foundChannels.push(channel);
+    this.foundMessages = [];
+    this.channelService.userChannelsContent.forEach(channel => {
+      if (channel.channel.name.toLowerCase().includes(this.search.toLowerCase()) && this.search !== '') {
+        if (!this.foundChannels.find(el => el.id === channel.channel.id))
+        this.foundChannels.push(channel.channel);
       }
-    });
+      channel.messages.forEach(message => {
+        const dom = new DOMParser().parseFromString(message.text, "text/html");
+        const text = dom.documentElement.textContent;
+        if (text && this.search !== '' && text.toLowerCase().includes(this.search.toLowerCase())) {
+          if (!this.foundMessages.find(el => el.message.mid === message.mid)) 
+          this.foundMessages.push({ user: this.firebase.getUser(message.uid)!, message: message, channel: channel.channel, chat: undefined });
+        }
+      });
+    })
     this.firebase.users.forEach(user => {
       if (user.name.toLowerCase().includes(this.search.toLowerCase()) && this.search !== '') {
         this.foundUsers.push(user);
@@ -148,5 +165,18 @@ export class HeaderComponent {
     this.foundChannels = [];
     this.foundUsers = [];
     this.searchService.openDirectChat(user);
+  }
+
+  chooseFoundedMessage(message: { user: User, message: Message, channel?: Channel, chat?: Chat }): void {
+    this.search = '';
+    this.foundChannels = [];
+    this.foundUsers = [];
+    this.scrollService.midToScroll.set(message.message.mid);
+    if (message.channel) {
+      this.searchService.getAllUsersFromChannel(message.channel) 
+    }
+      
+    else 
+      this.searchService.openDirectChat(message.user);
   }
 }

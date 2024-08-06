@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, QueryList, ViewChildren, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, QueryList, ViewChildren, effect, inject } from '@angular/core';
 import { ChatService } from '../../../services/chat/chat.service';
 import { Chat } from '../../../models/chat.class';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -8,6 +8,8 @@ import { MessageComponent } from './message/message.component';
 import { User } from '../../../interfaces/user';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
 import { FirebaseChannelService } from '../../../services/firebase-channel/firebase-channel.service';
+import { ScrollService } from '../../../services/scroll/scroll.service';
+import { Message } from '../../../models/message.class';
 
 @Component({
   selector: 'app-chat-body',
@@ -35,6 +37,7 @@ export class ChatBodyComponent implements AfterViewInit {
   public showProfileService: ShowProfileService = inject(ShowProfileService);
   firebase = inject(FirebaseService);
   channelService = inject(FirebaseChannelService);
+  scrollService = inject(ScrollService);
 
   constructor() {
     this.chatService.currentChat.subscribe(chat => {
@@ -52,15 +55,38 @@ export class ChatBodyComponent implements AfterViewInit {
       else {
         this.chat = undefined;
       }
-      if (this.channelService.isChannelSet()){
+      if (this.channelService.isChannelSet()) {
         this.partners = this.channelService.usersFromChannel;
       }
     });
+    effect(() => {
+      this.checkForScrolling();
+    }, { allowSignalWrites: true });
   }
+
+  checkForScrolling() {
+    if (this.scrollService.midToScroll().length > 0) {
+      setTimeout(() => {
+        this.scrollMessageIntoView(this.scrollService.midToScroll());
+        this.scrollService.midToScroll.set('');
+      }, 200)
+      
+    }
+  }
+
   ngAfterViewInit(): void {
     this.messageItems.changes.subscribe((messageObj) => {
       this.scrollToBottom(messageObj.first);
-    })
+    });
+  }
+
+  scrollMessageIntoView(mid: string) {
+    document.getElementById(mid)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    let element = document.getElementById(mid);
+    element?.classList.add('active');
+    setTimeout(() => {
+      element?.classList.remove('active');
+    }, 1200);
   }
 
   public scrollToBottom(elem: any) {
@@ -139,7 +165,7 @@ export class ChatBodyComponent implements AfterViewInit {
     }
     return null;
   }
-  
+
   getFormattedDate(date: Date, now: Date) {
     if (this.isToday(date)) {
       return 'Heute';
@@ -149,11 +175,11 @@ export class ChatBodyComponent implements AfterViewInit {
       return this.pipe.transform(date, 'EEEE, d MMMM, y');
     }
   }
-  
+
   isSameDay(date1: Date, date2: Date) {
     return date1 && date2 && date1.toDateString() === date2.toDateString();
   }
-  
+
   isToday(date: Date) {
     return new Date().toDateString() === date.toDateString();
   }

@@ -86,6 +86,25 @@ section {
   z-index: 0;
 }
 
+
+.active {
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  0% {
+    background-color: none;
+  }
+
+  50% {
+    background-color: #ECEEFE;
+  }
+
+  100% {
+    background-color: none;
+  }
+}
+
 @media(max-width: 450px) {
   .placeholder-header {
     font-size: 20px;

@@ -1,6 +1,6 @@
 import { Injectable, inject, OnDestroy, signal } from '@angular/core';
 import { Channel } from '../../interfaces/channel';
-import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDoc, Unsubscribe, updateDoc } from 'firebase/firestore';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';
 import { FirebaseService } from '../firebase/firebase.service';
 import { UserService } from '../user/user.service';
@@ -21,7 +21,9 @@ export class FirebaseChannelService implements OnDestroy {
 
   public channels: Channel[] = [];
   public usersFromChannel: User[] = [];
+  public userChannelsContent: { channel: Channel, messages: Message[] }[] = [];
   public userChannels: any[] = [];
+  private unsubs: Unsubscribe[] = [];
 
   public channel: Channel = {
     id: '',
@@ -97,6 +99,7 @@ export class FirebaseChannelService implements OnDestroy {
               if (id === channel.id) {
                 if (!this.userChannels.includes(channel)) {
                   this.userChannels.push(channel);
+                  this.userChannelsContent.push({ channel: channel, messages: this.getChannelMessages(channel.id) });
                 }
               }
             }
@@ -106,7 +109,22 @@ export class FirebaseChannelService implements OnDestroy {
     }
   }
 
+  getChannelMessages(channelId: string): Message[] {
+    const channelDocRef = this.getSingleChannel(channelId);
+    let messages: Message[] = [];
+    const unsubMessages = onSnapshot(collection(channelDocRef, 'messages'), querySnapshot => {
+      querySnapshot.forEach(doc => {
+        messages.push(doc.data() as Message);
+      });
+      messages = this.messages.sort((a, b) => b.timestamp - a.timestamp);
+    });
+    this.unsubs.push(unsubMessages);
+    return messages;
+  }
+
+
   ngOnDestroy() {
+    this.unsubs.forEach(unsub => unsub());
     if (this.unsubChannels) {
       this.unsubChannels();
     }
