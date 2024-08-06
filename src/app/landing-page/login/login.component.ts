@@ -4,6 +4,9 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth/auth.service';
 import { UserService } from '../../services/user/user.service';
+import { browserSessionPersistence, onAuthStateChanged, setPersistence } from 'firebase/auth';
+import { Firestore } from 'firebase/firestore';
+import { FirebaseService } from '../../services/firebase/firebase.service';
 
 @Component({
   selector: 'app-login',
@@ -25,6 +28,7 @@ export class LoginComponent {
   private router = inject(Router);
   public authService = inject(AuthService);
   private userService = inject(UserService);
+  private firebaseService = inject(FirebaseService);
 
   ngOnInit() {
     this.userForm = this.fb.group({
@@ -32,6 +36,19 @@ export class LoginComponent {
       password: ['', [Validators.required, Validators.pattern(/^.{8,}$/)]]
     });
     this.userService.resetUser();
+    setPersistence(this.authService.firebaseAuth, browserSessionPersistence);
+    onAuthStateChanged(this.authService.firebaseAuth, (user) => {
+      if (user) {
+        let currentUser = this.firebaseService.getUser(user.uid);
+        if (currentUser) {
+          currentUser.online = true;
+          this.firebaseService.updateUser(currentUser);
+        }
+      } else {
+        this.firebaseService.currentUser.online = false;
+        this.firebaseService.updateUser(this.firebaseService.currentUser);
+      }
+    })
   }
 
   public async loginWithGoogle() {
