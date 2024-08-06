@@ -142,6 +142,13 @@ export class FirebaseChannelService implements OnDestroy {
     await updateDoc(doc(collection(channelDocRef, 'messages'), messageDocRef.id), { mid: messageDocRef.id });
   }
 
+  async sendMessageToChannel(channelId: string, text: string) {
+    const message = new Message('', this.firebaseService.currentUser.uid!, text, Date.now(), []);
+    const channelDocRef = this.getSingleChannel(channelId);
+    const messageDocRef = await addDoc(collection(channelDocRef, 'messages'), this.getJSONFromObject(message));
+    await updateDoc(doc(collection(channelDocRef, 'messages'), messageDocRef.id), { mid: messageDocRef.id });
+  }
+
   getJSONFromObject(obj: any) {
     return JSON.parse(JSON.stringify(obj));
   }

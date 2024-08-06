@@ -50,8 +50,8 @@ export class ChatInputComponent {
 
   ngOnInit(): void {
     this.editor = new Editor();
-      this.editor.commands.focus().exec();
-    if (this.channelService.isChannelSet()){
+    this.editor.commands.focus().exec();
+    if (this.channelService.isChannelSet()) {
       this.users = this.channelService.usersFromChannel;
     }
   }
@@ -82,10 +82,10 @@ export class ChatInputComponent {
   }
 
   getPlaceholderText() {
-    if (this.isThread){
+    if (this.isThread) {
       return 'Antworten...';
     }
-    else if (this.channelService.isChannelSet()){
+    else if (this.channelService.isChannelSet()) {
       this.users = this.channelService.usersFromChannel;
       return 'Nachricht an #' + this.channelService.channel.name;
     }
@@ -96,34 +96,34 @@ export class ChatInputComponent {
 
   async sendMessage() {
     if (!this.isWhiteSpace(this.message))
-      if (this.isThread) {
-        await this.sendThreadMessage();
-      }else if(this.chatService.newMessage) {
-        if (this.newMessageService.selectedUserChats().length > 0) {
-          for (let partner of this.newMessageService.selectedUserChats()) {
-            await this.chatService.sendMessageToUser(partner.uid!, this.message);
-          }
-          this.newMessageService.selectedUserChats.set([]);
-        }
-        //TODO: here we need to send the message to the channels selected in the header
-        // if (this.newMessageService.selectedChannels().length > 0) {
-        //   for (let channel of this.newMessageService.selectedChannels()) {
-        //     await this.channelService.sendMessageToChannel(channel.cid, this.message);
-        //   }
-        // }
-      }     
+      if (this.isThread) await this.sendThreadMessage();
+      else if (this.chatService.newMessage) await this.sendNewMessage();
       else {
-        if (this.channelService.isChannelSet()) {
-          await this.channelService.sendMessage(this.message);
-        } else
+        if (this.channelService.isChannelSet()) await this.channelService.sendMessage(this.message);
+        else
           if (this.firebase.currentUser.uid && this.currentChat && this.currentChat.cid) {
             const mid = await this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);
             const message = new Message(mid.id, this.firebase.currentUser.uid, this.message, Date.now(), []);
             await this.firebase.updateMessage(this.currentChat.cid, mid.id, message);
-          } 
+          }
           else console.log('no user is logged in');
       }
     this.message = '';
+  }
+
+  async sendNewMessage() {
+    if (this.newMessageService.selectedUserChats().length > 0) {
+      for (let partner of this.newMessageService.selectedUserChats()) {
+        await this.chatService.sendMessageToUser(partner.uid!, this.message);
+      }
+      this.newMessageService.selectedUserChats.set([]);
+    }
+    if (this.newMessageService.selectedChannels().length > 0) {
+      for (let channel of this.newMessageService.selectedChannels()) {
+        await this.channelService.sendMessageToChannel(channel.id, this.message);
+      }
+      this.newMessageService.selectedChannels.set([]);
+    }
   }
 
   async sendThreadMessage() {
@@ -205,12 +205,12 @@ export class ChatInputComponent {
         if (file.type.includes('pdf'))
           imgPath = './assets/img/main-page/input/pdf.png';
         this.editor.commands
-            .insertLink(file.name, { href: url } )
-            .insertNewLine()
-            .insertImage(imgPath, { width: '80px' })
-            .insertNewLine()
-            .focus()
-            .exec()
+          .insertLink(file.name, { href: url })
+          .insertNewLine()
+          .insertImage(imgPath, { width: '80px' })
+          .insertNewLine()
+          .focus()
+          .exec()
       } else {
         window.alert('Bitte wähle nur Bilder oder PDFs aus!');
       }
@@ -232,18 +232,18 @@ export class ChatInputComponent {
     `;
     this.isUserListOpen = false;
     this.editor?.commands.
-    textColor("#535AF1").    
-    insertHTML(html).
-    exec();
+      textColor("#535AF1").
+      insertHTML(html).
+      exec();
     this.editor?.commands.
-    textColor("#000000").
-    insertHTML(`&nbsp;`).
-    insertText(` `).
-    focus().
-    exec();
+      textColor("#000000").
+      insertHTML(`&nbsp;`).
+      insertText(` `).
+      focus().
+      exec();
   }
 
-  closeUsersList(event : Event) {
+  closeUsersList(event: Event) {
     event.stopPropagation();
     this.isUserListOpen = false;
   }
