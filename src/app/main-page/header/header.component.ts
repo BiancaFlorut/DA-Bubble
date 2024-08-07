@@ -68,8 +68,6 @@ export class HeaderComponent {
           this.firebase.currentUser.email = 'mail@guest.com';
           this.firebase.currentUser.avatar = './assets/img/profile.png';
           this.userService.currentAvatar = './assets/img/profile.png';
-          // this.firebase.currentUser.online = true;
-          // this.firebase.updateUser(this.firebase.currentUser);
           this.firebase.connectUser(this.firebase.currentUser);
         } else if (user) {
           this.editUserProfileService.googleUser = user.providerData[0].providerId === 'google.com' ? true : false;
@@ -82,7 +80,6 @@ export class HeaderComponent {
             this.firebase.currentUser.avatar = './assets/img/profile.png';
             this.userService.currentAvatar = './assets/img/profile.png';
           }
-          // this.firebase.currentUser.online = true;
           this.firebase.connectUser(this.firebase.currentUser);
         } else {
           this.router.navigate(['landing-page/login']);
@@ -209,7 +206,13 @@ export class HeaderComponent {
       this.searchService.getAllUsersFromChannel(message.channel) 
     }
     else if (message.chatId){
-      const chatRef = this.firebase.getSingleChat(message.chatId);
+      await this.searchPartnerAndOpenChat(message.chatId);
+    }
+    this.scrollService.midToScroll.set(message.message.mid);
+  }
+
+  async searchPartnerAndOpenChat(chatId: string) {
+    const chatRef = this.firebase.getSingleChat(chatId);
       const uidsData = await getDoc(chatRef);
       const uids = uidsData.data()!['uids'] as string[];
       uids.splice(uids.indexOf(this.firebase.currentUser.uid!), 1);
@@ -218,7 +221,5 @@ export class HeaderComponent {
       else partner = this.firebase.getUser(uids[0]);
       if (partner)
       await this.searchService.openDirectChat(partner);
-    }
-    this.scrollService.midToScroll.set(message.message.mid);
   }
 }
