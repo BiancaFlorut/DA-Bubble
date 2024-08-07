@@ -21,7 +21,7 @@ export class ChatService {
     avatar: '',
     online: false
   };
-  loading: boolean = false;
+  loading = signal(false);
   newMessage: boolean = true;
   firebase = inject(FirebaseService);
   constructor() {
@@ -42,7 +42,7 @@ export class ChatService {
   }
 
   async getChatWith(partner: User) {
-    this.loading = true;
+    this.loading.set(true);
     const user = this.firebase.currentUser;
     const cid = await this.firebase.getDirectChatId(user.uid!, partner.uid!);
     if (cid && cid != '') {
@@ -78,7 +78,7 @@ export class ChatService {
     let chat: Chat = new Chat(cid, [this.firebase.currentUser.uid!, partner.uid!], msgs);
     this.chat = chat;
     this.chatSub.next(chat);
-    this.loading = false;
+    this.loading.set(false);
   }
 
   async editMessage(cid: string, message: Message) {
