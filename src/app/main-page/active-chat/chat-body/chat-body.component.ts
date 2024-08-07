@@ -69,8 +69,8 @@ export class ChatBodyComponent implements AfterViewInit {
       setTimeout(() => {
         this.scrollMessageIntoView(this.scrollService.midToScroll());
         this.scrollService.midToScroll.set('');
-      }, 200)
-      
+      }, 500)
+
     }
   }
 
@@ -81,12 +81,15 @@ export class ChatBodyComponent implements AfterViewInit {
   }
 
   scrollMessageIntoView(mid: string) {
-    document.getElementById(mid)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     let element = document.getElementById(mid);
-    element?.classList.add('active');
-    setTimeout(() => {
-      element?.classList.remove('active');
-    }, 1200);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element?.classList.add('active');
+      setTimeout(() => {
+        element?.classList.remove('active');
+      }, 1200);
+    } else console.log("element not found");
+    
   }
 
   public scrollToBottom(elem: any) {

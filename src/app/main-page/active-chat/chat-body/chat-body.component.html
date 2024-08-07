@@ -5,7 +5,7 @@
   }"
 >
   @if (chat.messages.length > 0) { @for (message of chat.messages; track $index)
-  { <app-message [message]="message" [chat]="chat" #messageItem></app-message>
+  { <app-message [message]="message" [chat]="chat" #messageItem [id]="message.mid" ></app-message>
   @if (isNewDate($index)) {
   <div class="timestamp-container">
     <div class="line-container"><div class="line"></div></div>
@@ -47,7 +47,7 @@
     <section>
       @if (channelService.messages.length > 0)  {
       @for (message of channelService.messages; track $index) {
-        <app-message [message]="message" [id]="message.mid" class="message" #messageItem></app-message>
+        <app-message [message]="message" #messageItem [id]="message.mid" class="message" ></app-message>
         @if (isNewDate($index)) {
           <div class="timestamp-container">
             <div class="line-container"><div class="line"></div></div>

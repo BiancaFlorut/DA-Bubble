@@ -42,9 +42,9 @@ export class ChatService {
   }
 
   async getChatWith(partner: User) {
+    this.loading = true;
     const user = this.firebase.currentUser;
     const cid = await this.firebase.getDirectChatId(user.uid!, partner.uid!);
-    this.loading = true;
     if (cid && cid != '') {
       this.setActualChat(cid, partner);
       return true;
