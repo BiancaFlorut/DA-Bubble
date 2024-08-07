@@ -3,6 +3,7 @@
     class="message-editor"
     [editor]="editor!"
     [(ngModel)]="message"
+    (input)="onInput($event)"
     [disabled]="false"
     [placeholder]="getPlaceholderText()"
     minHeight="50px"
@@ -47,8 +48,8 @@
       </app-three-states-button>
       </div>
       <svg
-        [class.send-btn]="message !== ''"
-        [class.send-btn-disabled]="isWhiteSpace(message)"
+        [class.send-btn]="!isMessageWhiteSpace"
+        [class.send-btn-disabled]="isMessageWhiteSpace"
         (click)="sendMessage()"
         width="30"
         height="30"

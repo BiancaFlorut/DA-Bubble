@@ -214,7 +214,7 @@ export class HeaderComponent {
       if (uids.length === 0) partner = this.firebase.currentUser;
       else partner = this.firebase.getUser(uids[0]);
       if (partner)
-      this.searchService.openDirectChat(partner);
+      await this.searchService.openDirectChat(partner);
     }
     this.scrollService.midToScroll.set(message.message.mid);
   }

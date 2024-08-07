@@ -29,6 +29,7 @@ import { NewMessageService } from '../../../services/new-message/new-message.ser
 export class ChatInputComponent {
   @Input() isThread: boolean = false;
   message: string = '';
+  isMessageWhiteSpace: boolean = true;
   chatService: ChatService = inject(ChatService);
   threadService: ThreadChatService = inject(ThreadChatService);
   newMessageService: NewMessageService = inject(NewMessageService);
@@ -95,7 +96,9 @@ export class ChatInputComponent {
   }
 
   async sendMessage() {
-    if (!this.isWhiteSpace(this.message))
+    const dom = new DOMParser().parseFromString(this.message, 'text/html');
+    const text = dom.documentElement.textContent;
+    if (text && !this.isWhiteSpace(text) && text.length > 0)
       if (this.isThread) await this.sendThreadMessage();
       else if (this.chatService.newMessage) await this.sendNewMessage();
       else {
@@ -109,6 +112,8 @@ export class ChatInputComponent {
           else console.log('no user is logged in');
       }
     this.message = '';
+    this.isMessageWhiteSpace = true;
+    this.editor.commands.focus().exec();
   }
 
   async sendNewMessage() {
@@ -166,7 +171,7 @@ export class ChatInputComponent {
   }
 
   isWhiteSpace(text: string) {
-    return text.trim().length === 0;
+    return /^\s*$/.test(text);
   }
 
   replacePlaceholder() {
@@ -246,5 +251,12 @@ export class ChatInputComponent {
   closeUsersList(event: Event) {
     event.stopPropagation();
     this.isUserListOpen = false;
+  }
+
+  onInput(event: any) {
+    if (this.isWhiteSpace(this.message))
+      this.isMessageWhiteSpace = true;
+    else
+      this.isMessageWhiteSpace = false;
   }
 }
