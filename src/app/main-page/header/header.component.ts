@@ -17,7 +17,7 @@ import { Message } from '../../models/message.class';
 import { Channel } from '../../interfaces/channel';
 import { Chat } from '../../models/chat.class';
 import { ScrollService } from '../../services/scroll/scroll.service';
-import { collection, doc, getDoc, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, doc, DocumentData, getDoc, getDocs, onSnapshot, query, QuerySnapshot, where } from 'firebase/firestore';
 
 @Component({
   selector: 'app-header',
@@ -133,6 +133,15 @@ export class HeaderComponent {
     this.foundChannels = [];
     this.foundUsers = [];
     this.foundMessages = [];
+    this.searchInChannels();
+    this.firebase.users.forEach(user => {
+      if (user.name.toLowerCase().includes(this.search.toLowerCase()) && this.search !== '') this.foundUsers.push(user);
+    });
+    if (this.search != '') 
+    this.searchMessagesInDirectChats();
+  }
+
+  searchInChannels() {
     this.channelService.userChannelsContent.forEach(channel => {
       if (channel.channel.name.toLowerCase().includes(this.search.toLowerCase()) && this.search !== '') {
         if (!this.foundChannels.find(el => el.id === channel.channel.id))
@@ -148,39 +157,33 @@ export class HeaderComponent {
         }
       });
     })
-    this.firebase.users.forEach(user => {
-      if (user.name.toLowerCase().includes(this.search.toLowerCase()) && this.search !== '') {
-        this.foundUsers.push(user);
-      }
-    });
-    if (this.search != '') 
-    this.searchMessagesInDirectChats();
   }
 
-  searchMessagesInDirectChats() {
+  async searchMessagesInDirectChats() {
     if (!this.firebase.currentUser.directChatIds) {
       console.log('current user has no direct chats');
       return;
     }
-    this.firebase.currentUser.directChatIds.forEach( chatId => {
+    for (const chatId of this.firebase.currentUser.directChatIds) {
       const ref = this.firebase.getSingleChat(chatId);
       const messagesRef = collection(ref, 'messages');
-      const q = query(messagesRef);
-      onSnapshot(q, (querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          const dom = new DOMParser().parseFromString(doc.data()['text'], "text/html");
-          const text = dom.documentElement.textContent;
-          if (text && this.search !== '' && text.toLowerCase().includes(this.search.toLowerCase()))
-          if (!this.foundMessages.find(el => el.message.mid === doc.data()['mid'])) 
-          this.foundMessages.push({
-            user: this.firebase.getUser(doc.data()['uid'])!, 
-            message: doc.data() as Message, 
-            channel: undefined, 
-            chatId: chatId});
-        })
-      })
-      
-    })
+      const snapshot = await getDocs(messagesRef);
+      this.searchThroughMessages(chatId, snapshot);
+    }
+  }
+
+  searchThroughMessages(chatId: string, snapshot: QuerySnapshot<DocumentData, DocumentData>) {
+    snapshot.forEach((doc) => {
+      const dom = new DOMParser().parseFromString(doc.data()['text'], "text/html");
+      const text = dom.documentElement.textContent;
+      if (text && this.search !== '' && text.toLowerCase().includes(this.search.toLowerCase()))
+      if (!this.foundMessages.find(el => el.message.mid === doc.data()['mid'])) 
+      this.foundMessages.push({
+        user: this.firebase.getUser(doc.data()['uid'])!, 
+        message: doc.data() as Message, 
+        channel: undefined, 
+        chatId: chatId});
+    });
   }
 
   public chooseFoundedChannel(channel: any): void {
