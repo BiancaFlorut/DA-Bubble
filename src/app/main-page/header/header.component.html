@@ -9,7 +9,7 @@
             <img class="input-img" src="./assets/img/main-page/header/search.png" alt="search">
             <input [(ngModel)]="search" (input)="searchContent()" type="text" name="search" id="search"
                 placeholder="Code learning durchsuchen" autocomplete="off">
-            @if( search.length > 0 || foundChannels.length > 0 || foundUsers.length > 0 || foundMessages.length > 0) {
+            @if( search.length > 0 && ( foundChannels.length > 0 || foundUsers.length > 0 || foundMessages.length > 0)){
             <div class="founded-content-container">
                 @for (channel of foundChannels; track $index) {
                 <span (click)="chooseFoundedChannel(channel)">Channel: <span># {{channel.name}}</span></span>
@@ -22,7 +22,7 @@
                     @if (message.channel) {
                     <span># {{message.channel.name}}</span>
                     }
-                    @else if (message.chat) {
+                    @else if (message.chatId) {
                     <span>Direct Chat from {{message.user.name}}</span>
                     }
                     <span [innerHTML]="message.message.text"></span>

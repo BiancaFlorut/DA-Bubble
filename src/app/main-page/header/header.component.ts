@@ -17,6 +17,7 @@ import { Message } from '../../models/message.class';
 import { Channel } from '../../interfaces/channel';
 import { Chat } from '../../models/chat.class';
 import { ScrollService } from '../../services/scroll/scroll.service';
+import { collection, doc, getDoc, onSnapshot, query, where } from 'firebase/firestore';
 
 @Component({
   selector: 'app-header',
@@ -47,7 +48,7 @@ export class HeaderComponent {
 
   public foundChannels: Channel[] = [];
   public foundUsers: User[] = [];
-  public foundMessages: { user: User, message: Message, channel?: Channel, chat?: Chat }[] = [];
+  public foundMessages: { user: User, message: Message, channel?: Channel, chatId: string | undefined }[] = [];
 
   public isUserMenuActive: boolean = false;
   public search: string = '';
@@ -141,8 +142,9 @@ export class HeaderComponent {
         const dom = new DOMParser().parseFromString(message.text, "text/html");
         const text = dom.documentElement.textContent;
         if (text && this.search !== '' && text.toLowerCase().includes(this.search.toLowerCase())) {
-          if (!this.foundMessages.find(el => el.message.mid === message.mid)) 
-          this.foundMessages.push({ user: this.firebase.getUser(message.uid)!, message: message, channel: channel.channel, chat: undefined });
+          if (!this.foundMessages.find(el => el.message.mid === message.mid)) {
+            this.foundMessages.push({ user: this.firebase.getUser(message.uid)!, message: message, channel: channel.channel, chatId: undefined });
+          }
         }
       });
     })
@@ -151,6 +153,34 @@ export class HeaderComponent {
         this.foundUsers.push(user);
       }
     });
+    if (this.search != '') 
+    this.searchMessagesInDirectChats();
+  }
+
+  searchMessagesInDirectChats() {
+    if (!this.firebase.currentUser.directChatIds) {
+      console.log('current user has no direct chats');
+      return;
+    }
+    this.firebase.currentUser.directChatIds.forEach( chatId => {
+      const ref = this.firebase.getSingleChat(chatId);
+      const messagesRef = collection(ref, 'messages');
+      const q = query(messagesRef);
+      onSnapshot(q, (querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const dom = new DOMParser().parseFromString(doc.data()['text'], "text/html");
+          const text = dom.documentElement.textContent;
+          if (text && this.search !== '' && text.toLowerCase().includes(this.search.toLowerCase()))
+          if (!this.foundMessages.find(el => el.message.mid === doc.data()['mid'])) 
+          this.foundMessages.push({
+            user: this.firebase.getUser(doc.data()['uid'])!, 
+            message: doc.data() as Message, 
+            channel: undefined, 
+            chatId: chatId});
+        })
+      })
+      
+    })
   }
 
   public chooseFoundedChannel(channel: any): void {
@@ -167,16 +197,25 @@ export class HeaderComponent {
     this.searchService.openDirectChat(user);
   }
 
-  chooseFoundedMessage(message: { user: User, message: Message, channel?: Channel, chat?: Chat }): void {
+  async chooseFoundedMessage(message: { user: User, message: Message, channel?: Channel, chatId: string | undefined }) {
     this.search = '';
     this.foundChannels = [];
     this.foundUsers = [];
-    this.scrollService.midToScroll.set(message.message.mid);
+    this.foundMessages = [];
     if (message.channel) {
       this.searchService.getAllUsersFromChannel(message.channel) 
     }
-      
-    else 
-      this.searchService.openDirectChat(message.user);
+    else if (message.chatId){
+      const chatRef = this.firebase.getSingleChat(message.chatId);
+      const uidsData = await getDoc(chatRef);
+      const uids = uidsData.data()!['uids'] as string[];
+      uids.splice(uids.indexOf(this.firebase.currentUser.uid!), 1);
+      let partner;
+      if (uids.length === 0) partner = this.firebase.currentUser;
+      else partner = this.firebase.getUser(uids[0]);
+      if (partner)
+      this.searchService.openDirectChat(partner);
+    }
+    this.scrollService.midToScroll.set(message.message.mid);
   }
 }

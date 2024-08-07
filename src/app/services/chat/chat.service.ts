@@ -87,7 +87,6 @@ export class ChatService {
   }
 
   async sendMessageToUser(uid: string, message: string) {
-    
     const partner = this.firebase.getUser(uid)!;
     if (uid.length == 0) {
       console.log("no user to send message to");
