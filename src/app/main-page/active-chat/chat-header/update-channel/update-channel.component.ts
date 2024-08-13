@@ -18,7 +18,7 @@ import { AddPeopleComponent } from '../add-people/add-people.component';
     AddPeopleComponent
   ],
   templateUrl: './update-channel.component.html',
-  styleUrl: './update-channel.component.scss'
+  styleUrls: ['./update-channel.component.scss', './update-channel.component.media.scss']
 })
 export class UpdateChannelComponent {
   public channelModalService: ChannelModalService = inject(ChannelModalService);

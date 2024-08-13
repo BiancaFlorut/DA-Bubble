@@ -15,7 +15,7 @@ import { User } from '../../../../interfaces/user';
     FormsModule,
   ],
   templateUrl: './add-people.component.html',
-  styleUrl: './add-people.component.scss'
+  styleUrls: ['./add-people.component.scss', './add-people.component.media.scss']
 })
 export class AddPeopleComponent {
   public channelModalService: ChannelModalService = inject(ChannelModalService);

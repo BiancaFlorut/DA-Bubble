@@ -22,7 +22,7 @@ import { SearchService } from '../../services/search/search.service';
     FormsModule
   ],
   templateUrl: './workspace-menu.component.html',
-  styleUrl: './workspace-menu.component.scss'
+  styleUrls: ['./workspace-menu.component.scss', './workspace-menu.component.media.scss']
 })
 export class WorkspaceMenuComponent {
   public firebaseService: FirebaseService = inject(FirebaseService);

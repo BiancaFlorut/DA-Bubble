@@ -24,7 +24,7 @@ import { SearchService } from '../../services/search/search.service';
     FormsModule
   ],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrls: ['./header.component.scss', './header.component.media.scss']
 })
 export class HeaderComponent {
   private router: Router = inject(Router);
