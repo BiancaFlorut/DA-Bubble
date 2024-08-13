@@ -15,31 +15,26 @@ import { AuthService } from '../../services/auth/auth.service';
   styleUrl: './choose-avatar.component.scss'
 })
 export class ChooseAvatarComponent {
+  @ViewChild('fileInput') public fileInput: any;
+
+  public userService: UserService = inject(UserService);
+  private router: Router = inject(Router);
+  private authService: AuthService = inject(AuthService);
+
   public chooseAvatar: boolean = false;
   public avatar: string = './assets/img/profile.png';
   public showCreateUser: boolean = false;
 
-  @ViewChild('fileInput') public fileInput: any;
-
-  public userService = inject(UserService);
-  private router = inject(Router);
-  private authService = inject(AuthService);
-
-  public selectedAvatar(avatar: number) {
+  public selectedAvatar(avatar: number): void {
     this.avatar = `./assets/img/character${avatar}.png`;
     this.chooseAvatar = true;
   }
 
-  public async saveUser() {
+  public async saveUser(): Promise<void> {
     if (this.chooseAvatar) {
       this.userService.user.avatar = this.avatar;
       if (this.userService.userPassword) {
-        await this.authService.register(
-          this.userService.user.name,
-          this.userService.user.email,
-          this.userService.userPassword,
-          this.userService.user.avatar
-        )
+        await this.authService.register(this.userService.user.name, this.userService.user.email, this.userService.userPassword, this.userService.user.avatar)
           .then(() => {
             this.showCreateUserAndNavigateToLogin();
           })
@@ -51,7 +46,7 @@ export class ChooseAvatarComponent {
     }
   }
 
-  private showCreateUserAndNavigateToLogin() {
+  private showCreateUserAndNavigateToLogin(): void {
     this.showCreateUser = true;
     setTimeout(() => {
       this.showCreateUser = false;
@@ -59,11 +54,11 @@ export class ChooseAvatarComponent {
     }, 2000);
   }
 
-  public onUploadButtonClick() {
+  public onUploadButtonClick(): void {
     this.fileInput.nativeElement.click();
   }
 
-  public async onFileSelected(event: Event) {
+  public async onFileSelected(event: Event): Promise<void> {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput.files && fileInput.files[0]) {
       const file = fileInput.files[0];

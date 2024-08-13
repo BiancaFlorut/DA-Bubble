@@ -7,18 +7,18 @@
     <div class="right-container">
         <div class="input-container">
             <img class="input-img" src="./assets/img/main-page/header/search.png" alt="search">
-            <input [(ngModel)]="search" (input)="searchContent()" type="text" name="search" id="search"
+            <input [(ngModel)]="search" (input)="searchService.searchContent(search)" type="text" name="search" id="search"
                 placeholder="Code learning durchsuchen" autocomplete="off">
-            @if( search.length > 0 && ( foundChannels.length > 0 || foundUsers.length > 0 || foundMessages.length > 0)){
+            @if( search.length > 0 && (searchService.foundChannels.length > 0 || searchService.foundUsers.length > 0 || searchService.foundMessages.length > 0)){
             <div class="founded-content-container">
-                @for (channel of foundChannels; track $index) {
-                <span (click)="chooseFoundedChannel(channel)">Channel: <span># {{channel.name}}</span></span>
+                @for (channel of searchService.foundChannels; track $index) {
+                <span (click)="searchService.chooseFoundedChannel(channel)">Channel: <span># {{channel.name}}</span></span>
                 }
-                @for (user of foundUsers; track $index) {
-                <span (click)="chooseFoundedUser(user)">User: <img src="{{user.avatar}}" alt="avatar"> <span>{{user.name}}</span></span>
+                @for (user of searchService.foundUsers; track $index) {
+                <span (click)="searchService.chooseFoundedUser(user)">User: <img src="{{user.avatar}}" alt="avatar"> <span>{{user.name}}</span></span>
                 }
-                @for (message of foundMessages; track $index) {
-                <span (click)="chooseFoundedMessage(message)">Message in 
+                @for (message of searchService.foundMessages; track $index) {
+                <span (click)="searchService.chooseFoundedMessage(message)">Message in 
                     @if (message.channel) {
                     <span># {{message.channel.name}}</span>
                     }

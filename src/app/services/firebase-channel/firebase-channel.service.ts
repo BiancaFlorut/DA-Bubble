@@ -1,4 +1,4 @@
-import { Injectable, inject, OnDestroy, signal } from '@angular/core';
+import { Injectable, inject, OnDestroy } from '@angular/core';
 import { Channel } from '../../interfaces/channel';
 import { addDoc, collection, deleteDoc, doc, getDoc, Unsubscribe, updateDoc } from 'firebase/firestore';
 import { Firestore, onSnapshot } from '@angular/fire/firestore';
@@ -131,7 +131,6 @@ export class FirebaseChannelService implements OnDestroy {
   }
 
   public async deleteChannel(channelId: string) {
-    console.log(channelId)
     const channelDocRef = this.getSingleChannel(channelId);
     await deleteDoc(channelDocRef);
   }
@@ -202,7 +201,6 @@ export class FirebaseChannelService implements OnDestroy {
   async editMessage(message: Message) {
     const channelDocRef = this.getSingleChannel(this.channel.id);
     const messageDocRef = doc(channelDocRef, 'messages', message.mid);
-    console.log(messageDocRef)
     await updateDoc(messageDocRef, this.getJSONFromObject(message));
   }
 

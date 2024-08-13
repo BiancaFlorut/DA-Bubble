@@ -2,9 +2,11 @@
     <h2>Anmeldung</h2>
     <p>Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit verwendest.</p>
     <form [formGroup]="userForm" (ngSubmit)="login()">
-        <div class="pos-rel-container">
-            <input type="email" formControlName="email" id="email" placeholder="beispielnamen@email.com">
-            <img src="./assets/img/landing-page/email.png" alt="email">
+        <div class="input-container">
+            <div class="pos-rel-container">
+                <input type="email" formControlName="email" id="email" placeholder="beispielnamen@email.com">
+                <img src="./assets/img/landing-page/email.png" alt="email">
+            </div>
             @if (userForm.get('email')?.touched && userForm.get('email')?.invalid) {
             @if(userForm.get('email')?.errors?.['required']) {
             <span>Bitte schreiben Sie eine E-Mail</span>
@@ -17,9 +19,11 @@
             <span>*Diese E-Mail-Adresse ist leider ungültig.</span>
             }
         </div>
-        <div class="pos-rel-container">
-            <input type="password" formControlName="password" id="password" placeholder="Passwort">
-            <img src="./assets/img/landing-page/lock.png" alt="lock">
+        <div class="input-container">
+            <div class="pos-rel-container">
+                <input type="password" formControlName="password" id="password" placeholder="Passwort">
+                <img src="./assets/img/landing-page/lock.png" alt="lock">
+            </div>
             @if (userForm.get('password')?.touched && userForm.get('password')?.invalid) {
             @if(userForm.get('password')?.errors?.['required']) {
             <span>Bitte geben Sie ein Passwort ein.</span>
@@ -32,7 +36,8 @@
             <span>Falsches Passwort. Bitte noch einmal versuchen.</span>
             }
             @if(errorMessage === 'too-many-requests') {
-            <span>Zu viele fehlgeschlagene Anmeldeversuche. Bitte setzen Sie Ihr Passwort zurück oder versuchen Sie es
+            <span>Zu viele fehlgeschlagene Anmeldeversuche. Bitte setzen Sie Ihr Passwort zurück oder versuchen Sie
+                es
                 später erneut.</span>
             }
         </div>

@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, Pipe, PipeTransform, SecurityContext, ViewChild, ViewEncapsulation, inject, input } from '@angular/core';
+import { Component, ElementRef, Input, Pipe, PipeTransform, SecurityContext, ViewChild, inject } from '@angular/core';
 import { Message } from '../../../../models/message.class';
 import { ReactionBarComponent } from './reaction-bar/reaction-bar.component';
 import { ShowProfileService } from '../../../../services/show-profile/show-profile.service';

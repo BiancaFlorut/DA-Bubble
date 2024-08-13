@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, QueryList, ViewChildren, effect, inject } from '@angular/core';
+import { AfterViewInit, Component, Input, QueryList, ViewChildren, effect, inject } from '@angular/core';
 import { ChatService } from '../../../services/chat/chat.service';
 import { Chat } from '../../../models/chat.class';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -9,7 +9,6 @@ import { User } from '../../../interfaces/user';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
 import { FirebaseChannelService } from '../../../services/firebase-channel/firebase-channel.service';
 import { ScrollService } from '../../../services/scroll/scroll.service';
-import { Message } from '../../../models/message.class';
 
 @Component({
   selector: 'app-chat-body',

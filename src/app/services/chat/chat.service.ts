@@ -1,5 +1,5 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, WritableSignal, inject, signal } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../../interfaces/user';
 import { FirebaseService } from '../firebase/firebase.service';
 import { Chat } from '../../models/chat.class';
@@ -11,37 +11,40 @@ import { Emoji } from '../../models/emoji.class';
   providedIn: 'root'
 })
 export class ChatService {
-  chat!: Chat | undefined;
-  chatSub: BehaviorSubject<Chat | undefined>
-  currentChat;
-  currentPartner: User = {
+  public firebase: FirebaseService = inject(FirebaseService);
+
+  public chat!: Chat | undefined;
+  private chatSub: BehaviorSubject<Chat | undefined>
+  public currentChat: Observable<Chat | undefined>;
+
+  public currentPartner: User = {
     uid: '',
     name: '',
     email: '',
     avatar: '',
     online: false
   };
-  loading = signal(false);
-  newMessage: boolean = true;
-  firebase = inject(FirebaseService);
+  public loading: WritableSignal<boolean> = signal(false);
+  public newMessage: boolean = true;
+
   constructor() {
     this.chatSub = new BehaviorSubject<Chat | undefined>(this.chat);
     this.currentChat = this.chatSub.asObservable();
   }
 
-  resetChat() {
+  public resetChat(): void {
     this.chat = undefined;
     this.chatSub = new BehaviorSubject<Chat | undefined>(this.chat);
     this.currentChat = this.chatSub.asObservable();
     this.newMessage = true;
   }
 
-  closeChat() {
+  public closeChat(): void {
     this.chat = undefined;
     this.chatSub.next(this.chat);
   }
 
-  async getChatWith(partner: User) {
+  public async getChatWith(partner: User): Promise<boolean> {
     this.loading.set(true);
     const user = this.firebase.currentUser;
     const cid = await this.firebase.getDirectChatId(user.uid!, partner.uid!);
@@ -51,20 +54,20 @@ export class ChatService {
     } else return false;
   }
 
-  setActualChat(cid: string, partner: User) {
+  public setActualChat(cid: string, partner: User): void {
     this.newMessage = false;
-      onSnapshot(this.firebase.getDirectChatMessagesRef(cid), (collection) => {
-        let msgs = [] as Message[];
-        collection.forEach((doc) => {
-          let msg = this.getMessage(doc);
-          msgs.push(msg);
-        });
-        this.setSubscriber(cid, partner, msgs);
-      })
-      this.currentPartner = partner;
+    onSnapshot(this.firebase.getDirectChatMessagesRef(cid), (collection) => {
+      let msgs = [] as Message[];
+      collection.forEach((doc) => {
+        let msg = this.getMessage(doc);
+        msgs.push(msg);
+      });
+      this.setSubscriber(cid, partner, msgs);
+    })
+    this.currentPartner = partner;
   }
 
-  getMessage(doc: any) {
+  public getMessage(doc: any) {
     const emojis = doc.data()['emojis'] as Emoji[];
     let msg = new Message(doc.data()['mid'], doc.data()['uid'], doc.data()['text'], doc.data()['timestamp'], emojis);
     if (doc.data()['editedTimestamp']) msg.editedTimestamp = doc.data()['editedTimestamp'];
@@ -74,29 +77,29 @@ export class ChatService {
     return msg;
   }
 
-  setSubscriber(cid: string, partner: User, msgs: Message[]) {
+  public setSubscriber(cid: string, partner: User, msgs: Message[]): void {
     let chat: Chat = new Chat(cid, [this.firebase.currentUser.uid!, partner.uid!], msgs);
     this.chat = chat;
     this.chatSub.next(chat);
     this.loading.set(false);
   }
 
-  async editMessage(cid: string, message: Message) {
+  public async editMessage(cid: string, message: Message): Promise<void> {
     if (message.mid)
       await this.firebase.updateMessage(cid, message.mid, message);
   }
 
-  async sendMessageToUser(uid: string, message: string) {
+  public async sendMessageToUser(uid: string, message: string): Promise<void> {
     const partner = this.firebase.getUser(uid)!;
     if (uid.length == 0) {
       console.log("no user to send message to");
       return;
     }
-    if (partner){
+    if (partner) {
       const cid = await this.firebase.getDirectChatId(this.firebase.currentUser.uid!, uid);
       const mid = await this.firebase.sendMessage(cid, this.firebase.currentUser.uid!, Date.now(), message);
       if (mid) console.log("sent message to: " + partner.name + " cid: " + cid + " mid: " + mid.id);
-      
+
     }
   }
 }

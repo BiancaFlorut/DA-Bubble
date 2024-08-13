@@ -208,7 +208,6 @@ export class FirebaseService {
     await updateDoc(ref, this.getJsonFromObject(data));
   }
 
-
   getJsonFromObject(obj: any) {
     return JSON.parse(JSON.stringify(obj));
   }

@@ -12,6 +12,7 @@
 
         .devspace-logo {
             display: none;
+            cursor: pointer;
         }
     }
 
@@ -57,6 +58,7 @@
     gap: 20px;
     background-color: white;
     padding: 30px;
+    max-width: 400px;
     max-height: 320px;
     border-radius: 0 20px 20px 20px;
     overflow-y: auto;
@@ -213,7 +215,12 @@
         display: flex;
         gap: 15px;
 
+        svg {
+            cursor: pointer;
+        }
+
         span {
+            cursor: pointer;
             font-weight: 600;
             font-size: 20px;
             line-height: 27.28px;
@@ -275,7 +282,7 @@
     }
 }
 
-@media(max-width: 965px) {
+@media(max-width: 970px) {
     .header-container {
         .right-container {
             justify-content: flex-end;
@@ -287,7 +294,7 @@
     }
 }
 
-@media(max-width: 870px) {
+@media(max-width: 970px) {
     .header-container {
 
         .left-container {

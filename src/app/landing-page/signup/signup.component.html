@@ -3,9 +3,11 @@
     <h2>Konto erstellen</h2>
     <p>Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues DABubble-Konto.</p>
     <form [formGroup]="userForm" (ngSubmit)="addUser()">
-        <div class="pos-rel-container">
-            <input type="text" formControlName="name" id="name" placeholder="Name und Nachname">
-            <img src="./assets/img/landing-page/person.png" alt="person">
+        <div class="input-container">
+            <div class="pos-rel-container">
+                <input type="text" formControlName="name" id="name" placeholder="Name und Nachname">
+                <img src="./assets/img/landing-page/person.png" alt="person">
+            </div>
             @if (userForm.get('name')?.touched && userForm.get('name')?.invalid) {
             @if (userForm.get('name')?.errors?.['required']) {
             <span>Bitte schreiben Sie einen Namen.</span>
@@ -15,9 +17,11 @@
             }
             }
         </div>
-        <div class="pos-rel-container">
-            <input type="email" formControlName="email" id="email" placeholder="beispielnamen@email.com">
-            <img src="./assets/img/landing-page/email.png" alt="email">
+        <div class="input-container">
+            <div class="pos-rel-container">
+                <input type="email" formControlName="email" id="email" placeholder="beispielnamen@email.com">
+                <img src="./assets/img/landing-page/email.png" alt="email">
+            </div>
             @if (userForm.get('email')?.touched && userForm.get('email')?.invalid) {
             @if (userForm.get('email')?.errors?.['required']) {
             <span>Bitte schreiben Sie eine E-Mail</span>
@@ -30,9 +34,11 @@
             <span>*Diese E-Mail-Adresse ist leider schon vergeben.</span>
             }
         </div>
-        <div class="pos-rel-container">
-            <input type="password" formControlName="password" id="password" placeholder="Passwort">
-            <img src="./assets/img/landing-page/lock.png" alt="lock">
+        <div class="input-container">
+            <div class="pos-rel-container">
+                <input type="password" formControlName="password" id="password" placeholder="Passwort">
+                <img src="./assets/img/landing-page/lock.png" alt="lock">
+            </div>
             @if (userForm.get('password')?.touched && userForm.get('password')?.invalid) {
             @if (userForm.get('password')?.errors?.['required']) {
             <span>Bitte geben Sie ein Passwort ein.</span>

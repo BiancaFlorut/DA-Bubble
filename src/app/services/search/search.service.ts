@@ -8,6 +8,9 @@ import { FirebaseService } from '../firebase/firebase.service';
 import { UserService } from '../user/user.service';
 import { CreateChannelService } from '../create-channel/create-channel.service';
 import { User } from '../../interfaces/user';
+import { Message } from '../../models/message.class';
+import { collection, DocumentData, getDoc, getDocs, QuerySnapshot } from 'firebase/firestore';
+import { ScrollService } from '../scroll/scroll.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +23,14 @@ export class SearchService {
   private firebaseService: FirebaseService = inject(FirebaseService);
   private userService: UserService = inject(UserService);
   private createChannelService: CreateChannelService = inject(CreateChannelService);
+  private channelService: FirebaseChannelService = inject(FirebaseChannelService);
+  private scrollService: ScrollService = inject(ScrollService);
+
+  public foundChannels: Channel[] = [];
+  public foundUsers: User[] = [];
+  public foundMessages: { user: User, message: Message, channel?: Channel, chatId: string | undefined }[] = [];
+
+  public search: string = '';
 
   public getAllUsersFromChannel(channel: Channel): void {
     this.chatService.closeChat();
@@ -63,5 +74,106 @@ export class SearchService {
     this.firebaseChannelService.openCreatedChannel = false;
     this.createChannelService.showChannel = false;
     this.toggleDNone.toggleIsClassRemoved();
+  }
+
+  public searchContent(search: string): void {
+    this.search = search;
+    this.foundChannels = [];
+    this.foundUsers = [];
+    this.foundMessages = [];
+    this.searchInChannels();
+    this.firebaseService.users.forEach(user => {
+      if (user.name.toLowerCase().includes(this.search.toLowerCase()) && this.search !== '') this.foundUsers.push(user);
+    });
+    if (this.search != '')
+      this.searchMessagesInDirectChats();
+  }
+
+  searchInChannels() {
+    this.channelService.userChannelsContent.forEach(channel => {
+      if (channel.channel.name.toLowerCase().includes(this.search.toLowerCase()) && this.search !== '') {
+        if (!this.foundChannels.find(el => el.id === channel.channel.id))
+          this.foundChannels.push(channel.channel);
+      }
+      channel.messages.forEach(message => {
+        const dom = new DOMParser().parseFromString(message.text, "text/html");
+        const text = dom.documentElement.textContent;
+        if (text && this.search !== '' && text.toLowerCase().includes(this.search.toLowerCase())) {
+          if (!this.foundMessages.find(el => el.message.mid === message.mid)) {
+            this.foundMessages.push({ user: this.firebaseService.getUser(message.uid)!, message: message, channel: channel.channel, chatId: undefined });
+          }
+        }
+      });
+    })
+  }
+
+  async searchMessagesInDirectChats() {
+    if (!this.firebaseService.currentUser.directChatIds) {
+      console.log('current user has no direct chats');
+      return;
+    }
+    for (const chatId of this.firebaseService.currentUser.directChatIds) {
+      const ref = this.firebaseService.getSingleChat(chatId);
+      const messagesRef = collection(ref, 'messages');
+      const snapshot = await getDocs(messagesRef);
+      this.searchThroughMessages(chatId, snapshot);
+    }
+  }
+
+  searchThroughMessages(chatId: string, snapshot: QuerySnapshot<DocumentData, DocumentData>) {
+    snapshot.forEach((doc) => {
+      const dom = new DOMParser().parseFromString(doc.data()['text'], "text/html");
+      const text = dom.documentElement.textContent;
+      if (text && this.search !== '' && text.toLowerCase().includes(this.search.toLowerCase()))
+        if (!this.foundMessages.find(el => el.message.mid === doc.data()['mid']))
+          this.foundMessages.push({
+            user: this.firebaseService.getUser(doc.data()['uid'])!,
+            message: doc.data() as Message,
+            channel: undefined,
+            chatId: chatId
+          });
+    });
+  }
+
+  public chooseFoundedChannel(channel: any): void {
+    this.search = '';
+    this.foundChannels = [];
+    this.foundUsers = [];
+    this.foundMessages = [];
+    this.getAllUsersFromChannel(channel);
+  }
+
+  public chooseFoundedUser(user: any): void {
+    this.search = '';
+    this.foundChannels = [];
+    this.foundUsers = [];
+    this.foundMessages = [];
+    this.openDirectChat(user);
+  }
+
+  async chooseFoundedMessage(message: { user: User, message: Message, channel?: Channel, chatId: string | undefined }) {
+    this.search = '';
+    this.foundChannels = [];
+    this.foundUsers = [];
+    this.foundMessages = [];
+    if (message.channel) {
+      this.getAllUsersFromChannel(message.channel)
+    }
+    else if (message.chatId) {
+      await this.searchPartnerAndOpenChat(message.chatId);
+    }
+    this.scrollService.midToScroll.set(message.message.mid);
+  }
+
+  async searchPartnerAndOpenChat(chatId: string) {
+    const chatRef = this.firebaseService.getSingleChat(chatId);
+    const uidsData = await getDoc(chatRef);
+    const uids = uidsData.data()!['uids'] as string[];
+    uids.splice(uids.indexOf(this.firebaseService.currentUser.uid!), 1);
+    let partner;
+    if (uids.length === 0) partner = this.firebaseService.currentUser;
+    else partner = this.firebaseService.getUser(uids[0]);
+    if (partner)
+      await this.openDirectChat(partner);
   }
 }

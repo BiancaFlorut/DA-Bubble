@@ -110,6 +110,15 @@ form {
     }
 }
 
+.input-container {
+    width: 100%;
+
+    .pos-rel-container {
+        width: 100%;
+        position: relative;
+    }
+}
+
 .unchecked {
     background-image: url(./../../../assets/img/landing-page/check.png);
 

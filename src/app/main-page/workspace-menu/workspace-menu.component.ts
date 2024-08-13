@@ -10,13 +10,16 @@ import { ThreadChatService } from '../../services/chat/thread-chat/thread-chat.s
 import { UserService } from '../../services/user/user.service';
 import { Channel } from '../../interfaces/channel';
 import { ToggleDNoneService } from '../../services/toggle-d-none/toggle-d-none.service';
+import { FormsModule } from '@angular/forms';
+import { SearchService } from '../../services/search/search.service';
 
 @Component({
   selector: 'app-workspace-menu',
   standalone: true,
   imports: [
     CommonModule,
-    CreateChannelComponent
+    CreateChannelComponent,
+    FormsModule
   ],
   templateUrl: './workspace-menu.component.html',
   styleUrl: './workspace-menu.component.scss'
@@ -29,9 +32,11 @@ export class WorkspaceMenuComponent {
   private threadChatService = inject(ThreadChatService);
   public userService: UserService = inject(UserService);
   private toggleDNone: ToggleDNoneService = inject(ToggleDNoneService);
+  public searchService: SearchService = inject(SearchService);
 
   public areChannelsMenuOpen: boolean = true;
   public areDirectChatsMenuOpen: boolean = true;
+  public search: string = '';
 
   public openChannelsMenu(): void {
     if (this.areChannelsMenuOpen) {
