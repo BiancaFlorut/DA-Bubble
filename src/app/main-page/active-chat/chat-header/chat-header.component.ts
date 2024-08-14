@@ -26,7 +26,7 @@ import { NewMessageService } from '../../../services/new-message/new-message.ser
     FormsModule
   ],
   templateUrl: './chat-header.component.html',
-  styleUrl: './chat-header.component.scss'
+  styleUrls: ['./chat-header.component.scss', './chat-header.component.media.scss']
 })
 export class ChatHeaderComponent {
   public firebaseService: FirebaseService = inject(FirebaseService);

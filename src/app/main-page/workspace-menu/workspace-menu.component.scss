@@ -63,6 +63,56 @@ section {
   }
 }
 
+.founded-content-container {
+  position: absolute;
+  z-index: 9999;
+  top: 78px;
+  left: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: white;
+  padding: 30px;
+  max-height: 320px;
+  max-width: 260px;
+  border-radius: 0 20px 20px 20px;
+  overflow-y: auto;
+  box-shadow: 0px 6px 10px 0px rgba(0, 0, 0, 0.2);
+
+  &::-webkit-scrollbar {
+      width: 0;
+  }
+
+  span {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 5px 29px;
+      border-radius: 100px;
+
+      &:hover {
+          background-color: #ECEEFE;
+          color: #535AF1;
+      }
+
+      span {
+          font-weight: 900;
+          padding: 0;
+          text-align: center;
+          word-break: break-all;
+      }
+
+      img {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+      }
+  }
+}
+
 .edit-square {
   cursor: pointer;
   border-radius: 20px;
@@ -104,218 +154,5 @@ section {
 
   &:active path {
     fill: black;
-  }
-}
-
-.channels-container {
-  @include displayFlex(column, space-between, unset, 25px);
-}
-
-.channels-header {
-  @include displayFlex(row, space-between, center, 0);
-  padding: 0 3px;
-}
-
-.channels-title {
-  @include displayFlex(row, flex-start, center, 10px);
-
-  span {
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 27.28px;
-  }
-}
-
-.channels-arrow {
-  transform: rotate(-90deg);
-  width: 30px;
-  height: 30px;
-}
-
-.arrow_drop_down {
-  transform: rotate(0deg);
-}
-
-.channels-btn {
-  @include displayFlex(row, flex-start, center, 15px);
-  cursor: pointer;
-
-  &:hover {
-    color: $purple_1;
-  }
-
-  &:hover svg path {
-    fill: $purple_1;
-  }
-
-  &:active svg path {
-    fill: black;
-  }
-
-  &:active {
-    color: black;
-  }
-}
-
-.users-container {
-  @include displayFlex(column, unset, unset, 13px);
-}
-
-.user {
-  @include displayFlex(row, flex-start, center, 15px);
-  cursor: pointer;
-  margin-left: 20px;
-  padding: 4px 20px;
-  border-radius: 30px;
-  width: fit-content;
-
-  &:hover {
-    background-color: $bg_color;
-  }
-
-  &:active .avatar {
-    font-weight: 700;
-  }
-}
-
-.all-channels-container {
-  @include displayFlex(column, unset, unset, 13px);
-}
-
-.channel {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: 25px;
-  padding: 4px 20px;
-  border-radius: 20px;
-  width: fit-content;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #ECEEFE;
-  }
-
-  &:hover path {
-    fill: #535AF1;
-  }
-
-  span {
-    font-size: 18px;
-    line-height: 24.55px;
-  }
-}
-
-.current-channel {
-  background-color: #ECEEFE;
-
-  svg path {
-    fill: #535AF1;
-  }
-
-  span {
-    font-weight: 700;
-    color: #535AF1;
-  }
-}
-
-.add-channel-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: 45px;
-  margin-top: 20px;
-  cursor: pointer;
-
-  &:hover path {
-    fill: #535AF1;
-  }
-
-  &:hover span {
-    color: #535AF1;
-  }
-
-  span {
-    font-size: 18px;
-    line-height: 24.55px;
-  }
-}
-
-.active {
-  .name {
-    font-weight: 700;
-    color: $purple_3;
-  }
-
-  background-color: $bg_color;
-}
-
-.avatar {
-  @include displayFlex(column, center, center, 0);
-
-  img {
-    width: 50px;
-    height: 50px;
-    border-radius: 30px;
-    object-fit: cover;
-  }
-
-  .status-container {
-    @include displayFlex(row, flex-end, center, 0);
-    position: relative;
-    width: 100%;
-  }
-}
-
-.status-dot {
-  position: absolute;
-  height: 14px;
-  width: 14px;
-  border: 2px solid white;
-  border-radius: 20px;
-  transform: translateY(-50%);
-}
-
-.name {
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 24.55px;
-}
-
-.online {
-  background: $online_green;
-}
-
-.offline {
-  background: $gray;
-}
-
-.new-message {
-  display: none;
-  position: fixed;
-  right: 25px;
-  bottom: 25px;
-  z-index: 2;
-}
-
-@media(max-width: 965px) {
-  .input-container {
-    display: block;
-  }
-
-  .logo-container {
-    display: none;
-  }
-}
-
-@media(max-width: 870px) {
-  section {
-    width: 100vw;
-    border-radius: unset;
-    padding: 32px 20px;
-  }
-
-  .new-message {
-    display: unset;
   }
 }

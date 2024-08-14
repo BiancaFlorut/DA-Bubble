@@ -18,7 +18,30 @@
   </div>
   <div class="input-container">
     <img src="./assets/img/main-page/header/search.png" alt="search">
-    <input type="text" name="search" id="search" placeholder="Gehe zu...">
+    <input [(ngModel)]="search" (input)="searchService.searchContent(search)" type="text" name="search" id="search" placeholder="Gehe zu..." autocomplete="off">
+    @if(search.length > 0 && (searchService.foundChannels.length > 0 || searchService.foundUsers.length > 0 ||
+    searchService.foundMessages.length > 0)){
+    <div class="founded-content-container">
+      @for (channel of searchService.foundChannels; track $index) {
+      <span (click)="searchService.chooseFoundedChannel(channel)">Channel: <span># {{channel.name}}</span></span>
+      }
+      @for (user of searchService.foundUsers; track $index) {
+      <span (click)="searchService.chooseFoundedUser(user)">User: <img src="{{user.avatar}}" alt="avatar">
+        <span>{{user.name}}</span></span>
+      }
+      @for (message of searchService.foundMessages; track $index) {
+      <span (click)="searchService.chooseFoundedMessage(message)">Message in
+        @if (message.channel) {
+        <span># {{message.channel.name}}</span>
+        }
+        @else if (message.chatId) {
+        <span>Direct Chat from {{message.user.name}}</span>
+        }
+        <span [innerHTML]="message.message.text"></span>
+      </span>
+      }
+    </div>
+    }
   </div>
   <div class="chat-list-container">
     <div class="channels-container">
@@ -167,7 +190,8 @@
       }
     </div>
   </div>
-  <svg (click)="handleNewMessage()" class="new-message" width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg (click)="handleNewMessage()" class="new-message" width="80" height="80" viewBox="0 0 80 80" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
     <g filter="url(#filter0_d_693_14384)">
       <rect x="10" y="4" width="60" height="60" rx="30" fill="#444DF2" />
       <mask id="mask0_693_14384" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="28" y="20" width="24"

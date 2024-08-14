@@ -15,7 +15,7 @@ import { EditUserProfileService } from '../../services/edit-user-profile/edit-us
     ReactiveFormsModule
   ],
   templateUrl: './edit-user-profile.component.html',
-  styleUrl: './edit-user-profile.component.scss'
+  styleUrls: ['./edit-user-profile.component.scss', './edit-user-profile.component.media.scss']
 })
 export class EditUserProfileComponent {
   public userService: UserService = inject(UserService);

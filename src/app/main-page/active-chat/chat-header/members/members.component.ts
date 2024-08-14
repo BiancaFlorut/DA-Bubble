@@ -30,11 +30,9 @@ export class MembersComponent {
   public openAddPeople(event: Event) {
     event.stopPropagation();
     if (this.channelModalService.showMembers) {
-      console.log('big screen')
       this.channelModalService.toggleShowMembers();
       this.channelModalService.toggleShowAddPeople();
     } else {
-      console.log('small screen')
       this.channelModalService.toggleaddMobileClassToAddPeople();
     }
   }

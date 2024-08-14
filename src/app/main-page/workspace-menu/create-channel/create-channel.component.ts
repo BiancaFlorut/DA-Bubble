@@ -17,7 +17,7 @@ import { ThreadChatService } from '../../../services/chat/thread-chat/thread-cha
     CommonModule
   ],
   templateUrl: './create-channel.component.html',
-  styleUrl: './create-channel.component.scss'
+  styleUrls: ['./create-channel.component.scss', './create-channel.component.media.scss']
 })
 export class CreateChannelComponent {
   private createChannelService: CreateChannelService = inject(CreateChannelService);

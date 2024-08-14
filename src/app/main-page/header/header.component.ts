@@ -12,12 +12,6 @@ import { EditUserProfileService } from '../../services/edit-user-profile/edit-us
 import { FirebaseChannelService } from '../../services/firebase-channel/firebase-channel.service';
 import { ToggleDNoneService } from '../../services/toggle-d-none/toggle-d-none.service';
 import { SearchService } from '../../services/search/search.service';
-import { User } from '../../interfaces/user';
-import { Message } from '../../models/message.class';
-import { Channel } from '../../interfaces/channel';
-import { Chat } from '../../models/chat.class';
-import { ScrollService } from '../../services/scroll/scroll.service';
-import { collection, doc, DocumentData, getDoc, getDocs, onSnapshot, query, QuerySnapshot, where } from 'firebase/firestore';
 
 @Component({
   selector: 'app-header',
@@ -30,7 +24,7 @@ import { collection, doc, DocumentData, getDoc, getDocs, onSnapshot, query, Quer
     FormsModule
   ],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrls: ['./header.component.scss', './header.component.media.scss']
 })
 export class HeaderComponent {
   private router: Router = inject(Router);
@@ -42,13 +36,7 @@ export class HeaderComponent {
   private channelService: FirebaseChannelService = inject(FirebaseChannelService);
   public editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
   public toggleDNone: ToggleDNoneService = inject(ToggleDNoneService);
-  private searchService: SearchService = inject(SearchService);
-  private scrollService = inject(ScrollService);
-
-
-  public foundChannels: Channel[] = [];
-  public foundUsers: User[] = [];
-  public foundMessages: { user: User, message: Message, channel?: Channel, chatId: string | undefined }[] = [];
+  public searchService: SearchService = inject(SearchService);
 
   public isUserMenuActive: boolean = false;
   public search: string = '';
@@ -62,29 +50,37 @@ export class HeaderComponent {
     this.authService.user$
       .subscribe(user => {
         if (this.router.url.includes('guest')) {
-          this.editUserProfileService.googleUser = false;
-          this.firebase.currentUser.uid = 'guest';
-          this.firebase.currentUser.name = 'New Guest';
-          this.firebase.currentUser.email = 'mail@guest.com';
-          this.firebase.currentUser.avatar = './assets/img/profile.png';
-          this.userService.currentAvatar = './assets/img/profile.png';
-          this.firebase.connectUser(this.firebase.currentUser);
+          this.setGuestUser();
         } else if (user) {
-          this.editUserProfileService.googleUser = user.providerData[0].providerId === 'google.com' ? true : false;
-          this.firebase.currentUser.uid = user.uid!;
-          this.firebase.currentUser.name = user.displayName!;
-          this.firebase.currentUser.email = user.email!;
-          this.firebase.currentUser.avatar = user.photoURL!;
-          this.userService.currentAvatar = user.photoURL!;
-          if (user.photoURL?.includes('https://lh3.googleusercontent.com')) {
-            this.firebase.currentUser.avatar = './assets/img/profile.png';
-            this.userService.currentAvatar = './assets/img/profile.png';
-          }
+          this.setUser(user);
           this.firebase.connectUser(this.firebase.currentUser);
         } else {
           this.router.navigate(['landing-page/login']);
         }
       });
+  }
+
+  private setGuestUser(): void {
+    this.editUserProfileService.googleUser = false;
+    this.firebase.currentUser.uid = 'guest';
+    this.firebase.currentUser.name = 'New Guest';
+    this.firebase.currentUser.email = 'mail@guest.com';
+    this.firebase.currentUser.avatar = './assets/img/profile.png';
+    this.userService.currentAvatar = './assets/img/profile.png';
+    this.firebase.connectUser(this.firebase.currentUser);
+  }
+
+  private setUser(user: any): void {
+    this.editUserProfileService.googleUser = user.providerData[0].providerId === 'google.com' ? true : false;
+    this.firebase.currentUser.uid = user.uid!;
+    this.firebase.currentUser.name = user.displayName!;
+    this.firebase.currentUser.email = user.email!;
+    this.firebase.currentUser.avatar = user.photoURL!;
+    this.userService.currentAvatar = user.photoURL!;
+    if (user.photoURL?.includes('https://lh3.googleusercontent.com')) {
+      this.firebase.currentUser.avatar = './assets/img/profile.png';
+      this.userService.currentAvatar = './assets/img/profile.png';
+    }
   }
 
   private redirectLogin(): void {
@@ -124,102 +120,5 @@ export class HeaderComponent {
     this.threadChatService.exitThread();
     this.channelService.resetChannel();
     this.chatService.newMessage = true;
-  }
-
-  public searchContent(): void {
-    this.foundChannels = [];
-    this.foundUsers = [];
-    this.foundMessages = [];
-    this.searchInChannels();
-    this.firebase.users.forEach(user => {
-      if (user.name.toLowerCase().includes(this.search.toLowerCase()) && this.search !== '') this.foundUsers.push(user);
-    });
-    if (this.search != '') 
-    this.searchMessagesInDirectChats();
-  }
-
-  searchInChannels() {
-    this.channelService.userChannelsContent.forEach(channel => {
-      if (channel.channel.name.toLowerCase().includes(this.search.toLowerCase()) && this.search !== '') {
-        if (!this.foundChannels.find(el => el.id === channel.channel.id))
-        this.foundChannels.push(channel.channel);
-      }
-      channel.messages.forEach(message => {
-        const dom = new DOMParser().parseFromString(message.text, "text/html");
-        const text = dom.documentElement.textContent;
-        if (text && this.search !== '' && text.toLowerCase().includes(this.search.toLowerCase())) {
-          if (!this.foundMessages.find(el => el.message.mid === message.mid)) {
-            this.foundMessages.push({ user: this.firebase.getUser(message.uid)!, message: message, channel: channel.channel, chatId: undefined });
-          }
-        }
-      });
-    })
-  }
-
-  async searchMessagesInDirectChats() {
-    if (!this.firebase.currentUser.directChatIds) {
-      console.log('current user has no direct chats');
-      return;
-    }
-    for (const chatId of this.firebase.currentUser.directChatIds) {
-      const ref = this.firebase.getSingleChat(chatId);
-      const messagesRef = collection(ref, 'messages');
-      const snapshot = await getDocs(messagesRef);
-      this.searchThroughMessages(chatId, snapshot);
-    }
-  }
-
-  searchThroughMessages(chatId: string, snapshot: QuerySnapshot<DocumentData, DocumentData>) {
-    snapshot.forEach((doc) => {
-      const dom = new DOMParser().parseFromString(doc.data()['text'], "text/html");
-      const text = dom.documentElement.textContent;
-      if (text && this.search !== '' && text.toLowerCase().includes(this.search.toLowerCase()))
-      if (!this.foundMessages.find(el => el.message.mid === doc.data()['mid'])) 
-      this.foundMessages.push({
-        user: this.firebase.getUser(doc.data()['uid'])!, 
-        message: doc.data() as Message, 
-        channel: undefined, 
-        chatId: chatId});
-    });
-  }
-
-  public chooseFoundedChannel(channel: any): void {
-    this.search = '';
-    this.foundChannels = [];
-    this.foundUsers = [];
-    this.searchService.getAllUsersFromChannel(channel);
-  }
-
-  public chooseFoundedUser(user: any): void {
-    this.search = '';
-    this.foundChannels = [];
-    this.foundUsers = [];
-    this.searchService.openDirectChat(user);
-  }
-
-  async chooseFoundedMessage(message: { user: User, message: Message, channel?: Channel, chatId: string | undefined }) {
-    this.search = '';
-    this.foundChannels = [];
-    this.foundUsers = [];
-    this.foundMessages = [];
-    if (message.channel) {
-      this.searchService.getAllUsersFromChannel(message.channel) 
-    }
-    else if (message.chatId){
-      await this.searchPartnerAndOpenChat(message.chatId);
-    }
-    this.scrollService.midToScroll.set(message.message.mid);
-  }
-
-  async searchPartnerAndOpenChat(chatId: string) {
-    const chatRef = this.firebase.getSingleChat(chatId);
-      const uidsData = await getDoc(chatRef);
-      const uids = uidsData.data()!['uids'] as string[];
-      uids.splice(uids.indexOf(this.firebase.currentUser.uid!), 1);
-      let partner;
-      if (uids.length === 0) partner = this.firebase.currentUser;
-      else partner = this.firebase.getUser(uids[0]);
-      if (partner)
-      await this.searchService.openDirectChat(partner);
   }
 }

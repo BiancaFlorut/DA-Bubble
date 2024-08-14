@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, inject, viewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ChatInputComponent } from './chat-input/chat-input.component';
 import { ChatHeaderComponent } from './chat-header/chat-header.component';
 import { ChatBodyComponent } from './chat-body/chat-body.component';

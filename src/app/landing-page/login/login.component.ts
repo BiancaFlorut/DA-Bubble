@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth/auth.service';
 import { UserService } from '../../services/user/user.service';
 import { browserSessionPersistence, onAuthStateChanged, setPersistence } from 'firebase/auth';
-import { Firestore } from 'firebase/firestore';
 import { FirebaseService } from '../../services/firebase/firebase.service';
 
 @Component({
@@ -21,22 +20,30 @@ import { FirebaseService } from '../../services/firebase/firebase.service';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+  private fb: FormBuilder = inject(FormBuilder);
+  private router: Router = inject(Router);
+  public authService: AuthService = inject(AuthService);
+  private userService: UserService = inject(UserService);
+  private firebaseService: FirebaseService = inject(FirebaseService);
+
   public userForm!: FormGroup;
   public errorMessage!: string;
 
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-  public authService = inject(AuthService);
-  private userService = inject(UserService);
-  private firebaseService = inject(FirebaseService);
-
   ngOnInit() {
+    this.setupEmailAndPasswordForm();
+    this.userService.resetUser();
+    setPersistence(this.authService.firebaseAuth, browserSessionPersistence);
+    this.handleAuthStateChange();
+  }
+
+  private setupEmailAndPasswordForm(): void {
     this.userForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
       password: ['', [Validators.required, Validators.pattern(/^.{8,}$/)]]
     });
-    this.userService.resetUser();
-    setPersistence(this.authService.firebaseAuth, browserSessionPersistence);
+  }
+
+  private handleAuthStateChange(): void {
     onAuthStateChanged(this.authService.firebaseAuth, (user) => {
       if (user) {
         let currentUser = this.firebaseService.getUser(user.uid);
@@ -51,7 +58,7 @@ export class LoginComponent {
     })
   }
 
-  public async loginWithGoogle() {
+  public async loginWithGoogle(): Promise<void> {
     await this.authService.googleSignIn()
       .then(data => {
         if (data) {
@@ -60,13 +67,12 @@ export class LoginComponent {
       });
   }
 
-  public async login() {
+  public async login(): Promise<void> {
     await this.authService.login(this.userForm.get('email')?.value, this.userForm.get('password')?.value)
       .then((result) => {
         const user = result.user.uid;
         this.router.navigate([`main-page/${user}`]);
-      })
-      .catch((error) => {
+      }).catch((error) => {
         if (error.code === 'auth/user-not-found') {
           this.errorMessage = 'user-not-found';
         } else if (error.code === 'auth/wrong-password') {
@@ -77,7 +83,7 @@ export class LoginComponent {
       });
   }
 
-  public loginAsGuest() {
+  public loginAsGuest(): void {
     this.router.navigate(['main-page/guest']);
   }
 }

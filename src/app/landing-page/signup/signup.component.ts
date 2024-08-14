@@ -17,25 +17,29 @@ import { UserService } from '../../services/user/user.service';
   styleUrl: './signup.component.scss'
 })
 export class SignupComponent {
+  private userService: UserService = inject(UserService);
+  private fb: FormBuilder = inject(FormBuilder);
+  private router: Router = inject(Router);
+
   public isChecked: boolean = false;
   public showCheckboxFeedback: boolean = false;
   public userForm!: FormGroup;
   public errorMessage!: string | null;
 
-  private userService = inject(UserService);
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-
   ngOnInit() {
+    this.createUserProfileForm();
+    this.setTimeoutErrorMessage();
+  }
+
+  private createUserProfileForm(): void {
     this.userForm = this.fb.group({
       name: [this.userService.user.name, [Validators.required, Validators.pattern(/^[A-Z][a-zA-Z]+\s[A-Z][a-zA-Z]+$/)]],
       email: [this.userService.user.email, [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]],
       password: [this.userService.userPassword, [Validators.required, Validators.pattern(/^.{8,}$/)]]
     });
-    this.setTimeoutErrorMessage();
   }
 
-  private setTimeoutErrorMessage() {
+  private setTimeoutErrorMessage(): void {
     this.errorMessage = localStorage.getItem('error');
     setTimeout(() => {
       localStorage.removeItem('error');
@@ -43,16 +47,16 @@ export class SignupComponent {
     }, 3000);
   }
 
-  public handleCheckbox() {
+  public handleCheckbox(): void {
     this.isChecked = !this.isChecked;
   }
 
-  public addUser() {
+  public addUser(): void {
     this.checkCheckbox();
     this.updateAndNavigate();
   }
 
-  private checkCheckbox() {
+  private checkCheckbox(): void {
     if (!this.isChecked) {
       this.showCheckboxFeedback = true;
       setTimeout(() => {
@@ -61,7 +65,7 @@ export class SignupComponent {
     }
   }
 
-  private updateAndNavigate() {
+  private updateAndNavigate(): void {
     if (this.userForm.valid && this.isChecked) {
       this.userService.setUser(this.userForm.value);
       this.userService.userPassword = this.userForm.get('password')?.value;

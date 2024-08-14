@@ -33,7 +33,6 @@ export class EditableMessageComponent {
     this.editor.setContent(this.message.text);
   }
 
-  // make sure to destory the editor
   ngOnDestroy(): void {
     if (this.editor)
     this.editor.destroy();

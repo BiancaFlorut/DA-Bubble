@@ -17,22 +17,26 @@ import { AuthService } from '../../services/auth/auth.service';
   styleUrl: './forgot-password.component.scss'
 })
 export class ForgotPasswordComponent {
+  private router: Router = inject(Router);
+  public authService: AuthService = inject(AuthService);
+  private fb: FormBuilder = inject(FormBuilder);
+
   public validEmail!: boolean;
   public userForm!: FormGroup;
   public errorMessage!: string;
   public showSendEmailMessage: boolean = false;
 
-  private router: Router = inject(Router);
-  public authService = inject(AuthService);
-  private fb = inject(FormBuilder);
-
   ngOnInit(): void {
+    this.setupEmailForm();
+  }
+
+  private setupEmailForm(): void {
     this.userForm = this.fb.group({
       email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/)]]
     });
   }
 
-  public async sendPasswordResetEmail() {
+  public async sendPasswordResetEmail(): Promise<void> {
     const email = this.userForm.get('email')?.value;
     if (email) {
       await this.authService.sendPasswordReset(email)
@@ -48,13 +52,13 @@ export class ForgotPasswordComponent {
     }
   }
 
-  private setTimeOutErrorMessage() {
+  private setTimeOutErrorMessage(): void {
     setTimeout(() => {
       this.errorMessage = '';
     }, 2000);
   }
 
-  private showEmailSentMessage() {
+  private showEmailSentMessage(): void {
     this.showSendEmailMessage = true;
     setTimeout(() => {
       this.showSendEmailMessage = false;

@@ -26,16 +26,24 @@ export class ChangePasswordComponent {
   public isPasswordMatch: boolean = true;
   public showResetMessage: boolean = false;
 
-  mode!: string;
-  oobCode!: string;
-  apiKey!: string;
-  lang!: string;
+  private mode!: string;
+  private oobCode!: string;
+  private apiKey!: string;
+  private lang!: string;
 
   ngOnInit() {
+    this.setupPasswordForm();
+    this.loadQueryParams();
+  }
+
+  private setupPasswordForm(): void {
     this.userForm = this.fb.group({
       password: ['', [Validators.required, Validators.pattern(/^.{8,}$/)]],
       newPassword: ['', [Validators.required, Validators.pattern(/^.{8,}$/)]]
     });
+  }
+
+  private loadQueryParams(): void {
     this.route.queryParams.subscribe(params => {
       this.mode = params['mode'];
       this.oobCode = params['oobCode'];
@@ -44,7 +52,7 @@ export class ChangePasswordComponent {
     });
   }
 
-  public async updatePassword() {
+  public async updatePassword(): Promise<void> {
     if (this.userForm.get('password')?.value !== this.userForm.get('newPassword')?.value) {
       this.handleIsPasswordMatchMessage();
     } else if (this.userForm.valid) {
@@ -61,14 +69,14 @@ export class ChangePasswordComponent {
     }
   }
 
-  private handleIsPasswordMatchMessage() {
+  private handleIsPasswordMatchMessage(): void {
     this.isPasswordMatch = false;
     setTimeout(() => {
       this.isPasswordMatch = true;
     }, 2000);
   }
 
-  private showMessage() {
+  private showMessage(): void {
     this.showResetMessage = true;
     setTimeout(() => {
       this.showResetMessage = false;

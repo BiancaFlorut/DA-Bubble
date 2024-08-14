@@ -31,7 +31,13 @@ form {
     align-items: center;
     gap: 30px;
 
-    .pos-rel-container {
+    .input-container {
+        width: 100%;
+
+        .pos-rel-container {
+            width: 100%;
+            position: relative;
+        }
 
         span {
             font-size: 14px;
