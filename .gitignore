@@ -45,3 +45,6 @@ Thumbs.db
 *.log
 firebase-debug.log
 firestore-debug.log
+
+# .gitignore
+src/environments/environment.ts
