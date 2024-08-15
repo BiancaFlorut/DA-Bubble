@@ -101,9 +101,9 @@ export class ChatService {
     }
     if (partner) {
       const cid = await this.firebase.getDirectChatId(this.firebase.currentUser.uid!, uid);
-      const mid = await this.firebase.sendMessage(cid, this.firebase.currentUser.uid!, Date.now(), message);
-      if (mid) console.log("sent message to: " + partner.name + " cid: " + cid + " mid: " + mid.id);
-
+      let mid = await this.firebase.sendMessage(cid, this.firebase.currentUser.uid!, Date.now(), message);
+      let msg = new Message(mid.id, this.firebase.currentUser.uid!, message, Date.now(), []);
+      await this.firebase.updateMessage(cid, mid.id, msg);
     }
   }
 }
