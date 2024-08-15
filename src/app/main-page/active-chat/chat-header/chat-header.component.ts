@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, effect, inject } from '@angular/core';
 import { User } from '../../../interfaces/user';
 import { ChatService } from '../../../services/chat/chat.service';
 import { FirebaseService } from '../../../services/firebase/firebase.service';
@@ -37,7 +37,7 @@ export class ChatHeaderComponent {
   private editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
   public newMessageService = inject(NewMessageService);
 
-  private currentChat!: Chat;
+  public actualChat: Chat | undefined = this.chatService.actualChat();
   public partner: User | undefined;
   public user!: User;
   public directChat: boolean = false;
@@ -50,20 +50,21 @@ export class ChatHeaderComponent {
   selectedUsers: User[] = [];
 
   constructor() {
-    this.chatService.currentChat.subscribe(chat => {
-      if (chat) {
-        this.currentChat = chat;
-        const rest = this.currentChat.uids.filter(uid => uid !== this.firebaseService.currentUser.uid);
+    effect(() => {
+      this.actualChat = this.chatService.actualChat();
+      if (this.actualChat) {
+        const rest = this.actualChat.uids.filter(uid => uid !== this.firebaseService.currentUser.uid);
         if (rest.length === 0) {
           this.partner = this.firebaseService.currentUser;
         } else {
           this.partner = this.firebaseService.users.find(user => user.uid === rest[0]);
         }
         this.user = this.firebaseService.currentUser;
-        this.chatService.newMessage = false;
+        this.chatService.newMessage.set(false);
         this.directChat = true;
       }
-    });
+
+    }, { allowSignalWrites: true });
   }
 
   public toggleShowProfile(event: Event): void {
@@ -88,7 +89,7 @@ export class ChatHeaderComponent {
       this.searchForUsers();
     else if (this.searchToken.includes('#'))
       this.searchForChannels();
-    else  
+    else
       this.isSuggestedUserListOpen = false;
   }
 
@@ -105,7 +106,7 @@ export class ChatHeaderComponent {
       });
     }
     if (this.users.length === 0 || this.searchToken.length === 0) this.isSuggestedUserListOpen = false;
-      else this.isSuggestedUserListOpen = true;
+    else this.isSuggestedUserListOpen = true;
   }
 
   searchForChannels(): void {
@@ -121,18 +122,18 @@ export class ChatHeaderComponent {
       });
     }
     if (this.channelList.length === 0 || this.searchToken.length === 0) this.isSuggestedChannelListOpen = false;
-      else this.isSuggestedChannelListOpen = true;
+    else this.isSuggestedChannelListOpen = true;
   }
 
   selectUser(user: User): void {
     if (this.newMessageService.selectedUserChats().includes(user)) {
-      this.newMessageService.selectedUserChats.update( users => {
+      this.newMessageService.selectedUserChats.update(users => {
         return users.filter(u => u.uid !== user.uid);
       });
     } else
-    this.newMessageService.selectedUserChats.update( users => {
-      return [...users, user];
-    })
+      this.newMessageService.selectedUserChats.update(users => {
+        return [...users, user];
+      })
     this.isSuggestedUserListOpen = false;
     this.searchToken = '';
   }

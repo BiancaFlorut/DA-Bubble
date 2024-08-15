@@ -69,7 +69,7 @@ export class WorkspaceMenuComponent {
 
   public handleNewMessage(): void {
     this.chatService.closeChat();
-    this.chatService.newMessage = true;
+    this.chatService.newMessage.set(true);
     this.firebaseChannelService.openCreatedChannel = false;
     this.firebaseChannelService.resetChannel();
     this.createChannelService.showChannel = false;
@@ -83,7 +83,7 @@ export class WorkspaceMenuComponent {
   public getAllUsersFromChannel(channel: Channel): void {
     this.chatService.closeChat();
     this.threadChatService.exitThread();
-    this.chatService.newMessage = false;
+    this.chatService.newMessage.set(false);
     this.filterUsersByChannel(channel);
     this.updateChannelVisibility(channel);
     this.firebaseChannelService.subscribeToMessages();

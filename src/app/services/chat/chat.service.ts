@@ -14,8 +14,9 @@ export class ChatService {
   public firebase: FirebaseService = inject(FirebaseService);
 
   public chat!: Chat | undefined;
-  private chatSub: BehaviorSubject<Chat | undefined>
-  public currentChat: Observable<Chat | undefined>;
+  // private chatSub: BehaviorSubject<Chat | undefined>
+  // public currentChat: Observable<Chat | undefined>;
+  public actualChat = signal<Chat | undefined>(this.chat);
 
   public currentPartner: User = {
     uid: '',
@@ -25,23 +26,25 @@ export class ChatService {
     online: false
   };
   public loading: WritableSignal<boolean> = signal(false);
-  public newMessage: boolean = true;
+  public newMessage = signal(true);
 
   constructor() {
-    this.chatSub = new BehaviorSubject<Chat | undefined>(this.chat);
-    this.currentChat = this.chatSub.asObservable();
+    // this.chatSub = new BehaviorSubject<Chat | undefined>(this.chat);
+    // this.currentChat = this.chatSub.asObservable();
   }
 
   public resetChat(): void {
     this.chat = undefined;
-    this.chatSub = new BehaviorSubject<Chat | undefined>(this.chat);
-    this.currentChat = this.chatSub.asObservable();
-    this.newMessage = true;
+    this.actualChat.set(this.chat);
+    // this.chatSub = new BehaviorSubject<Chat | undefined>(this.chat);
+    // this.currentChat = this.chatSub.asObservable();
+    this.newMessage.set(true);
   }
 
   public closeChat(): void {
     this.chat = undefined;
-    this.chatSub.next(this.chat);
+    // this.chatSub.next(this.chat);
+    this.actualChat.set(this.chat);
   }
 
   public async getChatWith(partner: User): Promise<boolean> {
@@ -55,7 +58,7 @@ export class ChatService {
   }
 
   public setActualChat(cid: string, partner: User): void {
-    this.newMessage = false;
+    this.newMessage.set(false);
     onSnapshot(this.firebase.getDirectChatMessagesRef(cid), (collection) => {
       let msgs = [] as Message[];
       collection.forEach((doc) => {
@@ -80,7 +83,8 @@ export class ChatService {
   public setSubscriber(cid: string, partner: User, msgs: Message[]): void {
     let chat: Chat = new Chat(cid, [this.firebase.currentUser.uid!, partner.uid!], msgs);
     this.chat = chat;
-    this.chatSub.next(chat);
+    // this.chatSub.next(chat);
+    this.actualChat.set(this.chat);
     this.loading.set(false);
   }
 

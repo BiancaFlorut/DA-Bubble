@@ -39,10 +39,10 @@ export class ChatBodyComponent implements AfterViewInit {
   scrollService = inject(ScrollService);
 
   constructor() {
-    this.chatService.currentChat.subscribe(chat => {
-      if (chat) {
-        this.chat = chat;
-        this.chat.messages = chat.messages.sort((a, b) => b.timestamp - a.timestamp);
+    effect(() => {
+      this.chat = this.chatService.actualChat();
+      if (this.chat) {
+        this.chat.messages = this.chat.messages.sort((a, b) => b.timestamp - a.timestamp);
         const rest = this.chat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
         if (rest.length === 0) {
           this.partner = this.firebase.currentUser;
@@ -51,15 +51,11 @@ export class ChatBodyComponent implements AfterViewInit {
         }
         this.user = this.firebase.currentUser;
       }
-      else {
-        this.chat = undefined;
-      }
       if (this.channelService.isChannelSet()) {
         this.partners = this.channelService.usersFromChannel;
       }
-    });
-    effect(() => {
       this.checkForScrolling();
+      
     }, { allowSignalWrites: true });
   }
 

@@ -166,7 +166,7 @@
         @for (user of firebaseService.users; track $index) {
         @if(firebaseService.users.length >= 0) {
         <div class="user" (click)="openDirectChat(user)"
-          [class.active]="chatService.currentPartner.uid === user.uid && !createChannelService.showChannel && !chatService.newMessage">
+          [class.active]="chatService.currentPartner.uid === user.uid && !createChannelService.showChannel && !chatService.newMessage()">
           <div class="avatar">
             @if(user.uid === firebaseService.currentUser.uid){
             <img src="{{firebaseService.currentUser.avatar}}" alt="avatar">

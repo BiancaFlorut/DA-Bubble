@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, effect, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../services/chat/chat.service';
 import { Chat } from '../../../models/chat.class';
@@ -63,9 +63,10 @@ export class ChatInputComponent {
   }
 
   constructor() {
-    this.chatService.currentChat.subscribe(chat => {
+    effect(() => {
       this.users = [];
-      if (chat) {
+      let chat = this.chatService.actualChat();
+      if (chat) { 
         this.currentChat = chat;
         const rest = this.currentChat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
         if (rest.length === 0) {
@@ -79,7 +80,7 @@ export class ChatInputComponent {
         }
         this.user = this.firebase.currentUser;
       }
-    });
+    }, { allowSignalWrites: true });
   }
 
   getPlaceholderText() {
@@ -100,7 +101,7 @@ export class ChatInputComponent {
     const text = dom.documentElement.textContent;
     if (text && !this.isWhiteSpace(text) && text.length > 0)
       if (this.isThread) await this.sendThreadMessage();
-      else if (this.chatService.newMessage) await this.sendNewMessage();
+      else if (this.chatService.newMessage()) await this.sendNewMessage();
       else {
         if (this.channelService.isChannelSet()) await this.channelService.sendMessage(this.message);
         else
@@ -227,7 +228,7 @@ export class ChatInputComponent {
   showUsersList() {
     this.isUserListOpen = true;
     if (this.isThread) this.users = this.threadService.users;
-    if (this.chatService.newMessage)
+    if (this.chatService.newMessage())
       this.users = this.firebase.users;
   }
 

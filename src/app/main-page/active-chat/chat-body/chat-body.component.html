@@ -1,4 +1,4 @@
-@if(chat && !chatService.newMessage) {
+@if(chat && !chatService.newMessage()) {
 <section
   [ngStyle]="{
     'justify-content': chat.messages.length === 0 ? 'flex-end' : ''

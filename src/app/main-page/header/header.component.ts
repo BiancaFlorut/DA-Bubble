@@ -119,6 +119,6 @@ export class HeaderComponent {
     this.chatService.resetChat();
     this.threadChatService.exitThread();
     this.channelService.resetChannel();
-    this.chatService.newMessage = true;
+    this.chatService.newMessage.set(true);
   }
 }

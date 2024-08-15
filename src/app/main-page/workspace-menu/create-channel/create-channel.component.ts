@@ -46,7 +46,7 @@ export class CreateChannelComponent {
     this.createChannelService.toggleShowCreateChannel();
     this.showCreateChannel = true;
     this.createChannelService.showChannel = false;
-    this.chatService.newMessage = true;
+    this.chatService.newMessage.set(true);
     this.firebaseChannelService.openCreatedChannel = false;
   }
 
@@ -134,7 +134,7 @@ export class CreateChannelComponent {
   }
 
   public saveCurrentChannelToUsers(): void {
-    this.chatService.newMessage = false;
+    this.chatService.newMessage.set(false);
     let currentChannel = this.userService.currentChannel;
     this.updateUsersChannelSubscription(currentChannel);
     this.loadUsersFromCurrentChannel(currentChannel);

@@ -35,7 +35,7 @@ export class SearchService {
   public getAllUsersFromChannel(channel: Channel): void {
     this.chatService.closeChat();
     this.threadChatService.exitThread();
-    this.chatService.newMessage = false;
+    this.chatService.newMessage.set(false);
     this.filterUsersByChannel(channel);
     this.updateChannelVisibility(channel);
     this.firebaseChannelService.subscribeToMessages();

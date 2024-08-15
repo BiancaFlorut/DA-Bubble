@@ -116,103 +116,116 @@
       }
     </div>
   </div>
-  } } @else { @if (chatService.newMessage) {
+  } } @else { 
+    @if (chatService.newMessage()) {
   <div class="new-message-container">
     <h1>Neue Nachricht</h1>
     <div class="search-container">
       <input
-      class="search-input"
-      type="text"
-      autocomplete="off"
-      placeholder="An: #channel oder @jemand"
-      [(ngModel)]="searchToken"
-      (keyup) ="search()"
-    />
-    @if (isSuggestedUserListOpen) {
+        class="search-input"
+        type="text"
+        autocomplete="off"
+        placeholder="An: #channel oder @jemand"
+        [(ngModel)]="searchToken"
+        (keyup)="search()"
+      />
+      @if (isSuggestedUserListOpen) {
       <div class="users-list-bg" (click)="closeSuggestedUserList($event)"></div>
       <div class="users-list-container">
         @for (suggestedUser of users; track $index) {
-          <div
-            class="user"
-            (click)="selectUser(suggestedUser)"
-            [class.selected]="newMessageService.selectedUserChats().includes(suggestedUser)"
-          >
-            <div class="avatar">
-              <img src="{{ suggestedUser.avatar }}" alt="avatar" />
-              <div
-                class="status-container"
-                [ngClass]="suggestedUser.online ? 'online' : 'offline'"
-              ></div>
-            </div>
-            <div class="user-name">{{ suggestedUser.name }}</div>
+        <div
+          class="user"
+          (click)="selectUser(suggestedUser)"
+          [class.selected]="
+            newMessageService.selectedUserChats().includes(suggestedUser)
+          "
+        >
+          <div class="avatar">
+            <img src="{{ suggestedUser.avatar }}" alt="avatar" />
+            <div
+              class="status-container"
+              [ngClass]="suggestedUser.online ? 'online' : 'offline'"
+            ></div>
           </div>
+          <div class="user-name">{{ suggestedUser.name }}</div>
+        </div>
         }
       </div>
-    }
-    @if (isSuggestedChannelListOpen) {
-      <div class="users-list-bg" (click)="closeSuggestedChannelList($event)"></div>
+      } @if (isSuggestedChannelListOpen) {
+      <div
+        class="users-list-bg"
+        (click)="closeSuggestedChannelList($event)"
+      ></div>
       <div class="users-list-container">
         @for (suggestedChannel of channelList; track $index) {
-          <div
-            class="user"
-            (click)="selectChannel(suggestedChannel)"
-            [class.selected]="selectedChannels.includes(suggestedChannel)"
-          >
-            <div class="avatar">
-              <img src="./assets/img/main-page/workspace-menu/hashtag.svg" alt="avatar" />
-            </div>
-            <div class="user-name">{{ suggestedChannel.name }}</div>
-          </div>
-        }
-      </div>
-    }
-    @if (newMessageService.selectedUserChats().length > 0) {
-      <div class="selected-chats">
-        @for (selectedUser of newMessageService.selectedUserChats(); track $index) {
-          <div class="user" (click)="selectUser(selectedUser)">
-            <div class="avatar">
-              <img src="{{ selectedUser.avatar }}" alt="avatar" />
-              <div
-                class="status-container"
-                [ngClass]="selectedUser.online ? 'online' : 'offline'"
-              ></div>
-            </div>
-            <div class="user-name">{{ selectedUser.name }}</div>
-          </div>
-        }
-      </div>
-    }
-    @if (selectedChannels.length > 0) {
-      <div class="selected-chats">
-        @for (selectedChannel of newMessageService.selectedChannels(); track $index) {
-          <div class="user" (click)="selectChannel(selectedChannel)">
-            <div class="avatar">
-              <img src="./assets/img/main-page/workspace-menu/hashtag.svg" alt="avatar" />
-            </div>
-            <div class="user-name">{{ selectedChannel.name }}</div>
-          </div>
-        }
-      </div>
-    }
-  </div>
-    </div>
-  } @if (directChat && partner && !chatService.newMessage) {
-  <div (click)="showProfileService.toggleShowProfile()" class="user-container">
-    <div class="avatar">
-      <img src="{{ partner.avatar }}" alt="avatar" />
-      <div class="status-container">
         <div
-          class="status-dot"
-          [ngClass]="partner.online ? 'online' : 'offline'"
-        ></div>
+          class="user"
+          (click)="selectChannel(suggestedChannel)"
+          [class.selected]="selectedChannels.includes(suggestedChannel)"
+        >
+          <div class="avatar">
+            <img
+              src="./assets/img/main-page/workspace-menu/hashtag.svg"
+              alt="avatar"
+            />
+          </div>
+          <div class="user-name">{{ suggestedChannel.name }}</div>
+        </div>
+        }
       </div>
-    </div>
-    <div class="name">
-      {{ partner.name }}
-      @if (firebaseService.currentUser.uid === partner.uid) { (Du) }
+      } @if (newMessageService.selectedUserChats().length > 0) {
+      <div class="selected-chats">
+        @for (selectedUser of newMessageService.selectedUserChats(); track
+        $index) {
+        <div class="user" (click)="selectUser(selectedUser)">
+          <div class="avatar">
+            <img src="{{ selectedUser.avatar }}" alt="avatar" />
+            <div
+              class="status-container"
+              [ngClass]="selectedUser.online ? 'online' : 'offline'"
+            ></div>
+          </div>
+          <div class="user-name">{{ selectedUser.name }}</div>
+        </div>
+        }
+      </div>
+      } @if (selectedChannels.length > 0) {
+      <div class="selected-chats">
+        @for (selectedChannel of newMessageService.selectedChannels(); track
+        $index) {
+        <div class="user" (click)="selectChannel(selectedChannel)">
+          <div class="avatar">
+            <img
+              src="./assets/img/main-page/workspace-menu/hashtag.svg"
+              alt="avatar"
+            />
+          </div>
+          <div class="user-name">{{ selectedChannel.name }}</div>
+        </div>
+        }
+      </div>
+      }
     </div>
   </div>
-  } }
+  } @else {
+    @if (directChat && partner) {
+      <div (click)="showProfileService.toggleShowProfile()" class="user-container">
+        <div class="avatar">
+          <img src="{{ partner.avatar }}" alt="avatar" />
+          <div class="status-container">
+            <div
+              class="status-dot"
+              [ngClass]="partner.online ? 'online' : 'offline'"
+            ></div>
+          </div>
+        </div>
+        <div class="name">
+          {{ partner.name }}
+          @if (firebaseService.currentUser.uid === partner.uid) { (Du) }
+        </div>
+      </div>
+      }
+  }  }
 </section>
 @if (chatService.loading()) {
 <div class="progress-container progressing-container">

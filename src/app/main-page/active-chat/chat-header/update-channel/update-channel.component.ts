@@ -83,7 +83,7 @@ export class UpdateChannelComponent {
   }
 
   private resetChatAndCloseModals(): void {
-    this.chatService.newMessage = true;
+    this.chatService.newMessage.set(true);
     this.firebaseChannelService.openCreatedChannel = false;
     this.channelModalService.closeAllModals();
   }

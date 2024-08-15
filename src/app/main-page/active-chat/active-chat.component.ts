@@ -14,10 +14,7 @@ import { Chat } from '../../models/chat.class';
 })
 export class ActiveChatComponent {
   chatService = inject(ChatService);
-  chat: Chat | undefined;
 
-  constructor() {
-    this.chat = this.chatService.chat;
-  }
+  constructor() {}
 
 }
