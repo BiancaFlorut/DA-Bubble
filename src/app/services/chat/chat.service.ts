@@ -94,16 +94,13 @@ export class ChatService {
   }
 
   public async sendMessageToUser(uid: string, message: string): Promise<void> {
-    const partner = this.firebase.getUser(uid)!;
     if (uid.length == 0) {
       console.log("no user to send message to");
       return;
     }
-    if (partner) {
-      const cid = await this.firebase.getDirectChatId(this.firebase.currentUser.uid!, uid);
-      let mid = await this.firebase.sendMessage(cid, this.firebase.currentUser.uid!, Date.now(), message);
-      let msg = new Message(mid.id, this.firebase.currentUser.uid!, message, Date.now(), []);
-      await this.firebase.updateMessage(cid, mid.id, msg);
-    }
+    const cid = await this.firebase.getDirectChatId(this.firebase.currentUser.uid!, uid);
+    let mid = await this.firebase.sendMessage(cid, this.firebase.currentUser.uid!, Date.now(), message);
+    let msg = new Message(mid.id, this.firebase.currentUser.uid!, message, Date.now(), []);
+    await this.firebase.updateMessage(cid, mid.id, msg);
   }
 }

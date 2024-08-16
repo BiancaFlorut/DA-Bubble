@@ -43,11 +43,12 @@
   position: relative;
   width: 100%;
   @include displayFlex(row, space-between, center, 0);
-  .send-btn {
-    cursor: pointer;
-    &:hover path {
-      fill: $purple_2;
-    }
+}
+
+.send-btn {
+  cursor: pointer;
+  &:hover path {
+    fill: $purple_2;
   }
 }
 
@@ -57,8 +58,6 @@
     fill: $light_purple;
   }
 }
-
-
 
 .send-options-container {
   @include displayFlex(row, space-between, center, 5px);
@@ -87,7 +86,7 @@ ngx-editor::ng-deep {
 .message-editor::ng-deep {
   .NgxEditor__Content p {
     vertical-align: middle;
-    font-family: 'Nunito';
+    font-family: "Nunito";
     font-size: 18px;
     line-height: 24.55px;
     font-weight: 400;

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, effect, inject } from '@angular/core';
+import { Component, Input, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../services/chat/chat.service';
 import { Chat } from '../../../models/chat.class';
@@ -28,8 +28,8 @@ import { NewMessageService } from '../../../services/new-message/new-message.ser
 })
 export class ChatInputComponent {
   @Input() isThread: boolean = false;
-  message: string = '';
-  isMessageWhiteSpace: boolean = true;
+  message = signal('');
+  isMessageWhiteSpace = signal(false);
   chatService: ChatService = inject(ChatService);
   threadService: ThreadChatService = inject(ThreadChatService);
   newMessageService: NewMessageService = inject(NewMessageService);
@@ -80,6 +80,7 @@ export class ChatInputComponent {
         }
         this.user = this.firebase.currentUser;
       }
+      this.onInput();
     }, { allowSignalWrites: true });
   }
 
@@ -97,36 +98,35 @@ export class ChatInputComponent {
   }
 
   async sendMessage() {
-    const dom = new DOMParser().parseFromString(this.message, 'text/html');
-    const text = dom.documentElement.textContent;
-    if (text && !this.isWhiteSpace(text) && text.length > 0)
+    if (!this.isMessageWhiteSpace())
       if (this.isThread) await this.sendThreadMessage();
       else if (this.chatService.newMessage()) await this.sendNewMessage();
       else {
-        if (this.channelService.isChannelSet()) await this.channelService.sendMessage(this.message);
+        if (this.channelService.isChannelSet()) await this.channelService.sendMessage(this.message());
         else
           if (this.firebase.currentUser.uid && this.currentChat && this.currentChat.cid) {
-            const mid = await this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message);
-            const message = new Message(mid.id, this.firebase.currentUser.uid, this.message, Date.now(), []);
+            const mid = await this.firebase.sendMessage(this.currentChat.cid, this.firebase.currentUser.uid, Date.now(), this.message());
+            const message = new Message(mid.id, this.firebase.currentUser.uid, this.message(), Date.now(), []);
             await this.firebase.updateMessage(this.currentChat.cid, mid.id, message);
           }
           else console.log('no user is logged in');
       }
-    this.message = '';
-    this.isMessageWhiteSpace = true;
+    
+    this.message.set('');
+    this.isMessageWhiteSpace.set(true);
     this.editor.commands.focus().exec();
   }
 
   async sendNewMessage() {
     if (this.newMessageService.selectedUserChats().length > 0) {
       for (let partner of this.newMessageService.selectedUserChats()) {
-        await this.chatService.sendMessageToUser(partner.uid!, this.message);
+        await this.chatService.sendMessageToUser(partner.uid!, this.message());
       }
       this.newMessageService.selectedUserChats.set([]);
     }
     if (this.newMessageService.selectedChannels().length > 0) {
       for (let channel of this.newMessageService.selectedChannels()) {
-        await this.channelService.sendMessageToChannel(channel.id, this.message);
+        await this.channelService.sendMessageToChannel(channel.id, this.message());
       }
       this.newMessageService.selectedChannels.set([]);
     }
@@ -138,7 +138,7 @@ export class ChatInputComponent {
     if (messages.length === 0) {
       this.createThreadMessage(mid);
     }
-    const message = new Message(mid, this.firebase.currentUser.uid!, this.message, Date.now(), []);
+    const message = new Message(mid, this.firebase.currentUser.uid!, this.message(), Date.now(), []);
     message.isAnswer = true;
     await this.addMessageToThread(mid, message);
     message.isAnswer = false;
@@ -192,9 +192,10 @@ export class ChatInputComponent {
   addEmoji(id: string) {
     const emoji = this.userService.emojis.find(emoji => emoji.id === id);
     if (emoji) {
-      this.editor?.commands.insertImage(emoji?.path, { width: '20px' }).exec();
-      this.editor?.commands.focus().exec();
+      this.editor?.commands.insertImage(emoji?.path, { width: '20px' }).focus().exec();
+      // this.editor?.commands.focus().exec();
     }
+    this.isMessageWhiteSpace.set(false);
   }
 
   async onFileSelected(event: Event) {
@@ -254,10 +255,14 @@ export class ChatInputComponent {
     this.isUserListOpen = false;
   }
 
-  onInput(event: any) {
-    if (this.isWhiteSpace(this.message))
-      this.isMessageWhiteSpace = true;
+  onInput() {
+    const dom = new DOMParser().parseFromString(this.message(), 'text/html');
+    const text = dom.documentElement.textContent;
+    const smileyContent = dom.documentElement.getElementsByTagName('img').length;
+    if (this.isWhiteSpace(text!) && smileyContent == 0)
+      this.isMessageWhiteSpace.set(true);
     else
-      this.isMessageWhiteSpace = false;
+      this.isMessageWhiteSpace.set(false);
   }
+  
 }
