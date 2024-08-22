@@ -1,16 +1,17 @@
 <section>
-  @if (threadChatService.messages.length > 0) { @for (message of
-    threadChatService.messages; track $index) {
+  @if (messages.length > 0) {
+  @for (message of
+    messages; track $index) {
   <app-message
     [message]="message"
-    [chat]="threadChatService.chat"
+    [chat]="threadChatService.chat()"
     #messageItem
     class="message-container"
   ></app-message>
   @if ($index == 0) {
     <div class="answer-count-container">
-      <div class="answer-count">{{ threadChatService.message.answerCount }} 
-        @if (threadChatService.message.answerCount > 1) {
+      <div class="answer-count">{{ threadChatService.message().answerCount }} 
+        @if (threadChatService.message().answerCount > 1) {
           Antworten
         } @else {
           Antwort
@@ -19,10 +20,11 @@
       <div class="line"></div>
     </div>
   }
-  } } @else {
+  } }
+  @else {
   <app-message
-    [message]="threadChatService.message"
-    [chat]="threadChatService.chat"
+    [message]="threadChatService.message()"
+    [chat]="threadChatService.chat()"
   ></app-message>
   }
 </section>

@@ -133,8 +133,8 @@ export class ChatInputComponent {
   }
 
   async sendThreadMessage() {
-    const mid = this.threadService.message.mid;
-    const messages = this.threadService.messages;
+    const mid = this.threadService.message().mid;
+    const messages = this.threadService.messages();
     if (messages.length === 0) {
       this.createThreadMessage(mid);
     }
@@ -142,8 +142,10 @@ export class ChatInputComponent {
     message.isAnswer = true;
     await this.addMessageToThread(mid, message);
     message.isAnswer = false;
-    this.threadService.message.answerCount++;
-    this.threadService.message.lastAnswerTimestamp = message.timestamp;
+    let msg = this.threadService.message();
+    msg.answerCount++;
+    msg.lastAnswerTimestamp = message.timestamp;
+    this.threadService.message.set(msg);
     this.updateThreadMessage(mid);
   }
 
@@ -161,14 +163,14 @@ export class ChatInputComponent {
     if (this.channelService.isChannelSet())
       await this.channelService.addThreadMessage(mid, message);
     else if (this.currentChat.cid && mid)
-      await this.firebase.addThreadMessage(this.threadService.chat!.cid, mid, message);
+      await this.firebase.addThreadMessage(this.threadService.chat()!.cid, mid, message);
   }
 
   updateThreadMessage(mid: string) {
     if (this.channelService.isChannelSet()) {
-      this.firebase.updateRefMessage(this.channelService.getChannelRefForMessage(mid), this.threadService.message);
+      this.firebase.updateRefMessage(this.channelService.getChannelRefForMessage(mid), this.threadService.message());
     } else
-      this.firebase.updateMessage(this.currentChat.cid, mid, this.threadService.message);
+      this.firebase.updateMessage(this.currentChat.cid, mid, this.threadService.message());
   }
 
   isWhiteSpace(text: string) {

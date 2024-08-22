@@ -28,7 +28,7 @@ export class SafeHtmlPipe implements PipeTransform {
   sanitizer = inject(DomSanitizer);
   transform(text: string, isOwn: boolean) {
     text = this.sanitizer.sanitize(SecurityContext.HTML, text)!;
-    if (text.includes('@')) {
+    if (text && text.includes('@')) {
       const dom = (new DOMParser()).parseFromString(text, "text/html");
       dom.querySelectorAll('span').forEach((span) => {
         if (span.textContent?.includes('@')) {
@@ -162,12 +162,15 @@ export class MessageComponent {
 
   areAnyEmojis() {
     let result = false;
-    for (let emoji of this.message.emojis) {
-      if (emoji.count > 0) {
-        result = true;
-        break;
+    if (this.message.emojis) {
+      for (let emoji of this.message.emojis) {
+        if (emoji.count > 0) {
+          result = true;
+          break;
+        }
       }
     }
+    
     return result;
   }
 

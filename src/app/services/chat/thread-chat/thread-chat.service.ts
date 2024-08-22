@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Message } from '../../../models/message.class';
 import { Chat } from '../../../models/chat.class';
 import { FirebaseService } from '../../firebase/firebase.service';
@@ -11,61 +11,59 @@ import { User } from '../../../interfaces/user';
 })
 export class ThreadChatService {
   openSideThread = signal(false);
-  message!: Message;
-  chat: Chat | undefined = undefined;
-  signalThreadChat = signal<Chat | undefined>(this.chat);
+  message = signal({} as Message);
+  chat = signal<Chat | undefined>(undefined);
   firebase = inject(FirebaseService);
-  messages: Message[] = [];
+  messages = signal<Message[]>([]);
   unsubMessages: Unsubscribe | undefined;
   channelService = inject(FirebaseChannelService);
-  loading = false;
+  loading = signal(false);
   users: User[] = [];
 
 
   openThreadChat(message: Message, chat: Chat) {
-    this.loading = true;
-    this.message = message;
+    this.loading.set(true);
+    this.message.set(message);
     if (this.channelService.isChannelSet()) {
-      this.chat = undefined;
+      this.chat.set(undefined);
       this.users = this.channelService.usersFromChannel;
     } else {
-      this.chat = chat;
-      for (let uid of this.chat.uids) {
+      this.chat.set(chat);
+      for (let uid of this.chat()!.uids) {
         this.users.push(this.firebase.getUser(uid)!);
       }
     }
     this.getMessages();
     this.openSideThread.set(true);
-    this.signalThreadChat.set(this.chat);
-    this.loading = false;
+    this.loading.set(false);
   }
 
   setThreadChat(message: Message, chat: Chat) {
-    this.message = message;
-    this.chat = chat;
+    this.message.set(message);
+    this.chat.set(chat);
   }
 
   exitThread() {
-    this.chat = undefined;
-    this.messages = [];
+    this.chat.set(undefined);
+    this.messages.set([]);
     this.openSideThread.set(false);
-    this.signalThreadChat.set(this.chat);
   }
 
   getMessages() {
     let ref;
     if (!this.channelService.isChannelSet()) {
-      ref = collection(doc(this.firebase.getDirectChatMessagesRef(this.chat?.cid!), this.message.mid), 'thread');
+      ref = collection(doc(this.firebase.getDirectChatMessagesRef(this.chat()!.cid!), this.message().mid), 'thread');
     } else {
-      ref = this.channelService.getChannelThreadForMessage(this.message.mid);
+      ref = this.channelService.getChannelThreadForMessage(this.message().mid);
     }
       if (this.unsubMessages) this.unsubMessages();
       this.unsubMessages = onSnapshot(ref, (collection) => {
-        this.messages = [];
+        let msgs: Message[] = [];
         collection.forEach((doc) => {
-          this.messages.push(doc.data() as Message);
+          msgs.push(doc.data() as Message);
         });
-        this.messages = this.messages.sort((a, b) => a.timestamp - b.timestamp);
+        msgs = msgs.sort((a, b) => a.timestamp - b.timestamp);
+        this.messages.set(msgs);
       })
     
   }
@@ -86,9 +84,9 @@ export class ThreadChatService {
         const ref = doc(this.channelService.getChannelThreadForMessage(message.mid), message.tid);
         await this.firebase.updateRefMessage(ref, message);
       }
-      else if (this.chat) {
+      else if (this.chat()) {
         const ref = doc(collection(doc(this.firebase.getDirectChatMessagesRef(cid), message.mid), 'thread'), message.tid);
-        const result = await this.firebase.updateRefMessage(ref, message);
+        await this.firebase.updateRefMessage(ref, message);
         
       }
     } else console.log('no message to edit');

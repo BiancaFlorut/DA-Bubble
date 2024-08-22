@@ -5,9 +5,10 @@
     <div >
       <app-svg-button [source]="'./assets/img/main-page/thread-chat/close.svg'" (click)="exitThread()"></app-svg-button>
     </div>
-    @if (threadService.loading) {
-      <div class="progress-container progressing-container">
-        <div #progressBar class="progress-bar progress"></div>
-      </div>
-    }
+    
 </section>
+@if (threadService.loading()) {
+<div class="progress-container progressing-container">
+  <div #progressBar class="progress-bar progress"></div>
+</div>
+}

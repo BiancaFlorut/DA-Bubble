@@ -201,6 +201,8 @@ export class FirebaseService {
   }
 
   async updateMessage(cid: string, mid: string, data: any) {
+    console.log(data);
+    
     await updateDoc(doc(this.getDirectChatMessagesRef(cid), mid), this.getJsonFromObject(data));
   }
 
