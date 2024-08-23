@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, effect, inject, Signal } from '@angular/core';
 import { ChatInputComponent } from './chat-input/chat-input.component';
 import { ChatHeaderComponent } from './chat-header/chat-header.component';
 import { ChatBodyComponent } from './chat-body/chat-body.component';
@@ -14,7 +14,9 @@ import { Chat } from '../../models/chat.class';
 })
 export class ActiveChatComponent {
   chatService = inject(ChatService);
+  chat: Signal<Chat | undefined> = computed(() => this.chatService.chat());
 
-  constructor() {}
+  constructor() {
+  }
 
 }

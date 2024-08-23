@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Message } from '../../../models/message.class';
 import { Chat } from '../../../models/chat.class';
 import { FirebaseService } from '../../firebase/firebase.service';
@@ -22,6 +22,8 @@ export class ThreadChatService {
 
 
   openThreadChat(message: Message, chat: Chat) {
+    this.exitThread();
+    this.openSideThread.set(true);
     this.loading.set(true);
     this.message.set(message);
     if (this.channelService.isChannelSet()) {
@@ -56,6 +58,7 @@ export class ThreadChatService {
     } else {
       ref = this.channelService.getChannelThreadForMessage(this.message().mid);
     }
+    if (ref){
       if (this.unsubMessages) this.unsubMessages();
       this.unsubMessages = onSnapshot(ref, (collection) => {
         let msgs: Message[] = [];
@@ -64,8 +67,9 @@ export class ThreadChatService {
         });
         msgs = msgs.sort((a, b) => a.timestamp - b.timestamp);
         this.messages.set(msgs);
+        
       })
-    
+    } else console.log('no ref found for the messages');
   }
 
   async getAnswerCount(mid: string, cid: string) {
@@ -87,7 +91,6 @@ export class ThreadChatService {
       else if (this.chat()) {
         const ref = doc(collection(doc(this.firebase.getDirectChatMessagesRef(cid), message.mid), 'thread'), message.tid);
         await this.firebase.updateRefMessage(ref, message);
-        
       }
     } else console.log('no message to edit');
   }
