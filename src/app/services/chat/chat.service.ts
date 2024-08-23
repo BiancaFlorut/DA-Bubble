@@ -13,10 +13,9 @@ import { Emoji } from '../../models/emoji.class';
 export class ChatService {
   public firebase: FirebaseService = inject(FirebaseService);
 
-  public chat!: Chat | undefined;
+  public chat = signal<Chat | undefined>(undefined);
   // private chatSub: BehaviorSubject<Chat | undefined>
   // public currentChat: Observable<Chat | undefined>;
-  public actualChat = signal<Chat | undefined>(this.chat);
 
   public currentPartner: User = {
     uid: '',
@@ -34,17 +33,15 @@ export class ChatService {
   }
 
   public resetChat(): void {
-    this.chat = undefined;
-    this.actualChat.set(this.chat);
+    this.chat.set(undefined);
     // this.chatSub = new BehaviorSubject<Chat | undefined>(this.chat);
     // this.currentChat = this.chatSub.asObservable();
     this.newMessage.set(true);
   }
 
   public closeChat(): void {
-    this.chat = undefined;
+    this.chat.set(undefined);
     // this.chatSub.next(this.chat);
-    this.actualChat.set(this.chat);
   }
 
   public async getChatWith(partner: User): Promise<boolean> {
@@ -82,9 +79,8 @@ export class ChatService {
 
   public setSubscriber(cid: string, partner: User, msgs: Message[]): void {
     let chat: Chat = new Chat(cid, [this.firebase.currentUser.uid!, partner.uid!], msgs);
-    this.chat = chat;
+    this.chat.set(chat);
     // this.chatSub.next(chat);
-    this.actualChat.set(this.chat);
     this.loading.set(false);
   }
 

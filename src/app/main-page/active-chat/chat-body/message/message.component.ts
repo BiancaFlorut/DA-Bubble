@@ -181,8 +181,15 @@ export class MessageComponent {
   }
 
   openThread() {
-    this.threadService.openThreadChat(this.message, this.chatService.chat!);
+    let chat = this.chatService.chat();
+    if (chat) {
+      this.threadService.openThreadChat(this.message, chat);
     this.toggleDNone.toggleIsThreadActive();
+    } else {
+      console.log('no chat found');
+      
+    }
+    
   }
 
   getAnswerText() {

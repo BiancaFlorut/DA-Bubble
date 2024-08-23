@@ -65,7 +65,7 @@ export class ChatInputComponent {
   constructor() {
     effect(() => {
       this.users = [];
-      let chat = this.chatService.actualChat();
+      let chat = this.chatService.chat();
       if (chat) { 
         this.currentChat = chat;
         const rest = this.currentChat.uids.filter(uid => uid !== this.firebase.currentUser.uid);
@@ -92,7 +92,7 @@ export class ChatInputComponent {
       this.users = this.channelService.usersFromChannel;
       return 'Nachricht an #' + this.channelService.channel.name;
     }
-    else if (this.chatService.chat)
+    else if (this.chatService.chat())
       return this.replacePlaceholder();
     return 'Einen Nachricht schreiben...';
   }

@@ -40,7 +40,7 @@ export class ChatBodyComponent implements AfterViewInit {
 
   constructor() {
     effect(() => {
-      this.chat = this.chatService.actualChat();
+      this.chat = this.chatService.chat();
       if (this.chat) {
         this.chat.messages = this.chat.messages.sort((a, b) => b.timestamp - a.timestamp);
         const rest = this.chat.uids.filter(uid => uid !== this.firebase.currentUser.uid);

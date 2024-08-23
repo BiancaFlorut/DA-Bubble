@@ -37,7 +37,7 @@ export class ChatHeaderComponent {
   private editUserProfileService: EditUserProfileService = inject(EditUserProfileService);
   public newMessageService = inject(NewMessageService);
 
-  public actualChat: Chat | undefined = this.chatService.actualChat();
+  public actualChat: Chat | undefined = this.chatService.chat();
   public partner: User | undefined;
   public user!: User;
   public directChat: boolean = false;
@@ -51,7 +51,7 @@ export class ChatHeaderComponent {
 
   constructor() {
     effect(() => {
-      this.actualChat = this.chatService.actualChat();
+      this.actualChat = this.chatService.chat();
       if (this.actualChat) {
         const rest = this.actualChat.uids.filter(uid => uid !== this.firebaseService.currentUser.uid);
         if (rest.length === 0) {

@@ -1,5 +1,5 @@
 
-import { AfterViewInit, Component, effect, inject, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, ApplicationRef, Component, effect, inject, QueryList, ViewChildren } from '@angular/core';
 import { MessageComponent } from '../../active-chat/chat-body/message/message.component';
 import { ThreadChatService } from '../../../services/chat/thread-chat/thread-chat.service';
 import { Message } from '../../../models/message.class';
@@ -15,10 +15,12 @@ export class ThreadBodyComponent implements AfterViewInit{
   @ViewChildren('messageItem') messageItems!: QueryList<any>;
   threadChatService = inject(ThreadChatService);
   messages: Message[] = this.threadChatService.messages();
+  applicationRef = inject(ApplicationRef);
 
   constructor() { 
     effect(() => {
       this.messages = this.threadChatService.messages();
+      this.applicationRef.tick();
     })
   }
 

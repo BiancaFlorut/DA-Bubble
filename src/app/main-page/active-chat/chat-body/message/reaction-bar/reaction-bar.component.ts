@@ -52,8 +52,11 @@ export class ReactionBarComponent {
   }
 
   openThread() {
-    this.threadService.openThreadChat(this.message, this.chatService.chat!);
-    this.toggleDNone.toggleIsThreadActive();
+    let chat = this.chatService.chat();
+    if (chat) {
+      this.threadService.openThreadChat(this.message, chat);
+      this.toggleDNone.toggleIsThreadActive();
+    } else console.log('no chat');
   }
 
 }
