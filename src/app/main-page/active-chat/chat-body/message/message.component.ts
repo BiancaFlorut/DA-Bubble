@@ -76,12 +76,12 @@ export class MessageComponent {
   oldMessage: string = '';
   firebase = inject(FirebaseService);
   channelService = inject(FirebaseChannelService);
-  
+
 
   constructor() {
     this.user = this.firebase.currentUser;
     if (this.message)
-    this.partner = this.firebase.users.find(user => user.uid === this.message.uid);
+      this.partner = this.firebase.users.find(user => user.uid === this.message.uid);
   }
 
   ngOnChanges() {
@@ -118,7 +118,7 @@ export class MessageComponent {
 
   async closeEdit(message: Message) {
     this.isEditing = false;
-    if (message)
+    if (message && !this.isWhiteSpace(this.message.text))
       if (message.isAnswer)
         await this.threadService.editMessage(message, this.cid);
       else if (this.channelService.isChannelSet()) {
@@ -128,6 +128,15 @@ export class MessageComponent {
     else {
       this.message.text = this.oldMessage;
     }
+  }
+
+  isWhiteSpace(text: string) {
+    const dom = new DOMParser().parseFromString(text, 'text/html');
+    const txt = dom.documentElement.textContent;
+    const smileyContent = dom.documentElement.getElementsByTagName('img').length;
+    if (/^\s*$/.test(txt!) && smileyContent == 0)
+      return true;
+    return false;
   }
 
   scrollIntoView() {
@@ -170,7 +179,7 @@ export class MessageComponent {
         }
       }
     }
-    
+
     return result;
   }
 
@@ -182,14 +191,9 @@ export class MessageComponent {
 
   openThread() {
     let chat = this.chatService.chat();
-    if (chat) {
-      this.threadService.openThreadChat(this.message, chat);
+    this.threadService.openThreadChat(this.message, chat!);
     this.toggleDNone.toggleIsThreadActive();
-    } else {
-      console.log('no chat found');
-      
-    }
-    
+
   }
 
   getAnswerText() {
