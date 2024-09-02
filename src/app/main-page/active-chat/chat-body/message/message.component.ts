@@ -140,7 +140,7 @@ export class MessageComponent {
   }
 
   scrollIntoView() {
-    this.messageItem.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.messageItem.nativeElement.scrollIntoView({ behavior: 'smooth'});
   }
 
   addReaction(id: string) {

@@ -79,6 +79,7 @@ app-editable-message {
   background-color: $bg_color;
   padding: 15px;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 
   ::ng-deep p {
     vertical-align: middle;
