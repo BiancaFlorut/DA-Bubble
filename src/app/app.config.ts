@@ -9,15 +9,9 @@ import { routes } from './app.routes';
 import { DatePipe, registerLocaleData } from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 import localeDeExtra from '@angular/common/locales/extra/de';
+import { firebaseConfig } from '../environments/environment';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyB4VNMwgPi02CgsIe-gBiO6xRgBluHYfBE",
-  authDomain: "dabubble-bf68c.firebaseapp.com",
-  projectId: "dabubble-bf68c",
-  storageBucket: "dabubble-bf68c.appspot.com",
-  messagingSenderId: "244168784753",
-  appId: "1:244168784753:web:1bde2e27e46dc290cd94d0"
-};
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
