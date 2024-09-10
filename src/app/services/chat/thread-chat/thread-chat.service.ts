@@ -21,6 +21,14 @@ export class ThreadChatService {
   users: User[] = [];
 
 
+  /**
+   * Opens a thread chat for the given message and chat.
+   * Sets openSideThread to true, sets loading to true, sets message to the given message, and
+   * sets chat to the given chat if it is not a channel, otherwise sets chat to undefined.
+   * Then it gets all messages of the chat and sets openSideThread to true again and sets loading to false.
+   * @param message The message for which the thread chat should be opened.
+   * @param chat The chat for which the thread chat should be opened.
+   */
   openThreadChat(message: Message, chat: Chat) {
     this.exitThread();
     this.openSideThread.set(true);
@@ -40,17 +48,31 @@ export class ThreadChatService {
     this.loading.set(false);
   }
 
+  /**
+   * Sets the message and chat of the thread chat.
+   * @param message The message for which the thread chat should be set.
+   * @param chat The chat for which the thread chat should be set.
+   */
   setThreadChat(message: Message, chat: Chat) {
     this.message.set(message);
     this.chat.set(chat);
   }
 
+  /**
+   * Resets the thread chat to its initial state.
+   * Sets the chat to undefined, the messages to an empty array, and openSideThread to false.
+   */
   exitThread() {
     this.chat.set(undefined);
     this.messages.set([]);
     this.openSideThread.set(false);
   }
 
+  /**
+   * Gets all messages of a thread in a direct chat or a channel.
+   * The messages are sorted by their timestamp in ascending order.
+   * If the thread is not found, a console error is logged.
+   */
   getMessages() {
     let ref;
     if (!this.channelService.isChannelSet()) {
@@ -72,6 +94,12 @@ export class ThreadChatService {
     } else console.log('no ref found for the messages');
   }
 
+  /**
+   * Gets the number of answers in a thread in a direct chat or a channel.
+   * @param mid The id of the message for which the number of answers should be retrieved.
+   * @param cid The id of the direct chat to which the message belongs.
+   * @returns The number of answers in the thread.
+   */
   async getAnswerCount(mid: string, cid: string) {
     let ref;
     if (this.channelService.isChannelSet()) {
@@ -82,6 +110,13 @@ export class ThreadChatService {
     return snapshot.data().count;
   }
 
+  /**
+   * Edits a message in a thread in a direct chat or a channel.
+   * If the message is in a direct chat, the id of the direct chat is needed.
+   * If no message is given, a console error is logged.
+   * @param message The message to edit
+   * @param cid The id of the direct chat to which the message belongs
+   */
   async editMessage(message: Message, cid: string) {
     if (message) {
       if (this.channelService.isChannelSet()) {
@@ -95,6 +130,10 @@ export class ThreadChatService {
     } else console.log('no message to edit');
   }
 
+  /**
+   * This function is called when the component is destroyed. It unsubscribes from all subscriptions
+   * that were created in this service to prevent memory leaks.
+   */
   onNgDestroy() {
     if (this.unsubMessages) this.unsubMessages();
   }
