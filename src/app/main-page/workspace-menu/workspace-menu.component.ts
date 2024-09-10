@@ -38,6 +38,11 @@ export class WorkspaceMenuComponent {
   public areDirectChatsMenuOpen: boolean = true;
   public search: string = '';
 
+  /**
+   * Toggles whether the channels menu is open or not.
+   * If the channels menu is open, it will be closed.
+   * If the channels menu is closed, it will be opened.
+   */
   public openChannelsMenu(): void {
     if (this.areChannelsMenuOpen) {
       this.areChannelsMenuOpen = false;
@@ -46,6 +51,11 @@ export class WorkspaceMenuComponent {
     }
   }
 
+  /**
+   * Toggles whether the direct chats menu is open or not.
+   * If the direct chats menu is open, it will be closed.
+   * If the direct chats menu is closed, it will be opened.
+   */
   public openDirectChatsMenu(): void {
     if (this.areDirectChatsMenuOpen) {
       this.areDirectChatsMenuOpen = false;
@@ -54,6 +64,13 @@ export class WorkspaceMenuComponent {
     }
   }
 
+  /**
+   * Opens a direct chat with the given user.
+   * If the chat already exists, it will be opened.
+   * If the chat doesn't exist, a new one will be created.
+   * @param partner The user to open the direct chat with.
+   * @returns A promise that resolves to true if the chat was found or created, false otherwise.
+   */
   public async openDirectChat(partner: User): Promise<void> {
     this.chatService.closeChat();
     this.firebaseChannelService.resetChannel();
@@ -67,6 +84,10 @@ export class WorkspaceMenuComponent {
     this.toggleDNone.toggleIsClassRemoved();
   }
 
+  /**
+   * Closes the current chat, sets newMessage to true, and toggles the isClassRemoved signal.
+   * This is used when a user wants to start a new message.
+   */
   public handleNewMessage(): void {
     this.chatService.closeChat();
     this.chatService.newMessage.set(true);
@@ -76,10 +97,21 @@ export class WorkspaceMenuComponent {
     this.toggleDNone.toggleIsClassRemoved();
   }
 
+  /**
+   * Toggles the visibility of the create channel menu.
+   * When the menu is visible, the user can create a new channel.
+   * When the menu is not visible, the user cannot create a new channel.
+   */
   public openCreateNewChannel(): void {
     this.createChannelService.toggleShowCreateChannel();
   }
 
+  /**
+   * Closes the current chat, sets newMessage to false, and subscribes to the given channel.
+   * Also updates the channel visibility and toggles the isClassRemoved signal.
+   * This is used when a user wants to start a new message in a channel.
+   * @param channel The channel to get all users from.
+   */
   public getAllUsersFromChannel(channel: Channel): void {
     this.chatService.closeChat();
     this.threadChatService.exitThread();
@@ -90,6 +122,11 @@ export class WorkspaceMenuComponent {
     this.toggleDNone.toggleIsClassRemoved();
   }
 
+  /**
+   * Filters the users from the given channel and stores them in the usersFromChannel array.
+   * This is used when a user wants to see all users from a channel.
+   * @param channel The channel from which to filter the users.
+   */
   private filterUsersByChannel(channel: Channel): void {
     this.firebaseService.users$.subscribe(users => {
       this.firebaseChannelService.usersFromChannel = [];
@@ -104,6 +141,11 @@ export class WorkspaceMenuComponent {
     });
   }
 
+  /**
+   * Updates the channel visibility and toggles the isClassRemoved signal.
+   * This is used when a user wants to start a new message in a channel.
+   * @param channel The channel for which to update the visibility.
+   */
   private updateChannelVisibility(channel: Channel): void {
     this.userService.currentChannel = channel.id;
     this.createChannelService.showChannel = true;

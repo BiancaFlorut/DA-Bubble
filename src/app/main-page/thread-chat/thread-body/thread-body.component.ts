@@ -18,6 +18,10 @@ export class ThreadBodyComponent implements AfterViewInit{
   applicationRef = inject(ApplicationRef);
   changeDetectorRef = inject(ChangeDetectorRef);
 
+  /**
+   * Initializes the component. Subscribes to the ThreadChatService's messages()
+   * signal and updates the local messages array whenever it changes.
+   */
   constructor() { 
     effect(() => {
       if (this.threadChatService.messages()) {
@@ -26,6 +30,9 @@ export class ThreadBodyComponent implements AfterViewInit{
     })
   }
 
+  /**
+   * Scrolls to the first message in the thread after the component has rendered
+   */
   ngAfterViewInit(): void {
     if (this.messageItems && this.messageItems.first) this.messageItems.first.scrollIntoView();
   }

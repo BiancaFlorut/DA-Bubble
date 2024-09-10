@@ -14,6 +14,9 @@ export class ThreadChatHeaderComponent {
   threadService = inject(ThreadChatService);
   public toggleDNone: ToggleDNoneService = inject(ToggleDNoneService);
 
+  /**
+   * Closes the current thread and toggles the visibility of the thread chat component.
+   */
   exitThread() {
     this.threadService.exitThread();
     this.toggleDNone.toggleIsThreadActive();
