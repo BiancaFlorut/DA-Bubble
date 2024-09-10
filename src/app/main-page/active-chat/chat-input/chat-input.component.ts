@@ -49,6 +49,11 @@ export class ChatInputComponent {
   isUserListOpen: boolean = false;
   usersToMessage: User[] = [];
 
+  /**
+   * Initializes the component.
+   * Sets up the editor and focuses on it.
+   * If the channel is set, it sets the users to the channel's users.
+   */
   ngOnInit(): void {
     this.editor = new Editor();
     this.editor.commands.focus().exec();
@@ -57,11 +62,21 @@ export class ChatInputComponent {
     }
   }
 
+  /**
+   * Destroys the editor to prevent memory leaks.
+   */
   ngOnDestroy(): void {
     if (this.editor)
       this.editor.destroy();
   }
 
+  /**
+   * Initializes the component.
+   * Sets up the users, current chat and partner.
+   * If the channel is set, it sets the users to the channel's users.
+   * Also sets up a effect that listens to changes in the chat.
+   * When the chat changes, it updates the current chat and the users.
+   */
   constructor() {
     effect(() => {
       this.users = [];
@@ -84,6 +99,14 @@ export class ChatInputComponent {
     }, { allowSignalWrites: true });
   }
 
+  /**
+   * Returns the placeholder text for the input field.
+   * If the chat is a thread, it returns 'Antworten...'.
+   * If the channel is set, it returns 'Nachricht an <channel name>'.
+   * If the chat is not a thread and the channel is not set, it returns 'Einen Nachricht schreiben...'.
+   * Otherwise, it returns the result of {@link replacePlaceholder}.
+   * @returns {string} The placeholder text.
+   */
   getPlaceholderText() {
     if (this.isThread) {
       return 'Antworten...';
@@ -97,6 +120,16 @@ export class ChatInputComponent {
     return 'Einen Nachricht schreiben...';
   }
 
+
+  /**
+   * Sends a message to the current chat.
+   * If the message is white space, it does nothing.
+   * If the chat is a thread, it sends the message to the thread.
+   * If the chat is not a thread but a new message, it sends the message to the chat.
+   * If the channel is set, it sends the message to the channel.
+   * If the chat is not a thread and the channel is not set, it sends the message to the chat.
+   * After sending the message, it resets the input field and focuses on it.
+   */
   async sendMessage() {
     if (!this.isMessageWhiteSpace())
       if (this.isThread) await this.sendThreadMessage();
@@ -117,6 +150,12 @@ export class ChatInputComponent {
     this.editor.commands.focus().exec();
   }
 
+  /**
+   * Sends a message to all the selected users and channels.
+   * If the users to message are selected, it sends the message to each of them.
+   * If the channels to message are selected, it sends the message to each of them.
+   * Afterwards, it resets the selected users and channels.
+   */
   async sendNewMessage() {
     if (this.newMessageService.selectedUserChats().length > 0) {
       for (let partner of this.newMessageService.selectedUserChats()) {
@@ -132,6 +171,13 @@ export class ChatInputComponent {
     }
   }
 
+  /**
+   * Sends a message to the current thread.
+   * If the thread has no messages, it creates a new thread message.
+   * If the thread has messages, it sends the message as an answer to the thread.
+   * After sending the message, it increases the answer count of the thread message and updates its last answer timestamp.
+   * @param mid The id of the message to which the thread belongs.
+   */
   async sendThreadMessage() {
     const mid = this.threadService.message().mid;
     const messages = this.threadService.messages();
@@ -149,6 +195,10 @@ export class ChatInputComponent {
     this.updateThreadMessage(mid);
   }
 
+  /**
+   * Creates a new thread in the current chat or channel.
+   * @param mid The id of the message to which the thread belongs.
+   */
   createThreadMessage(mid: string) {
     if (this.currentChat && this.currentChat.cid && mid)
       this.firebase.setThread(this.currentChat.cid, mid);
@@ -159,6 +209,11 @@ export class ChatInputComponent {
         console.log('no cid or mid create a thread');
   }
 
+  /**
+   * Adds a new message to an existing thread in the current chat or channel.
+   * @param mid The id of the message to which the new message should be added as a thread.
+   * @param message The message to add.
+   */
   async addMessageToThread(mid: string, message: Message) {
     if (this.channelService.isChannelSet())
       await this.channelService.addThreadMessage(mid, message);
@@ -166,6 +221,10 @@ export class ChatInputComponent {
       await this.firebase.addThreadMessage(this.threadService.chat()!.cid, mid, message);
   }
 
+  /**
+   * Updates a thread message in the current chat or channel.
+   * @param mid The id of the message to which the thread belongs.
+   */
   updateThreadMessage(mid: string) {
     if (this.channelService.isChannelSet()) {
       this.firebase.updateRefMessage(this.channelService.getChannelRefForMessage(mid), this.threadService.message());
@@ -173,10 +232,26 @@ export class ChatInputComponent {
       this.firebase.updateMessage(this.currentChat.cid, mid, this.threadService.message());
   }
 
+  /**
+   * Checks if a given string is white space.
+   * @param text The string to check.
+   * @returns True if the string is white space, false otherwise.
+   */
   isWhiteSpace(text: string) {
     return /^\s*$/.test(text);
   }
 
+  /**
+   * Returns the placeholder text for the input field.
+   * If the chat is a thread, it returns 'Antworten...'.
+   * If the channel is set, it returns 'Nachricht an <channel name>'.
+   * If the chat is not a thread and the channel is not set, it returns 'Einen Nachricht schreiben...'.
+   * Otherwise, it returns one of the following:
+   * - 'Nachricht an dir' if the user is the same as the current user.
+   * - 'Nachricht an <partner name>' if the user is different from the current user.
+   * - 'Nachricht von <user name>' if the user is not the current user.
+   * @returns {string} The placeholder text.
+   */
   replacePlaceholder() {
     if (this.partner && this.user) {
       if (this.user.uid === this.firebase.currentUser.uid) {
@@ -191,6 +266,13 @@ export class ChatInputComponent {
     return 'Einen Nachricht schreiben...';
   }
 
+  /**
+   * Adds an emoji to the input field.
+   * @param id The id of the emoji to add.
+   * If the emoji is found in the list of available emojis, it is added to the input field.
+   * The focus is then set back to the input field.
+   * The isMessageWhiteSpace observable is set to false.
+   */
   addEmoji(id: string) {
     const emoji = this.userService.emojis.find(emoji => emoji.id === id);
     if (emoji) {
@@ -200,6 +282,15 @@ export class ChatInputComponent {
     this.isMessageWhiteSpace.set(false);
   }
 
+  /**
+   * Handles the file input event.
+   * If a file is selected, it checks if the file is an image or a pdf and its size is less than 500000 bytes.
+   * If the conditions are met, it uploads the file to the firebase storage and inserts a link to the file in the editor.
+   * The file name is set as the link text.
+   * If the file is a pdf, it inserts the pdf icon instead of the file itself.
+   * The focus is then set back to the editor.
+   * If the file does not meet the conditions, it shows an alert with an appropriate message.
+   */
   async onFileSelected(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file && file.size < 500000) {
@@ -228,6 +319,11 @@ export class ChatInputComponent {
     }
   }
 
+  /**
+   * Toggles the user list open or closed. If the current chat is a thread, the users
+   * of the thread are shown. If the current chat is a new message, all users of the
+   * firebase are shown.
+   */
   showUsersList() {
     this.isUserListOpen = true;
     if (this.isThread) this.users = this.threadService.users;
@@ -235,6 +331,11 @@ export class ChatInputComponent {
       this.users = this.firebase.users;
   }
 
+  /**
+   * Selects a user from the user list and inserts the user's name into the editor
+   * as a link. The user list is then closed and the focus is set back to the editor.
+   * @param user The user to be selected.
+   */
   selectUser(user: User) {
     let html = /*html*/`
         <span style="color: #535AF1;">@${user.name}</span>
@@ -252,11 +353,20 @@ export class ChatInputComponent {
       exec();
   }
 
+  /**
+   * Closes the user list if it is open.
+   * @param event The event that triggered this function.
+   */
   closeUsersList(event: Event) {
     event.stopPropagation();
     this.isUserListOpen = false;
   }
 
+  /**
+   * Checks if the message is only whitespace (and not a smiley).
+   * If it is, sets the isMessageWhiteSpace signal to true, otherwise to false.
+   * This is used to disable the send button if the message is empty.
+   */
   onInput() {
     const dom = new DOMParser().parseFromString(this.message(), 'text/html');
     const text = dom.documentElement.textContent;

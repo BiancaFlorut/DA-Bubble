@@ -14,6 +14,11 @@ export class UserListComponent {
   @Input() users: User[] = [];
   @Output() userSelectedEvent: EventEmitter<User> = new EventEmitter();
 
+  /**
+   * Selects a user from the user list and emits the userSelectedEvent with the selected user.
+   * @param user The user to be selected.
+   * @param event The event that triggered this function.
+   */
   selectUser(user: User, event: Event) {
     event.stopPropagation();
     this.userSelectedEvent.emit(user);
