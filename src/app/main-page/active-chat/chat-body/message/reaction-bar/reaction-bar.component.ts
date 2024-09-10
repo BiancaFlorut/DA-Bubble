@@ -29,10 +29,17 @@ export class ReactionBarComponent {
   channelService = inject(FirebaseChannelService);
   public toggleDNone: ToggleDNoneService = inject(ToggleDNoneService);
 
+  /**
+   * Sorts the emojis in the UserService on component initialization.
+   */
   constructor() {
     this.userService.sortEmojis();
   }
 
+  /**
+   * Toggles the message menu open/closed. If the menu is opened, it will be
+   * closed after 2 seconds if no other action is taken.
+   */
   toggleMessageMenu() {
     this.isMessageMenuOpen = !this.isMessageMenuOpen;
     if (this.isMessageMenuOpen) {
@@ -42,15 +49,30 @@ export class ReactionBarComponent {
     }
   }
 
+  /**
+   * Emits an event to the parent component to open the message for editing
+   * and closes the message menu if it is open.
+   */
   editMessage() {
     this.editMessageEvent.emit();
     this.isMessageMenuOpen = false;
   }
 
+  /**
+   * Emits an event to the parent component to add a reaction to a message.
+   * The id of the emoji to add is given as a parameter.
+   * @param id The id of the emoji to add.
+   */
   addReaction(id: string) {
     this.addReactionEvent.emit(id);
   }
 
+  /**
+   * Opens the thread chat for the message.
+   * It sets the thread chat service's message to the current message and the chat to the current chat,
+   * and then gets all messages of the chat and sets the thread chat service's openSideThread to true again.
+   * Finally, it sets the is thread active flag to true.
+   */
   openThread() {
     let chat = this.chatService.chat();
       this.threadService.openThreadChat(this.message, chat!);
