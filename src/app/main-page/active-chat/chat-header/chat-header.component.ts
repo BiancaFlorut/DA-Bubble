@@ -49,6 +49,12 @@ export class ChatHeaderComponent {
   isSuggestedChannelListOpen: boolean = false;
   selectedUsers: User[] = [];
 
+  /**
+   * Sets up the chat header component by setting the actual chat,
+   * partner, user and directChat variable.
+   * Also sets the newMessage signal to false.
+   * @private
+   */
   constructor() {
     effect(() => {
       this.actualChat = this.chatService.chat();
@@ -67,6 +73,12 @@ export class ChatHeaderComponent {
     }, { allowSignalWrites: true });
   }
 
+  /**
+   * Toggles the showProfile flag of the editUserProfileService.
+   * If the showProfile flag is true, it is set to false.
+   * If the showProfile flag is false, all open modals are closed.
+   * @param event the click event
+   */
   public toggleShowProfile(event: Event): void {
     event.stopPropagation();
     if (this.editUserProfileService.showProfile) {
@@ -76,6 +88,11 @@ export class ChatHeaderComponent {
     }
   }
 
+  /**
+   * Handles the showMembers and showAddPeople modals of the channelModalService.
+   * If the window.innerWidth is less than or equal to 870, the showMembers flag is set to true.
+   * Otherwise, the showAddPeople flag is toggled.
+   */
   public handleShowMembersAndShowAddPeople(): void {
     if (window.innerWidth <= 870) {
       this.channelModalService.showMembers = true;
@@ -84,6 +101,12 @@ export class ChatHeaderComponent {
     }
   }
 
+  /**
+   * Handles the search input of the chat header.
+   * If the search input contains '@', it searches for users.
+   * If the search input contains '#', it searches for channels.
+   * If the search input is empty, it closes the suggested user list.
+   */
   search(): void {
     if (this.searchToken.includes('@'))
       this.searchForUsers();
@@ -93,6 +116,12 @@ export class ChatHeaderComponent {
       this.isSuggestedUserListOpen = false;
   }
 
+  /**
+   * Searches for users in the search input of the chat header.
+   * If the search input contains '@' followed by a string, it searches for users with name containing that string.
+   * If the search input contains '@' but no string, it shows all users.
+   * If the search input is empty or there are no users found, it closes the suggested user list.
+   */
   searchForUsers(): void {
     let token = this.searchToken.split('@');
     if (token[1].length === 0) {
@@ -109,6 +138,12 @@ export class ChatHeaderComponent {
     else this.isSuggestedUserListOpen = true;
   }
 
+  /**
+   * Searches for channels in the search input of the chat header.
+   * If the search input contains '#' followed by a string, it searches for channels with name containing that string.
+   * If the search input contains '#' but no string, it shows all channels.
+   * If the search input is empty or there are no channels found, it closes the suggested channel list.
+   */
   searchForChannels(): void {
     let token = this.searchToken.split('#');
     if (token[1].length === 0) {
@@ -125,6 +160,13 @@ export class ChatHeaderComponent {
     else this.isSuggestedChannelListOpen = true;
   }
 
+  /**
+   * Selects a user from the user list and toggles the selectedUserChats signal of the newMessageService.
+   * If the selectedUserChats signal already includes the user, it removes the user from the signal.
+   * If the selectedUserChats signal does not include the user, it adds the user to the signal.
+   * It then closes the suggested user list and resets the searchToken.
+   * @param user The user to be selected.
+   */
   selectUser(user: User): void {
     if (this.newMessageService.selectedUserChats().includes(user)) {
       this.newMessageService.selectedUserChats.update(users => {
@@ -138,12 +180,23 @@ export class ChatHeaderComponent {
     this.searchToken = '';
   }
 
+  /**
+   * Closes the suggested user list and resets the searchToken.
+   * @param event The event that triggered this function.
+   */
   closeSuggestedUserList(event: Event): void {
     event.stopPropagation();
     this.isSuggestedUserListOpen = false;
     this.searchToken = '';
   }
 
+  /**
+   * Selects a channel from the channel list and toggles the selectedChannels signal of the newMessageService.
+   * If the selectedChannels signal already includes the channel, it removes the channel from the signal.
+   * If the selectedChannels signal does not include the channel, it adds the channel to the signal.
+   * It then closes the suggested channel list and resets the searchToken.
+   * @param channel The channel to be selected.
+   */
   selectChannel(channel: Channel): void {
     if (this.selectedChannels.includes(channel)) {
       this.selectedChannels.splice(this.selectedChannels.indexOf(channel), 1);
@@ -154,6 +207,10 @@ export class ChatHeaderComponent {
     this.searchToken = '';
   }
 
+  /**
+   * Closes the suggested channel list and resets the searchToken.
+   * @param event The event that triggered this function.
+   */
   closeSuggestedChannelList(event: Event): void {
     event.stopPropagation();
     this.isSuggestedChannelListOpen = false;
