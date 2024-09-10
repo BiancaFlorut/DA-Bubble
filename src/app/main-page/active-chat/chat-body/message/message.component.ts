@@ -26,6 +26,13 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class SafeHtmlPipe implements PipeTransform {
   sanitizer = inject(DomSanitizer);
+  /**
+   * Sanitizes a given string of HTML and highlights any text that is wrapped in <span> tags and contains '@'.
+   * If the message is from the current user, the highlighted text is colored white, otherwise it is colored #535AF1.
+   * @param text The HTML string to transform.
+   * @param isOwn Whether the message is from the current user.
+   * @returns The transformed string of HTML.
+   */
   transform(text: string, isOwn: boolean) {
     text = this.sanitizer.sanitize(SecurityContext.HTML, text)!;
     if (text && text.includes('@')) {
@@ -78,12 +85,24 @@ export class MessageComponent {
   channelService = inject(FirebaseChannelService);
 
 
+  /**
+   * Constructor for the MessageComponent.
+   * Sets the user and partner properties based on the input message.
+   * If the message is not set, the user and partner are set to the current user.
+   */
   constructor() {
     this.user = this.firebase.currentUser;
     if (this.message)
       this.partner = this.firebase.users.find(user => user.uid === this.message.uid);
   }
 
+  /**
+   * Called when the input message or chat changes.
+   * Sets the user and partner properties based on the input message and chat.
+   * If the message is not set, the user and partner are set to the current user.
+   * If the channel service is set and the input message is set, the partner is set to the user
+   * from the channel service with the same uid as the message.
+   */
   ngOnChanges() {
     this.user = this.firebase.currentUser;
     if (this.chat) {
@@ -100,6 +119,14 @@ export class MessageComponent {
     }
   }
 
+  /**
+   * Edits a message in a direct chat or a channel.
+   * If the message is an answer, it edits the answer in the thread.
+   * If the channel service is set and the message is not an answer, it edits the message in the channel.
+   * If the channel service is not set and the message is not an answer, it edits the message in the direct chat.
+   * If no message is given, it sets the isEditing flag to true and sets the oldMessage to the current message's text.
+   * @param message The message to edit
+   */
   async editMessage(message: Message) {
     if (message) {
       if (message.isAnswer) {
@@ -116,6 +143,14 @@ export class MessageComponent {
   }
 
 
+  /**
+   * Closes the edit mode of the message.
+   * If the message is changed and is not an answer, it edits the message in the direct chat.
+   * If the message is changed and is an answer, it edits the answer in the thread.
+   * If the message is changed and the channel service is set, it edits the message in the channel.
+   * If the message is not changed, it sets the message's text to the old text.
+   * @param message The message to close the edit mode of
+   */
   async closeEdit(message: Message) {
     this.isEditing = false;
     if (message && !this.isWhiteSpace(this.message.text))
@@ -130,6 +165,11 @@ export class MessageComponent {
     }
   }
 
+  /**
+   * Checks if a given string is white space.
+   * @param text The string to check.
+   * @returns True if the string is white space, false otherwise.
+   */
   isWhiteSpace(text: string) {
     const dom = new DOMParser().parseFromString(text, 'text/html');
     const txt = dom.documentElement.textContent;
@@ -139,10 +179,20 @@ export class MessageComponent {
     return false;
   }
 
+  /**
+   * Scrolls the message element into view with a smooth animation.
+   */
   scrollIntoView() {
     this.messageItem.nativeElement.scrollIntoView({ behavior: 'smooth'});
   }
 
+  /**
+   * Adds a reaction to a message.
+   * If the emoji is found in the list of available emojis, it is added to the message.
+   * The user service is then updated to reflect the change.
+   * The message is then edited with the new emoji.
+   * @param id The id of the emoji to add.
+   */
   addReaction(id: string) {
     const indexUser = this.userService.emojis.findIndex(e => e.id === id);
     if (indexUser != -1) {
@@ -165,10 +215,19 @@ export class MessageComponent {
     }
   }
 
+  /**
+   * Checks if the given uid belongs to the current user.
+   * @param uid The uid to check.
+   * @returns True if the uid belongs to the current user, false otherwise.
+   */
   isCurrentUser(uid: string) {
     return uid === this.firebase.currentUser.uid;
   }
 
+  /**
+   * Checks if any emojis have been given on the message.
+   * @returns True if any emojis have been given, false otherwise.
+   */
   areAnyEmojis() {
     let result = false;
     if (this.message.emojis) {
@@ -184,11 +243,22 @@ export class MessageComponent {
   }
 
 
+
+  /**
+   * Checks if there are any answers to the message in the thread.
+   * @returns The number of answers in the thread if there are any, 0 otherwise.
+   */
   async areAnswers() {
     const count = await this.threadService.getAnswerCount(this.message.mid, this.chat?.cid!);
     return count;
   }
 
+  /**
+   * Opens the thread chat for the message.
+   * It sets the thread chat service's message to the current message and the chat to the current chat,
+   * and then gets all messages of the chat and sets the thread chat service's openSideThread to true again.
+   * Finally, it sets the is thread active flag to true.
+   */
   openThread() {
     let chat = this.chatService.chat();
     this.threadService.openThreadChat(this.message, chat!);
@@ -196,6 +266,12 @@ export class MessageComponent {
 
   }
 
+  /**
+   * Returns a string that describes the number of answers in the thread.
+   * If there is more than one answer, it returns the number of answers followed by "Antworten",
+   * otherwise it returns the number of answers followed by "Antwort".
+   * @returns A string that describes the number of answers in the thread.
+   */
   getAnswerText() {
     return this.message.answerCount + ' ' + (this.message.answerCount > 1 ? 'Antworten' : 'Antwort');
   }
