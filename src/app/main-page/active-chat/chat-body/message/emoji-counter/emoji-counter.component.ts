@@ -23,6 +23,14 @@ export class EmojiCounterComponent {
   user = this.firebase.currentUser;
   channelService = inject(FirebaseChannelService);
 
+  /**
+   * Increments the count of the emoji with the given id in the message's emojis.
+   * If the emoji is not found in the list of available emojis, it is added with a count of 1.
+   * If the emoji is already in the list of available emojis, its count is incremented.
+   * The user service is then updated to reflect the change.
+   * The message is then edited with the new emoji.
+   * @param id The id of the emoji to add.
+   */
   async incrementEmoji(id: string) {
     if (this.message.emojis) {
       const index = this.message.emojis.findIndex(e => e.id === id);
@@ -48,6 +56,15 @@ export class EmojiCounterComponent {
 
   }
 
+  /**
+   * Returns a string that describes who reacted with the emoji.
+   * If there is only one person, it returns 'Du hast reagiert.' if the user is the one who reacted, or 'X hat reagiert.' if it is someone else.
+   * If there are two people, it returns 'X und Y haben reagiert.'
+   * If there are three people, it returns 'X, Y und Z haben reagiert.'
+   * If there are more than three people, it returns 'X, Y und [number] weitere haben reagiert.'
+   * If there are no people, it returns an empty string.
+   * @returns string
+   */
   getDetailsText(): string {
     if (this.emoji.uids.length === 1) {
       const name = this.getNameFromId(this.emoji.uids[0]);
@@ -68,6 +85,14 @@ export class EmojiCounterComponent {
   }
 
 
+  /**
+   * Returns the name of a user with the given id.
+   * If the id matches the current user's id, it returns 'Du'.
+   * If no user with the given id exists, it returns 'unbekannter Benutzer'.
+   * Otherwise, it returns the name of the user with the given id.
+   * @param id The id of the user for which to retrieve the name.
+   * @returns The name of the user with the given id.
+   */
   getNameFromId(id: string): string {
     if (id === this.chatService.firebase.currentUser.uid!) {
       return 'Du';
